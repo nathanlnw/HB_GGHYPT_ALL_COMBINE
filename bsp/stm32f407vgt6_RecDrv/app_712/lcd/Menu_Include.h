@@ -59,7 +59,7 @@ unsigned char *p;
 typedef __packed struct
 {
 unsigned char Num;
-unsigned char PCard[18];
+unsigned char Drver_Name[22];
 unsigned char StartTime[6];
 unsigned char EndTime[6];
 }PilaoRecord;
@@ -67,7 +67,7 @@ unsigned char EndTime[6];
 typedef __packed struct
 {
 unsigned char Num;
-unsigned char PCard[18];
+unsigned char Drver_Name[22];
 unsigned char StartTime[6];
 unsigned char EndTime[6];
 unsigned char Speed;
@@ -117,6 +117,7 @@ extern unsigned char OneKeyCallFlag;
 extern unsigned char data_tirexps[120];
 extern u8 CarSet_0_counter;//记录设置车辆信息的设置内容1:车牌号2:类型3:颜色
 
+extern u8 MENU_set_carinfor_flag;
 
 ALIGN(RT_ALIGN_SIZE)extern  MENUITEM    *pMenuItem;
 ALIGN(RT_ALIGN_SIZE)extern  MENUITEM	Menu_0_0_password;
@@ -142,9 +143,9 @@ ALIGN(RT_ALIGN_SIZE)extern  MENUITEM	Menu_2_InforCheck;
 ALIGN(RT_ALIGN_SIZE)extern  MENUITEM	Menu_3_1_CenterQuesSend;
 ALIGN(RT_ALIGN_SIZE)extern  MENUITEM	Menu_3_2_FullorEmpty;
 ALIGN(RT_ALIGN_SIZE)extern  MENUITEM	Menu_3_3_ElectronicInfor;
-ALIGN(RT_ALIGN_SIZE)extern  MENUITEM	Menu_3_4_Multimedia;
-ALIGN(RT_ALIGN_SIZE)extern  MENUITEM	Menu_3_5_MultimediaTrans;
-ALIGN(RT_ALIGN_SIZE)extern  MENUITEM	Menu_3_6_Record;
+//ALIGN(RT_ALIGN_SIZE)extern  MENUITEM	Menu_3_4_Multimedia;
+//ALIGN(RT_ALIGN_SIZE)extern  MENUITEM	Menu_3_5_MultimediaTrans;
+//ALIGN(RT_ALIGN_SIZE)extern  MENUITEM	Menu_3_6_Record;
 ALIGN(RT_ALIGN_SIZE)extern  MENUITEM	Menu_3_7_Affair;
 ALIGN(RT_ALIGN_SIZE)extern  MENUITEM    Menu_3_8_LogOut;
 ALIGN(RT_ALIGN_SIZE)extern  MENUITEM	Menu_3_InforInteract;
@@ -157,7 +158,7 @@ ALIGN(RT_ALIGN_SIZE)extern  MENUITEM	Menu_5_1_TelDis;
 ALIGN(RT_ALIGN_SIZE)extern  MENUITEM	Menu_5_2_TelAtd;
 ALIGN(RT_ALIGN_SIZE)extern  MENUITEM	Menu_5_3_bdupgrade;
 ALIGN(RT_ALIGN_SIZE)extern  MENUITEM	Menu_5_4_bdColdBoot;
-ALIGN(RT_ALIGN_SIZE)extern  MENUITEM	Menu_5_5_can;
+//ALIGN(RT_ALIGN_SIZE)extern  MENUITEM	Menu_5_5_can;
 ALIGN(RT_ALIGN_SIZE)extern  MENUITEM	Menu_5_6_Concuss;
 ALIGN(RT_ALIGN_SIZE)extern  MENUITEM	Menu_5_7_Version;
 ALIGN(RT_ALIGN_SIZE)extern  MENUITEM	Menu_5_8_Usb;
@@ -219,7 +220,6 @@ extern unsigned char BD_upgrad_contr;
 extern unsigned char print_rec_flag;
 extern u8 print_workingFlag;  // 打印进行中。。 
 
-
 //------------ 使用前锁定相关 ------------------
 extern unsigned char Menu_Car_license[10];//存放车牌号码
 extern u8  Menu_VechileType[10];  //  车辆类型
@@ -230,6 +230,11 @@ extern u8 Menu_sim_Code[12];
 extern u8 License_Not_SetEnable;//    1:车牌号未设置
 extern u8 Menu_color_num; 
 extern u8 menu_type_flag,menu_color_flag;
+
+
+extern u8 Password_correctFlag;  // 密码正确
+extern u8 Exit_to_Idle;
+extern u8 Dis_deviceid_flag;
 
 extern u8 NET_SET_FLAG;
 extern u8 CAR_SET_FLAG;

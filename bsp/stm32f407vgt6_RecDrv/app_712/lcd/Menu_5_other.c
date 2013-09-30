@@ -14,7 +14,7 @@ static PMENUITEM psubmenu[8]=
 	&Menu_5_2_TelAtd,
 	&Menu_5_3_bdupgrade,
 	&Menu_5_4_bdColdBoot,
-	&Menu_5_5_can,
+	//&Menu_5_5_can,
 	&Menu_5_6_Concuss,
 	&Menu_5_7_Version,
 	&Menu_5_8_Usb,
@@ -26,7 +26,7 @@ unsigned char i=0;
 lcd_fill(0);
 lcd_text12(0,3,"其它",4,LCD_MODE_SET);
 lcd_text12(0,17,"信息",4,LCD_MODE_SET);
-for(i=0;i<8;i++)
+for(i=0;i<7;i++)
 	lcd_bitmap(30+i*11, 5, &BMP_noselect_5, LCD_MODE_SET);
 lcd_bitmap(30+menu_pos*11,5,&BMP_select_5,LCD_MODE_SET);
 lcd_text12(30,19,(char *)(psubmenu[menu_pos]->caption),psubmenu[menu_pos]->len,LCD_MODE_SET);
@@ -47,6 +47,9 @@ static void keypress(unsigned int key)
 switch(KeyValue)
 	{
 	case KeyValueMenu:
+		//允许退出
+		Password_correctFlag=1;
+		
 		pMenuItem=&Menu_6_SetInfor;
 		pMenuItem->show();
 		CounterBack=0;
@@ -57,14 +60,14 @@ switch(KeyValue)
 		break;
 	case KeyValueUP:
 		if(menu_pos==0) 
-			menu_pos=7;
+			menu_pos=6;
 		else
 			menu_pos--;
 		menuswitch();		
 		break;
 	case KeyValueDown:
 		menu_pos++;
-		if(menu_pos>7)
+		if(menu_pos>6)
 			menu_pos=0;
 		menuswitch();
 		break;

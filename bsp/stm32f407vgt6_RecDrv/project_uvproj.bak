@@ -1192,14 +1192,14 @@
               <FilePath>.\app_712\CAN\Device_CAN.h</FilePath>
             </File>
             <File>
-              <FileName>Device_CAN2.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\app_712\CAN\Device_CAN2.c</FilePath>
-            </File>
-            <File>
               <FileName>Device_CAN2.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\app_712\CAN\Device_CAN2.h</FilePath>
+            </File>
+            <File>
+              <FileName>Device_CAN2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\app_712\CAN\Device_CAN2.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1317,21 +1317,6 @@
               <FilePath>.\app_712\lcd\Menu_3_3_ElectronicInfor.c</FilePath>
             </File>
             <File>
-              <FileName>Menu_3_4_Multimedia.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\app_712\lcd\Menu_3_4_Multimedia.c</FilePath>
-            </File>
-            <File>
-              <FileName>Menu_3_5_MultimediaTrans.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\app_712\lcd\Menu_3_5_MultimediaTrans.c</FilePath>
-            </File>
-            <File>
-              <FileName>Menu_3_6_Record.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\app_712\lcd\Menu_3_6_Record.c</FilePath>
-            </File>
-            <File>
               <FileName>Menu_3_7_Affair.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\app_712\lcd\Menu_3_7_Affair.c</FilePath>
@@ -1380,11 +1365,6 @@
               <FileName>Menu_5_4_BDColdBoot.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\app_712\lcd\Menu_5_4_BDColdBoot.c</FilePath>
-            </File>
-            <File>
-              <FileName>Menu_5_5_Can.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\app_712\lcd\Menu_5_5_Can.c</FilePath>
             </File>
             <File>
               <FileName>Menu_5_6_Concuss.c</FileName>

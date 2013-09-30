@@ -1,5 +1,6 @@
-#include "Menu_Include.h"
 #include  <string.h>
+#include "Menu_Include.h"
+
 
 u8 screen_2_8_counter=0;
 
@@ -68,15 +69,15 @@ else if(par==2)
 else if(par==3)
 	{
 	lcd_fill(0);
-    lcd_text12(0,3,"优先连接主DNS",13,LCD_MODE_SET);
-	/*
+    //lcd_text12(0,3,"优先连接主DNS",13,LCD_MODE_SET);
+	
 	//--------根据系统存入的条件判断显示
-	if(     )
-		lcd_text12(0,3,"优先连接主DNS",LCD_MODE_SET);
+	if(Vechicle_Info.Link_Frist_Mode==1)
+		lcd_text12(0,3,"优先连接主IP",12,LCD_MODE_SET);
 	else
-		lcd_text12(0,3,"优先连接主IP",LCD_MODE_SET);
+		lcd_text12(0,3,"优先连接主DNS",13,LCD_MODE_SET);
 	//---------------------------------------------------
-	*/
+	
 	lcd_update_all();
 	}
 }
@@ -115,10 +116,10 @@ static void keypress(unsigned int key)
 			Disp_DnsIP(screen_2_8_counter);
 			break;
 		case KeyValueDown:
+			screen_2_8_counter++;
 			if(screen_2_8_counter>3)
 				screen_2_8_counter=1;
-			else
-				screen_2_8_counter++;
+				
 			Disp_DnsIP(screen_2_8_counter);
 			break;
 		}
@@ -128,8 +129,6 @@ static void keypress(unsigned int key)
 
 static void timetick(unsigned int systick)
 {
-       Cent_To_Disp();
-
 	CounterBack++;
 	if(CounterBack!=MaxBankIdleTime)
 		return;

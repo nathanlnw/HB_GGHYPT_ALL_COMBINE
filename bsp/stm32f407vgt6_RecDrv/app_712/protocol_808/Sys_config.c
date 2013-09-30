@@ -13,7 +13,7 @@
 #include  "Vdr.h"
 
  
-#define   SYSID            0xAE5B     
+#define   SYSID            0x01AB      
                                 /*        
                                                         0x0000   -----   0x00FF  …˙≤˙∫Õ—–∑¢”√
                                                         0x0100   -----   0x0FFF  ≤˙∆∑≥ˆªı”√
@@ -28,6 +28,7 @@ SYS_CONF          SysConf_struct;   //  œµÕ≥≈‰÷√
 ALIGN(RT_ALIGN_SIZE) 
 JT808_CONF       JT808Conf_struct;    //  JT 808   œ‡πÿ≈‰÷√   
 JT808_CONF       JT808_struct_Bak;    //  JT808 œ‡πÿƒ£ Ω…Ë÷√±∏∑›
+JT808_CONF       JT808_struct_Bak2;   //  JT808  bak 2
 
 ALIGN(RT_ALIGN_SIZE) 
 TIRED_CONF      TiredConf_struct;    //  ∆£¿Õº› ªœ‡πÿ≈‰÷√
@@ -41,8 +42,8 @@ u8      DeviceNumberID[13];//="800130100001";    // ≥µ¡æDeviceID    ---- ∫”±±ÃÏµ
 u8      SimID_12D[13]; // »ÎÕ¯ID  ∫≈¬Î 12 Œª  ◊Œª Œ™ 0
 
 u8          RemoteIP_Dnsr[4]={255,255,255,255}; 
-u8		RemoteIP_main[4]={58,83,210,131};//{125,38,185,88};//{113,31,28,101 };//{113,31,92,200};//ÃÏΩÚ{60,28,50,210}; ∫”±±ÃÏµÿÕ® 113,31,28,100                        
-u16		RemotePort_main= 7008;//ÃÏΩÚ9131;   ∫”±±ÃÏµÿÕ® 8201             //test tianjin     
+u8		RemoteIP_main[4]={113,31,28,101};//{125,38,185,88};//{113,31,28,101 };//{113,31,92,200};//ÃÏΩÚ{60,28,50,210}; ∫”±±ÃÏµÿÕ® 113,31,28,100                        
+u16		RemotePort_main= 8201;//ÃÏΩÚ9131;   ∫”±±ÃÏµÿÕ® 8201             //test tianjin     
 u8		RemoteIP_aux[4]={60,28,50,210};    //{60,28,50,210}
 u16		RemotePort_aux=4000; 
 //           Link2  Related 
@@ -52,7 +53,7 @@ u16     Remote_Link2_Port=9131;
 
 
 u8           APN_String[30]="UNINET"; //"CMNET";   //  ∫”±±ÃÏµÿÕ®  “∆∂Øµƒø®
-u8           DomainNameStr[50]="jt1.gghypt.net"; ;  // ”Ú√˚  ÃÏµÿÕ®up.gps960.com //jt1.gghypt.net
+u8           DomainNameStr[50]="up.gps960.com"; ;  // ”Ú√˚  ÃÏµÿÕ®up.gps960.com //jt1.gghypt.net 
 u8           DomainNameStr_aux[50]="jt2.gghypt.net";     //"www.sina.com";//jt2.gghypt.net
 u16         ACC_on_sd_Duration=30;    //  ACC ø™∆Ùµƒ ±∫Ú …œ±®µƒ ±º‰º‰∏Ù  
 u16         ACC_off_sd_Duration=60;    //  ACC πÿ±’ ±∫Ú…œ±®µƒ ±º‰º‰∏Ù  
@@ -93,7 +94,6 @@ u8      EmergentWarn=0;               // ΩÙº±±®æØ
 u8     Vechicle_TYPE=1;                 //   ≥µ¡æ¿‡–Õ    1:¥Û–Õªı≥µ  2: –°–Õªı≥µ  3:¥Û–ÕøÕ≥µ  4: ÷––ÕøÕ≥µ   5:–°–ÕøÕ≥µ
 u8     OnFire_Status=0;                      //   1 : ACC µ„ª≤Ÿ◊˜ÕÍ≥…     0 :  ACC  πÿª≤Ÿ◊˜ÕÍ≥… 
 u8     Login_Status=0x02;                    //   01H:µ«¬º£¨02H£∫ÕÀ≥ˆ£¨03H£∫∏¸ªªº› ª‘±
-u8     Powercut_Status=0x01;                 //01H:…œµÁ£¨02H£∫∂œµÁ
 u8     Settingchg_Status=0x00;                 /*
 												82H:…Ë÷√≥µ¡æ–≈œ¢£¨84H£∫…Ë÷√◊¥Ã¨¡ø
 												C2H:…Ë÷√º«¬º“« ±÷” 
@@ -289,18 +289,18 @@ u8  SysConfig_init(void)
 
 void SysConfig_Read(void)
 {
-        if( Api_Config_read(config,ID_CONF_SYS,(u8*)&SysConf_struct,sizeof(SysConf_struct)==false))   //∂¡»°œµÕ≥≈‰÷√–≈œ¢
+        if( Api_Config_read(config,ID_CONF_SYS,(u8*)&SysConf_struct,sizeof(SysConf_struct))==false)   //∂¡»°œµÕ≥≈‰÷√–≈œ¢
                       rt_kprintf("\r\nConfig_ Read Error\r\n");   
 
 			
  		memset((u8*)APN_String,0 ,sizeof(APN_String)); 
-		memcpy((u8*)APN_String,SysConf_struct.APN_str,strlen(SysConf_struct.APN_str));  
+		memcpy((u8*)APN_String,SysConf_struct.APN_str,strlen((const char*)SysConf_struct.APN_str));  
 	                        //   ”Ú√˚
 		memset((u8*)DomainNameStr,0 ,sizeof(DomainNameStr));
-		memcpy((u8*)DomainNameStr,SysConf_struct.DNSR,strlen(SysConf_struct.DNSR)); 
+		memcpy((u8*)DomainNameStr,SysConf_struct.DNSR,strlen((const char*)SysConf_struct.DNSR)); 
 	                        //   ”Ú√˚aux
 		memset((u8*)DomainNameStr_aux,0 ,sizeof(DomainNameStr_aux));
-		memcpy((u8*)DomainNameStr_aux,SysConf_struct.DNSR_Aux,strlen(SysConf_struct.DNSR_Aux)); 
+		memcpy((u8*)DomainNameStr_aux,SysConf_struct.DNSR_Aux,strlen((const char*)SysConf_struct.DNSR_Aux)); 
 
 		
 			 
@@ -329,7 +329,7 @@ void SysConfig_Read(void)
 */
 void JT808_DURATION_Init(void)
 {
-       JT808Conf_struct.DURATION.Heart_Dur=300;       // –ƒÃ¯∞¸∑¢ÀÕº‰∏Ù
+    JT808Conf_struct.DURATION.Heart_Dur=60;       // –ƒÃ¯∞¸∑¢ÀÕº‰∏Ù 
 	JT808Conf_struct.DURATION.TCP_ACK_Dur=20;     //  TCP ”¶¥≥¨ ±
 	JT808Conf_struct.DURATION.TCP_ReSD_Num=3;     //  TCP ÷ÿ∑¢¥Œ ˝
 	JT808Conf_struct.DURATION.TCP_ACK_Dur=20;     //  UDP ”¶¥≥¨ ±
@@ -383,14 +383,21 @@ void  Vehicleinfo_Init(void)
 	memset((u8*)&Vechicle_Info,0,sizeof(Vechicle_Info));
 	//-----------------------------------------------------------------------
 	memcpy(Vechicle_Info.Vech_VIN,"00000000000000000",17);
-	memcpy(Vechicle_Info.Vech_Num,"ΩÚA00000",8);        
+	memcpy(Vechicle_Info.Vech_Num,"ºΩA00000",8);        
 	memcpy(Vechicle_Info.Vech_Type,"Œ¥÷™–Õ",6);       
-	Vechicle_Info.Dev_ProvinceID=0;  // ƒ¨»œ °ID   0
-	Vechicle_Info.Dev_CityID=0;      // ƒ¨»œ –ID   0		
+	Vechicle_Info.Dev_ProvinceID=13;  // ƒ¨»œ °ID   0      13  ∫”±± °
+	Vechicle_Info.Dev_CityID=101;      // ƒ¨»œ –ID   0		  Øº“◊Ø 
 	Vechicle_Info.Dev_Color=1;       // ƒ¨»œ—’…´    // JT415    1  ¿∂ 2 ª∆ 3 ∫⁄ 4 ∞◊ 9∆‰À˚     
-	Vechicle_Info.loginpassword_flag=0;
+	//Vechicle_Info.loginpassword_flag=0;
+	Vechicle_Info.Link_Frist_Mode=0; //     0  : dnsr first     1: mainlink  first  
 
 	DF_WriteFlashSector(DF_Vehicle_Struct_offset,0,(u8*)&Vechicle_Info,sizeof(Vechicle_Info));  
+	
+	WatchDog_Feed();
+	DF_WriteFlashSector(DF_VehicleBAK_Struct_offset,0,(u8*)&Vechicle_Info,sizeof(Vechicle_Info)); 
+	
+	WatchDog_Feed();
+	DF_WriteFlashSector(DF_VehicleBAK2_Struct_offset,0,(u8*)&Vechicle_Info,sizeof(Vechicle_Info)); 
 	
 }
 
@@ -449,7 +456,8 @@ u8     JT808_Conf_init( void )
    	
                 JT808Conf_struct.OutGPS_Flag=1;     //  0  ƒ¨»œ  1  Ω”Õ‚≤ø”–‘¥ÃÏœﬂ 
                 JT808Conf_struct.concuss_step=40;
-				JT808Conf_struct.Link_Frist_Mode=0; //     0  : dnsr first     1: mainlink  first
+				JT808Conf_struct.Auto_ATA_flag=0; // ≤ª∆Ù”√◊‘∂ØΩ”Ã˝  
+				
 		   JT808_RealTimeLock_Init();   //   µ ±∏˙◊Ÿ…Ë÷√	
 
 		    		 
@@ -501,7 +509,7 @@ void  TIRED_Drive_Init(void)
 	 TiredConf_struct.Tired_drive.PreWarn_Dur=1200;  //∆£¿Õº› ª‘§±®æØ
 	 TiredConf_struct.Tired_drive.CurrentDay_DriveTimer_0=0;         //  …œ±®≤ﬂ¬‘Œ™  0  ± 
      TiredConf_struct.Tired_drive.CurrentDay_DriveTimer_Driver_1=0;  // …œ±®≤ﬂ¬‘Œ™1  ±
-     TiredConf_struct.Tired_drive.CurrentDay_DriveTimer_Driver_2; //  …œ±®≤ﬂ¬‘Œ™1  ±
+     TiredConf_struct.Tired_drive.CurrentDay_DriveTimer_Driver_2=0; //  …œ±®≤ﬂ¬‘Œ™1  ±
 
 
          //--- below again ---
@@ -1295,6 +1303,7 @@ void  SendMode_ConterProcess(void)         //  ∂® ±∑¢ÀÕ¥¶¿Ì≥Ã–Ú
             JT808Conf_struct.DURATION.Heart_SDFlag=1; 
     	}
    //  2. ∑¢ÀÕ≥¨ ±≈–∂œ
+   #if 0
     if(1==JT808Conf_struct.DURATION.TCP_SD_state)
     {
       JT808Conf_struct.DURATION.TCP_ACK_DurCnter++;
@@ -1312,6 +1321,7 @@ void  SendMode_ConterProcess(void)         //  ∂® ±∑¢ÀÕ¥¶¿Ì≥Ã–Ú
 	  	}
  
     }
+   #endif  
 }
 
 
@@ -1340,20 +1350,22 @@ void  FirstRun_Config_Write(void)
 		   RailPolygen_Init();	
 		   RouteLine_Init(); 
                  TEXTMSG_Write_Init();	   
- 		 
+				 
+ 		  //---- add special -----------  
+ 		  Login_Menu_Flag=0;     //   ‰»ÎΩÁ√ÊŒ™0 
+		  DF_WriteFlashSector(DF_LOGIIN_Flag_offset,0,&Login_Menu_Flag,1); 
+		  
 
 }
 //-----------------------------------------------------------------
 void SetConfig(void)
 {
-       u8  res=0;
-	u8 Reg_buf[22];	 
-	u8 i=0;//,len_write=0;
+	//u8 i=0;//,len_write=0;
 //	u32 j=0;
 	
        rt_kprintf("\r\nSave Config\r\n");
 	// 1.  ∂¡»°config ≤Ÿ◊˜      0 :≥…π¶    1 :   ß∞‹
-	res=Api_Config_read(config,ID_CONF_SYS,(u8*)&SysConf_struct,sizeof(SysConf_struct));           
+	Api_Config_read(config,ID_CONF_SYS,(u8*)&SysConf_struct,sizeof(SysConf_struct));           
        //rt_kprintf("\r\nRead Save SYSID\r\n");
        //  2. ∂¡»°≥…π¶  £¨≈–∂œ  ∞Ê±æID 
 	if(SysConf_struct.Version_ID!=SYSID)//SYSID)   //  check  wether need  update  or not 
@@ -1366,7 +1378,10 @@ void SetConfig(void)
            FirstRun_Config_Write();   // ¿Ô±ﬂ∏¸–¬¡À SYSID           
            rt_kprintf("\r\nready--erase vdr!\r\n");
 		   vdr_erase(); 
-	  	   rt_kprintf("\r\nSave Over!\r\n");  
+	  	   rt_kprintf("\r\nSave Over!\r\n"); 
+
+		   //----- BD_Module Type
+		   BD_MODULE_Write(Module_3020C);
 	}
 	else			
 		   rt_kprintf("\r\n Config Already Exist!\r\n"); 
@@ -1374,49 +1389,97 @@ void SetConfig(void)
 
  void ReadConfig(void) 
 {
-    u16   i=0;
+    u16   res[3];
 	
-           DF_delay_ms(50); 
+           DF_delay_ms(500);  
 		  DF_LOCK=1;   // lock  df
+
+		  //  1.   read  read to  compare  judge
           // Api_Config_read(jt808,0,(u8*)&JT808Conf_struct,sizeof(JT808Conf_struct));   //  ∂¡»°JT808   ≈‰÷√–≈œ¢
          //-------- JT808 ≤Œ ˝≈‰÷√∂¡»°≤‚ ‘£¨≤Ÿ◊˜∆µ∑±∂¯«“÷ÿ“™À˘“‘–Ë“™Ãÿ ‚¥¶¿Ì 
            DF_ReadFlash(JT808Start_offset, 0,(u8*)&JT808Conf_struct,sizeof(JT808Conf_struct)); 
 		   DF_delay_ms(80); 	// large content delay	
 
 		   DF_ReadFlash(JT808_BakSetting_offset, 0,(u8*)&JT808_struct_Bak,sizeof(JT808_struct_Bak)); 
+		   DF_delay_ms(80); 	// large content delay	 
+
+		   DF_ReadFlash(JT808_Bak2Setting_offset, 0,(u8*)&JT808_struct_Bak2,sizeof(JT808_struct_Bak2)); 
 		   DF_delay_ms(80); 	// large content delay	
 
-		   // 2. ±»Ωœ
-		  i=memcmp((u8*)&JT808Conf_struct,(u8*)&JT808_struct_Bak,sizeof(JT808_struct_Bak));
+		   // 2. compare
+		   /*
+		           note:   res[0] == org cmp  bak    res[1]== bak  cmp  bak2    res[2]== bak2  cmp  org		  
 
-			if(i==0)
-			   rt_kprintf("\r\n JT808 ∂¡»°–£—È≥…π¶! i=%d\r\n",i); 
-			else
-				{
-				   rt_kprintf("\r\n JT808 ∂¡»°–£—È ß∞‹! i=%d\r\n",i); 	 
+		           ---org --<seg1>--  bak ---<seg2>----bak2 ---<seg3>---
+		           |-----------<---------------<----------------------|
+		    */
+		   res[0]=memcmp((u8*)&JT808Conf_struct,(u8*)&JT808_struct_Bak,sizeof(JT808_struct_Bak));
+		   res[1]=memcmp((u8*)&JT808_struct_Bak,(u8*)&JT808_struct_Bak2,sizeof(JT808_struct_Bak));
+		   res[2]=memcmp((u8*)&JT808_struct_Bak2,(u8*)&JT808Conf_struct,sizeof(JT808_struct_Bak));
 
-				   if((JT808Conf_struct.DURATION.Default_Dur==0xFF)&&\
-				   	  (JT808Conf_struct.DURATION.Sleep_Dur==0xFF)&&\
-				   	  (JT808Conf_struct.SD_MODE.Dur_EmegencMode==0xFF))
-				    {
-				       Api_Config_Recwrite_Large(jt808,0,(u8*)&JT808_struct_Bak,sizeof(JT808_struct_Bak));	
-					   rt_kprintf("\r\n Formal Fail");
-				   	}	
-				   else 	   
-                   if((JT808_struct_Bak.DURATION.Default_Dur==0xFF)&&\
-				   	  (JT808_struct_Bak.DURATION.Sleep_Dur==0xFF)&&\
-				   	  (JT808_struct_Bak.SD_MODE.Dur_EmegencMode==0xFF))
-                   	{
-				      Api_Config_Recwrite_Large(jt808,0,(u8*)&JT808Conf_struct,sizeof(JT808Conf_struct));
-					   rt_kprintf("\r\n Bak Fail");
-                   	}
-                   else
-                   	{
-                   	  rt_kprintf("\r\n all recover"); 
-	                  JT808_Conf_init();	
-                   	}
-				}
-           
+           // 3. judge 
+           if(res[0]&&res[1]&&res[2])   // »´”–Œ Ã‚
+           	{
+           	   rt_kprintf("\r\n JT808 »´≤ø ß∞‹!\r\n"); 	
+			   rt_kprintf("\r\n need all recover"); 
+	           JT808_Conf_init();	
+           	}
+		   else
+		   if(res[0]&&res[1])   //    seg1  seg2  ”–Œ Ã‚Àµ√˜  BAK error
+		   	{    
+		   	    // org  bak2 ---ok      bak---error
+		   	   if((u8)(JT808Conf_struct.DURATION.Default_Dur>>24)!=0xFF) // ≈–∂œ’˝»∑µƒ «≤ª « FF
+		   	   	{ 
+		   	   	 
+				  DF_WriteFlashSector(JT808_BakSetting_offset,0,(u8*)&JT808Conf_struct,sizeof(JT808_struct_Bak));
+				  rt_kprintf("\r\n JT808 BAK error ,correct ok"); 			
+
+		   	   	}
+			   else
+			   	{ 
+			   	  rt_kprintf("\r\n need all recover 1"); 
+				  JT808_Conf_init();
+			   	}
+
+		   	}
+		   else
+		   if(res[0]&&res[2])  //  seg1  seg3    ”–Œ Ã‚Àµ√˜ BAK2  error
+		   	{
+		   	   // org  bak  ---ok       bak2 -----error
+		   	   if((u8)(JT808Conf_struct.DURATION.Default_Dur>>24)!=0xFF) // ≈–∂œ’˝»∑µƒ «≤ª « FF
+		   	   	{ 
+		   	   	 
+				  DF_WriteFlashSector(JT808_Bak2Setting_offset,0,(u8*)&JT808Conf_struct,sizeof(JT808_struct_Bak));
+				  rt_kprintf("\r\n JT808 BAK2 error ,correct ok"); 			
+
+		   	   	}
+			   else
+			   	{ 
+			   	  rt_kprintf("\r\n need all recover 2"); 
+				  JT808_Conf_init();
+			   	}
+
+		   	}
+		   else
+		   if(res[1]&&res[2])  //  seg2  seg3	 ”–Œ Ã‚Àµ√˜ org  error
+			{
+			   //  bak  bak2 --ok     org---error
+		         if((u8)(JT808_struct_Bak.DURATION.Default_Dur>>24)!=0xFF) // ≈–∂œ’˝»∑µƒ «≤ª « FF
+		   	   	{ 
+		   	   	 
+				  DF_WriteFlashSector(JT808Start_offset,0,(u8*)&JT808_struct_Bak,sizeof(JT808_struct_Bak));
+				  rt_kprintf("\r\n JT808 org error ,correct ok"); 	 		
+
+		   	   	}
+			   else
+			   	{ 
+			   	  rt_kprintf("\r\n need all recover 3"); 
+				  JT808_Conf_init();
+			   	}
+		   
+			} 
+		   else
+		   	rt_kprintf("\r\n JT808 ∂¡»°–£—È≥…π¶! \r\n"); 
          //-------------------------------------------------------------------------------------
 		   
 		   SysConfig_Read();  //∂¡»°œµÕ≥≈‰÷√–≈œ¢	                 
@@ -1432,8 +1495,82 @@ void SetConfig(void)
                  BD_EXT_Read();   
 		   Api_Read_var_rd_wr();	  	  	   
 
-		   DF_ReadFlash(DF_Vehicle_Struct_offset,0,(u8*)&Vechicle_Info,sizeof(Vechicle_Info));   
-           
+           //  Vechicle  compare
+		   DF_ReadFlash(DF_Vehicle_Struct_offset,0,(u8*)&Vechicle_Info,sizeof(Vechicle_Info));  
+		   
+		   WatchDog_Feed();
+		   DF_ReadFlash(DF_VehicleBAK_Struct_offset,0,(u8*)&Vechicle_Info_BAK,sizeof(Vechicle_Info_BAK)); 
+
+		   WatchDog_Feed();
+		   DF_ReadFlash(DF_VehicleBAK2_Struct_offset,0,(u8*)&Vechicle_info_BAK2,sizeof(Vechicle_info_BAK2)); 
+
+		   //  compare
+		   /*
+		           note:   res[0] == org cmp  bak    res[1]== bak  cmp  bak2    res[2]== bak2  cmp  org		  
+
+		           ---org --<seg1>--  bak ---<seg2>----bak2 ---<seg3>---
+		           |-----------<---------------<----------------------|
+		    */
+		   res[0]=memcmp((u8*)&Vechicle_Info,(u8*)&Vechicle_Info_BAK,sizeof(Vechicle_Info_BAK));	
+		   res[1]=memcmp((u8*)&Vechicle_Info_BAK,(u8*)&Vechicle_info_BAK2,sizeof(Vechicle_Info_BAK));
+		   res[2]=memcmp((u8*)&Vechicle_info_BAK2,(u8*)&Vechicle_Info,sizeof(Vechicle_Info_BAK));
+
+			// 3. judge 
+			if(res[0]&&res[1]&&res[2])	 // »´”–Œ Ã‚
+			 {
+				rt_kprintf("\r\n Vechicle»´≤ø ß∞‹! \r\n");	 
+				rt_kprintf("\r\n need all recover"); 
+				Vehicleinfo_Init();// –¥»Î≥µ¡æ–≈œ¢	 
+			 }
+			else
+			if(res[0]&&res[1])	 //    seg1  seg2  ”–Œ Ã‚Àµ√˜  BAK error
+			 {	  
+				 // org  bak2 ---ok 	 bak---error
+				if((u8)(Vechicle_Info.Dev_CityID>>8)!=0xFF) // ≈–∂œ’˝»∑µƒ «≤ª « FF
+				{ 
+				  DF_WriteFlashSector(DF_VehicleBAK_Struct_offset,0,(u8*)&Vechicle_Info,sizeof(Vechicle_Info)); 
+				  rt_kprintf("\r\n Vehicle BAK error ,correct ok");   
+		   	   	}
+			   else
+			   	{ 
+			   	  rt_kprintf("\r\n Vehicle need all recover 1"); 
+				  Vehicleinfo_Init();
+			   	}			
+			 }
+			else
+			if(res[0]&&res[2])	//	seg1  seg3	  ”–Œ Ã‚Àµ√˜ BAK2  error
+			 {
+				// org	bak  ---ok		 bak2 -----error
+			    if((u8)(Vechicle_Info.Dev_CityID>>8)!=0xFF) // ≈–∂œ’˝»∑µƒ «≤ª « FF
+				{ 
+				  DF_WriteFlashSector(DF_VehicleBAK2_Struct_offset,0,(u8*)&Vechicle_Info,sizeof(Vechicle_Info)); 
+				  rt_kprintf("\r\n Vehicle BAK2 error ,correct ok");   
+		   	   	}
+			   else
+			   	{ 
+			   	  rt_kprintf("\r\n Vehicle need all recover 2"); 
+				  Vehicleinfo_Init();
+			   	}
+			
+			 }
+			else
+			if(res[1]&&res[2])	//	seg2  seg3	  ”–Œ Ã‚Àµ√˜ org  error
+			 {
+				//	bak  bak2 --ok	   org---error
+			    	if((u8)(Vechicle_Info.Dev_CityID>>8)!=0xFF) // ≈–∂œ’˝»∑µƒ «≤ª « FF
+				{ 
+				  DF_WriteFlashSector(DF_Vehicle_Struct_offset,0,(u8*)&Vechicle_Info_BAK,sizeof(Vechicle_Info_BAK)); 
+				  rt_kprintf("\r\n Vehicle BAK error ,correct ok");   
+		   	   	}
+			   else
+			   	{ 
+			   	  rt_kprintf("\r\n Vehicle need all recover 3"); 
+				  Vehicleinfo_Init();
+			   	}
+			
+			 }
+			else
+				rt_kprintf("\r\n Vehicle ∂¡»°–£—È≥…π¶! \r\n");  
 			//---- …Ë±∏ID  --------	 
 		   memset(DeviceNumberID,0,sizeof(DeviceNumberID));
 		   DF_ReadFlash(DF_DeviceID_offset,0,(u8*)DeviceNumberID,12);  
@@ -1445,7 +1582,8 @@ void SetConfig(void)
 		   memset(SimID_12D,0,sizeof(SimID_12D));
 		   DF_ReadFlash(DF_SIMID_12D,0,(u8*)SimID_12D,12);  
 
-		   
+		   //------  ∂¡»° ¬º»Î◊¥Ã¨-----------
+		   DF_ReadFlash(DF_LOGIIN_Flag_offset,0,&Login_Menu_Flag,1); 
 		   
 		   if(JT808Conf_struct.DF_K_adjustState)  
 		   {
@@ -1615,7 +1753,7 @@ void DefaultConfig(void)
 	     BD_list(); 
 
 		 // ----     ◊¥Œ¡¨Ω”¿‡–Õ  --------------------
-		 if(JT808Conf_struct.Link_Frist_Mode==1)
+		 if(Vechicle_Info.Link_Frist_Mode==1)  
 		 	{
                  rt_kprintf("\r\n\r\n    ◊¥Œ¡¨Ω”ƒ£ Ω:   MainLink");    
 		 	}
@@ -1643,10 +1781,23 @@ void DefaultConfig(void)
 				rt_kprintf("%c",SimID_12D[i]);
 			rt_kprintf("\r\n");
 			} 
-	  	// ∂Ãœ¢÷––ƒ∫≈¬Î
-	  	 rt_kprintf("\r\n		   ∂Ãœ¢÷––ƒ∫≈¬Î :%s	 \r\n",JT808Conf_struct.SMS_RXNum);
-	  	
- 
+	  	// ∂Ãœ¢÷––ƒ∫≈¬Î-----------------------------
+	  	// rt_kprintf("\r\n		   ∂Ãœ¢÷––ƒ∫≈¬Î :%s	 \r\n",JT808Conf_struct.SMS_RXNum);
+
+		 // ---  ”≤º˛∞Ê±æ–≈œ¢-------------
+		  HardWareVerion=HardWareGet();		 
+		  rt_kprintf("\r\n		        -------”≤º˛∞Ê±æ:%X        B : %d %d %d\r\n",HardWareVerion,(HardWareVerion>>2)&0x01,(HardWareVerion>>1)&0x01,(HardWareVerion&0x01));   
+
+          if(HardWareVerion==7) // »´1
+		        BD_MODULE_Read();
+		  if(HardWareVerion==6)
+		  	 {  
+		  	   GPS_MODULE_TYPE=Module_3020C;  
+		  	   rt_kprintf("\r\n	±±∂∑∂®Œªƒ£øÈ: 3020C/D ƒ£ Ω");   
+			 }
+
+          //------- ◊‘∂ØΩ”Ã˝∑Ω Ω -----------           
+		  rt_kprintf("\r\n		        -------◊‘∂ØΩ”Ã˝∑Ω Ω:%d    \r\n",JT808Conf_struct.Auto_ATA_flag);     
 }
 //FINSH_FUNCTION_EXPORT(DefaultConfig, DefaultConfig);     
 
@@ -1662,8 +1813,6 @@ void DefaultConfig(void)
 			DefaultConfig();      
 	}
 
-
-	 
 
 
 void RstWrite_ACConoff_counter(void) 
@@ -1747,6 +1896,7 @@ void deviceid(u8 *str)
 
 			 if(value)
 			 	{
+			 	  rt_kprintf("\r\ndevice_ContentError\r\n");
 			 	  rt_kprintf("\r\n  ÷∂Ø…Ë÷√÷’∂ÀID≤ª∫œ∑®!  \r\n");   
                   return ;
 			 	} 
@@ -1754,6 +1904,7 @@ void deviceid(u8 *str)
           }
 		  else
 		  	{
+		  	    rt_kprintf("\r\ndevice_LenError\r\n");
 		  	    rt_kprintf("\r\n  ÷∂Ø…Ë÷√÷’∂ÀID ≥§∂»≤ª’˝»∑!  \r\n");   
                 return ;
 		  	}	
@@ -1761,12 +1912,14 @@ void deviceid(u8 *str)
 		  memset(DeviceNumberID,0,sizeof(DeviceNumberID));
 		  memcpy(DeviceNumberID,reg_str,12);								 
 		  DF_WriteFlashSector(DF_DeviceID_offset,0,DeviceNumberID,13); 
-		  delay_ms(80); 		  
-		  rt_kprintf("\r\n  ÷∂Ø÷’∂ÀID…Ë÷√Œ™ : ");  
+		  delay_ms(80);
+		  
+		  rt_kprintf("\r\ndevice_OK(");  
 		  DF_ReadFlash(DF_DeviceID_offset,0,DeviceNumberID,13);    
 		  for(i=0;i<12;i++)
 		  	rt_kprintf("%c",DeviceNumberID[i]);
-		  rt_kprintf("\r\n");
+		  rt_kprintf(")\r\n"); 
+		  rt_kprintf("\r\n ÷∂Ø÷’∂ÀID…Ë÷√Œ™ :%s\r\n",DeviceNumberID);
 	         return ;
 		}
 }

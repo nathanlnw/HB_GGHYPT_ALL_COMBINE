@@ -128,9 +128,9 @@ static void keypress(unsigned int key)
 	switch(KeyValue)
 		{
 		case KeyValueMenu:
+			
 			pMenuItem=&Menu_0_loggingin;
 			pMenuItem->show();
-			
 			CarType_counter=0;
 			CarType_Type=0;
 			break;
@@ -142,13 +142,7 @@ static void keypress(unsigned int key)
 				//printf("\r\nCarType_Type = %d",CarType_Type);
 				}
 			else if(CarType_Type==2)
-				{
-				CarType_Type=3;
-				lcd_fill(0);
-				lcd_text12(12,3,"车辆类型选择完毕",16,LCD_MODE_SET);
-				lcd_text12(6,18,"按确认键设置下一项",18,LCD_MODE_SET);
-				lcd_update_all();
-				
+				{				
 				//写入车辆类型
 				if((CarType_counter>=1)&&(CarType_counter<=8))
 					memset(Menu_VechileType,0,sizeof(Menu_VechileType));
@@ -170,6 +164,23 @@ static void keypress(unsigned int key)
 				else if(CarType_counter==8)
 					memcpy(Menu_VechileType,"出租车",6);  
 
+				CarType_Type=3;
+								// 车辆类型
+				if(MENU_set_carinfor_flag==1)
+					{
+					rt_kprintf("\r\n车辆类型设置完成，按菜单键返回，%s",Menu_VechileType);		
+					memset(Vechicle_Info.Vech_Type,0,sizeof(Vechicle_Info.Vech_Type));
+					memcpy(Vechicle_Info.Vech_Type,Menu_VechileType,10);
+					DF_WriteFlashSector(DF_Vehicle_Struct_offset,0,(u8*)&Vechicle_Info,sizeof(Vechicle_Info));         
+						WatchDog_Feed();
+					    DF_WriteFlashSector(DF_VehicleBAK_Struct_offset,0,(u8*)&Vechicle_Info,sizeof(Vechicle_Info)); 
+						WatchDog_Feed();
+					    DF_WriteFlashSector(DF_VehicleBAK2_Struct_offset,0,(u8*)&Vechicle_Info,sizeof(Vechicle_Info));
+					}
+				lcd_fill(0);
+				lcd_text12(12,3,"车辆类型选择完毕",16,LCD_MODE_SET);
+				lcd_text12(6,18,"按确认键设置下一项",18,LCD_MODE_SET);
+				lcd_update_all();
 				}
 			else if(CarType_Type==3)
 				{
@@ -211,16 +222,7 @@ static void keypress(unsigned int key)
 
 static void timetick(unsigned int systick)
 {
-	/*CounterBack++;
-	if(CounterBack!=MaxBankIdleTime*5)
-		return;
-	CounterBack=0;
-	pMenuItem=&Menu_0_loggingin;
-	pMenuItem->show();
-	
-	CarType_counter=0;
-	CarType_Type=0;
-	*/
+
 }
 
 

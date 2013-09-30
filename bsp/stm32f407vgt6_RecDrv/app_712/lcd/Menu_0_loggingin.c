@@ -23,14 +23,14 @@ void CarSet_0_fun(u8 set_type)
 			lcd_bitmap(35, 5, &BMP_select_log, LCD_MODE_SET);
 			for(i=0;i<4;i++)
 				lcd_bitmap(47+i*12, 5, &BMP_noselect_log ,LCD_MODE_SET);
-    		lcd_text12(35,19,"车牌号输入",10,LCD_MODE_INVERT);
+    		lcd_text12(30,19,"车牌号输入",10,LCD_MODE_INVERT);
     		break;
     	case 2:
 			lcd_bitmap(35, 5, &BMP_noselect_log, LCD_MODE_SET);
 			lcd_bitmap(47, 5, &BMP_select_log, LCD_MODE_SET);
-			for(i=0;i<2;i++)
+			for(i=0;i<3;i++)
 		    	lcd_bitmap(59+i*12, 5, &BMP_noselect_log, LCD_MODE_SET);
-    		lcd_text12(35,19,"车辆类型选择",12,LCD_MODE_INVERT);		
+    		lcd_text12(30,19,"车辆类型选择",12,LCD_MODE_INVERT);		
     		break;
     	case 3:
 			for(i=0;i<2;i++)
@@ -38,20 +38,20 @@ void CarSet_0_fun(u8 set_type)
 			lcd_bitmap(59, 5, &BMP_select_log, LCD_MODE_SET);
 			for(i=0;i<2;i++)
 				lcd_bitmap(71+i*12, 5, &BMP_noselect_log, LCD_MODE_SET);
-    		lcd_text12(35,19,"SIM卡号输入",11,LCD_MODE_INVERT);
+    		lcd_text12(30,19,"11位SIM卡号输入",15,LCD_MODE_INVERT);
     		break;
     	case 4:
 			for(i=0;i<3;i++)
 				lcd_bitmap(35+i*12, 5, &BMP_noselect_log, LCD_MODE_SET);
 			lcd_bitmap(71, 5, &BMP_select_log, LCD_MODE_SET);
 			lcd_bitmap(83, 5, &BMP_noselect_log, LCD_MODE_SET);
-		    lcd_text12(35,19,"VIN输入",7,LCD_MODE_INVERT); 
+		    lcd_text12(30,19,"17位VIN输入",11,LCD_MODE_INVERT); 
 		    break;
 	    case 5:
 			for(i=0;i<4;i++)
 				lcd_bitmap(35+i*12, 5, &BMP_noselect_log, LCD_MODE_SET);
 			lcd_bitmap(83, 5, &BMP_select_log, LCD_MODE_SET);
-		    lcd_text12(35,19,"车牌颜色输入",12,LCD_MODE_INVERT); 	
+		    lcd_text12(30,19,"车牌颜色输入",12,LCD_MODE_INVERT); 	
     		break;
     	}
 	lcd_update_all();
@@ -72,7 +72,7 @@ static void keypress(unsigned int key)
 switch(KeyValue)
 	{
 	case KeyValueMenu:
-		if(menu_color_flag)
+		if((menu_color_flag)||(MENU_set_carinfor_flag==1))
 			{
 			menu_color_flag=0;
 			
@@ -109,8 +109,26 @@ switch(KeyValue)
 			}
 		break;
 	case KeyValueUP:
+		if(MENU_set_carinfor_flag==1)
+			{
+			if(CarSet_0_counter==1)
+				CarSet_0_counter=5;
+			else
+				CarSet_0_counter--;
+			
+			CarSet_0_fun(CarSet_0_counter);
+			}
 		break;
 	case KeyValueDown:  
+		if(MENU_set_carinfor_flag==1)
+			{
+			if(CarSet_0_counter==5)
+				CarSet_0_counter=1;
+			else
+				CarSet_0_counter++;
+			
+			CarSet_0_fun(CarSet_0_counter);
+			}
 		break;
 	}
 KeyValue=0;

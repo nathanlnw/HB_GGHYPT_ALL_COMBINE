@@ -46,6 +46,7 @@ static void keypress(unsigned int key)
 
 static void timetick(unsigned int systick)
 {
+
       signal_counter++;
       if(signal_counter>=10)
 	      	{

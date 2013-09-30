@@ -5,7 +5,6 @@
 #define  ENTER_CODE  "000000"      // 天地通是 000000 以前是 001100
 
 u8 set_car_codetype=0;
-u8 Password_correctFlag=0;  // 密码正确
 u8 password_Code[10];
 u8 password_SetFlag=1,password_Counter=0;
 u8 password_icon[]={0x0C,0x06,0xFF,0x06,0x0C};
@@ -21,7 +20,7 @@ void password_Set(u8 par)
 		lcd_text12(84,3,(char *)password_Code,password_SetFlag-1,LCD_MODE_SET);//-1+14
 	lcd_bitmap(par*pass_width1, 14, &BMP_password_icon, LCD_MODE_SET);
 	lcd_text12(0,19,"0123456789",10,LCD_MODE_SET);
-	lcd_text12(70,20,"HB.gghypt",9,LCD_MODE_SET);  // 天津公共货运平台     
+	lcd_text12(68,20,"hb.GGHYPt",9,LCD_MODE_SET);  // 天津公共货运平台     
 	lcd_update_all();
 }
 
@@ -31,14 +30,14 @@ static void msg( void *p)
 }
 static void show(void)
 {
+	CounterBack=0;
+	password_SetFlag=1;
+	password_Counter=0;
+	
+	memset(password_Code,0,sizeof(password_Code));
+	password_Set(password_Counter);
+	//rt_kprintf("\r\nshow:password=%s,password_SetFlag=%d,password_Counter=%d\r\n",password_Code,password_SetFlag,password_Counter);
 
-CounterBack=0;
-password_SetFlag=1;
-password_Counter=0;
-
-memset(password_Code,0,sizeof(password_Code));
-password_Set(password_Counter);
-//rt_kprintf("\r\nshow:password=%s,password_SetFlag=%d,password_Counter=%d\r\n",password_Code,password_SetFlag,password_Counter);
 }
 
 
@@ -47,13 +46,18 @@ static void keypress(unsigned int key)
 	switch(KeyValue)
 		{
 		case KeyValueMenu:
-			if(Password_correctFlag==1)
+            if(Password_correctFlag==1)
 				{
 				if(set_car_codetype==1)
 					{
 					set_car_codetype=0;
 					CarSet_0_counter=1;//设置第1项
 					pMenuItem=&Menu_0_loggingin;
+					}
+				else if((NET_SET_FLAG==1)&&(Exit_to_Idle==1))
+					{
+					Exit_to_Idle=0;
+					pMenuItem=&Menu_1_Idle;
 					}
 				else if(NET_SET_FLAG==1)
 					{
@@ -104,6 +108,7 @@ static void keypress(unsigned int key)
 						password_SetFlag=8;	
 						Password_correctFlag=1;
 						set_car_codetype=1;
+						
 						lcd_fill(0);
 						lcd_text12(36,3,"密码正确",8,LCD_MODE_SET);
 						lcd_text12(0,19,"按菜单键进入设置信息",20,LCD_MODE_SET);
@@ -159,6 +164,16 @@ static void keypress(unsigned int key)
 
 static void timetick(unsigned int systick)
 {
+	Cent_To_Disp();
+	if(Dis_deviceid_flag>=2)
+		{
+		Dis_deviceid_flag++;
+		if(Dis_deviceid_flag>=50)
+			{
+			Dis_deviceid_flag=0;
+			}
+		}
+
 	CounterBack++;
 	if(CounterBack!=MaxBankIdleTime*5)
 		return;
@@ -172,6 +187,7 @@ static void timetick(unsigned int systick)
 		password_SetFlag=1;
 		password_Counter=0;
 		}
+
 }
 
 ALIGN(RT_ALIGN_SIZE)

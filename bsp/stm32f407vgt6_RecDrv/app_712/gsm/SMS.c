@@ -36,25 +36,6 @@ void SMS_timer(void)
 {
 	if(SMS_Service.SMS_waitCounter)
 		SMS_Service.SMS_waitCounter--;
-	/*
-	if(SMS_Service.SMS_delALL>1)
-		{
-		SMS_Service.SMS_delALL--;
-		}
-		*/
-	 //-------- 短信相关 ------------------
-	 /*
-	 if(SMS_Service.SMS_come==1)
-	 {
-		 SMS_Service.SMS_delayCounter++;
-		 if(SMS_Service.SMS_delayCounter)
-		   {
-			 SMS_Service.SMS_delayCounter=0;
-			 SMS_Service.SMS_come=0;
-			 SMS_Service.SMS_read=3;	  // 使能读取
-		   }
-	 }
-	 */
 }
 
 
@@ -74,7 +55,7 @@ void SMS_timer(void)
 void SMS_Process(void) 
 {
 	u16   	ContentLen=0;
-	u16 		i,j,k;
+//	u16 		i,j,k;
 	char *pstrTemp;
 	if(SMS_Service.SMS_waitCounter)
 		return;
@@ -223,6 +204,7 @@ void   SMS_protocol (u8 *instr,u16 len, u8  ACKstate)   //  ACKstate
 	strcpy(SMS_Service.SMS_sd_Content,Vechicle_Info.Vech_Num);
 	strcat(SMS_Service.SMS_sd_Content,"#");// Debug
 	strcat(SMS_Service.SMS_sd_Content,SimID_12D);// Debug
+	strcat(SMS_Service.SMS_sd_Content,"#V2");// 版本信息 
 	/*************************处理信息****************************/
 	p_Instr=(char *)instr;
 	for(i=0;i<len;i++)
@@ -349,12 +331,8 @@ void   SMS_protocol (u8 *instr,u16 len, u8  ACKstate)   //  ACKstate
 				if(j)
 					{
 					
-					rt_kprintf("\r\n修改发送间隔! %d",u16Temp);
-					dur(sms_content);
-					/*
-					JT808Conf_struct.DURATION.Default_Dur=u16Temp;
-					Api_Config_Recwrite_Large(jt808,0,(u8*)&JT808Conf_struct,sizeof(JT808Conf_struct));
-					*/
+						rt_kprintf("\r\n修改发送间隔! %d",u16Temp);
+						dur(sms_content);
 
 					///
 					Add_SMS_Ack_Content(sms_ack_data,ACKstate);
@@ -395,6 +373,28 @@ void   SMS_protocol (u8 *instr,u16 len, u8  ACKstate)   //  ACKstate
 
 					 //--------    清除鉴权码 -------------------
 					     idip("clear");		     
+					
+					}
+				    else
+					{
+					       continue;
+					}
+				}    //DeviceNumberID		
+				else if(strncmp(pstrTemp,"PHONENUM",8)==0)			///4. 修改SIMID
+				{
+				   if(cmdLen==11)
+					{
+						rt_kprintf("\r\n修改PHONENUM_ID  !"); 
+						memset(SimID_12D,0,sizeof(SimID_12D));
+						SimID_12D[0]='0'; //    第一位填写 0  
+						memcpy(SimID_12D+1,pstrTempStart,cmdLen);
+						DF_WriteFlashSector(DF_SIMID_12D,0,SimID_12D,13);  
+						SIMID_Convert_SIMCODE(); //  转换
+						
+						///
+						Add_SMS_Ack_Content(sms_ack_data,ACKstate);
+						 //--------    清除鉴权码 -------------------
+						     idip("clear");		      
 					
 					}
 				else
@@ -471,7 +471,7 @@ void   SMS_protocol (u8 *instr,u16 len, u8  ACKstate)   //  ACKstate
 				      TiredDrv_write=0;
 				      TiredDrv_read=0;	   
 				      DF_Write_RecordAdd(TiredDrv_write,TiredDrv_read,TYPE_TiredDrvAdd);      
-				      Add_SMS_Ack_Content(sms_ack_data,ACKstate);	  
+				      Add_SMS_Ack_Content(sms_ack_data,ACKstate);	   
 				}
 			else if(strncmp(pstrTemp,"DISCLEAR",8)==0)			///9清除里程
 				{
@@ -480,6 +480,16 @@ void   SMS_protocol (u8 *instr,u16 len, u8  ACKstate)   //  ACKstate
                                      Api_Config_Recwrite_Large(jt808,0,(u8*)&JT808Conf_struct,sizeof(JT808Conf_struct)); 
 					   Add_SMS_Ack_Content(sms_ack_data,ACKstate);				 
 				}
+            else if(strncmp(pstrTemp,"SPDWARNCLEAR",12)==0)    //  超速报警清除
+            	{
+            	  
+					 //-----  Record update---- 	
+				     AvrgSpdPerMin_write=0;
+					 AvrgSpdPerMin_write=0;
+				     DF_Write_RecordAdd(AvrgSpdPerMin_write, AvrgSpdPerMin_write, TYPE_AvrgSpdAdd);  
+					 Add_SMS_Ack_Content(sms_ack_data,ACKstate);	
+
+            	}
 			else if(strncmp(pstrTemp,"RESET",5)==0)			///10.终端重启
 				{
 				      reset();
@@ -514,24 +524,72 @@ void   SMS_protocol (u8 *instr,u16 len, u8  ACKstate)   //  ACKstate
 				}
 			else if(strncmp(pstrTemp,"PLAY",4)==0)				///13.语音播报
 				{
-				      TTS_Get_Data(sms_content,strlen(sms_content));
+				     TTS_Get_Data(sms_content,strlen(sms_content));
 				     Add_SMS_Ack_Content(sms_ack_data,ACKstate);		  
 				}
 			else if(strncmp(pstrTemp,"QUERY",5)==0)			///14.车辆状态查询
 				{
 				       switch(sms_content[0])
 				     	{
-				     	    case 0:  
-
-								     break;
-							case 1:
-
-								     break;
-                            case 2:
-
-								     break;
-				     	}				
-				        Add_SMS_Ack_Content(sms_ack_data,ACKstate);	  
+				     	    case '0':  // 终端号  主域名  主端口
+								     
+									 strcat((char *)SMS_Service.SMS_sd_Content,sms_ack_data);
+									 strcat(SMS_Service.SMS_sd_Content,"#");// 分隔符号
+                                     strcat(SMS_Service.SMS_sd_Content,DeviceNumberID);// 终端ID
+                                     strcat(SMS_Service.SMS_sd_Content,"#");// 分隔符号
+                                     strcat(SMS_Service.SMS_sd_Content,DomainNameStr);// 分隔符号
+                                     strcat(SMS_Service.SMS_sd_Content,"#");// 分隔符号
+                                     sprintf(SMS_Service.SMS_sd_Content+strlen(SMS_Service.SMS_sd_Content),"%d",RemotePort_main); 
+								
+								   break;
+							case '1':  // MODE    主IP   主端口
+								    strcat((char *)SMS_Service.SMS_sd_Content,sms_ack_data);
+									strcat(SMS_Service.SMS_sd_Content,"#");// 分隔符号
+									if(Vechicle_Info.Link_Frist_Mode==1)  
+                                         strcat(SMS_Service.SMS_sd_Content,"MODE(mainlink)");
+									else
+                                         strcat(SMS_Service.SMS_sd_Content,"MODE(dnsr)");
+									strcat(SMS_Service.SMS_sd_Content,"#");// 分隔符号
+									IP_Str(SMS_Service.SMS_sd_Content+strlen(SMS_Service.SMS_sd_Content), *( u32 * ) RemoteIP_main);
+								    strcat(SMS_Service.SMS_sd_Content,"#");// 分隔符号
+                                    sprintf(SMS_Service.SMS_sd_Content+strlen(SMS_Service.SMS_sd_Content),"%d",RemotePort_main);  
+												
+								    break;
+                            case '2':
+								    strcat(SMS_Service.SMS_sd_Content,"#");// 分隔符号
+                                    strcat(SMS_Service.SMS_sd_Content,Posit_ASCII.Lat_ASCII);// 分隔符号
+                                    strcat(SMS_Service.SMS_sd_Content,"#");// 分隔符号
+                                    strcat(SMS_Service.SMS_sd_Content,Posit_ASCII.Longi_ASCII);// 分隔符号
+                                    strcat(SMS_Service.SMS_sd_Content,"#");// 分隔符号
+                                    strcat(SMS_Service.SMS_sd_Content,&Posit_ASCII.AV_ASCII);// 分隔符号
+									strcat(SMS_Service.SMS_sd_Content,"#");// 分隔符号
+								    if(GpsStatus.Position_Moule_Status==1)
+									{
+									  strcat(SMS_Service.SMS_sd_Content,"BD");
+									}
+								else if(GpsStatus.Position_Moule_Status==2)
+									{
+									  strcat(SMS_Service.SMS_sd_Content,"GPS");
+									}
+								else if(GpsStatus.Position_Moule_Status==3)
+									{
+									  strcat(SMS_Service.SMS_sd_Content,"BD+GPS");
+									}
+                                     strcat(SMS_Service.SMS_sd_Content,"#");// 分隔符号
+                                     sprintf(SMS_Service.SMS_sd_Content+strlen(SMS_Service.SMS_sd_Content),"%d",ModuleSQ); 
+								
+								    break; 
+						   case '3':  // 省域ID  市域ID
+						   	       strcat(SMS_Service.SMS_sd_Content,"provinceid(");// 分隔符号						   	       
+							       sprintf(SMS_Service.SMS_sd_Content+strlen(SMS_Service.SMS_sd_Content),"%d",Vechicle_Info.Dev_ProvinceID); 
+							       strcat(SMS_Service.SMS_sd_Content,")#");// 分隔符号							       
+						   	       strcat(SMS_Service.SMS_sd_Content,"cityid(");// 分隔符号						   	       
+							       sprintf(SMS_Service.SMS_sd_Content+strlen(SMS_Service.SMS_sd_Content),"%d)",Vechicle_Info.Dev_CityID); 
+           					        break;
+				     	}	
+					   
+					    if(ACKstate)
+							SMS_Service.SMS_sendFlag=1;  // 发送返回短息标志位
 				}
 			else if(strncmp(pstrTemp,"ISP",3)==0)				///15.远程下载IP 端口
 				{
@@ -540,11 +598,20 @@ void   SMS_protocol (u8 *instr,u16 len, u8  ACKstate)   //  ACKstate
 				}
 			else if(strncmp(pstrTemp,"PLATENUM",8)==0)
 				{
-				    rt_kprintf("Vech_Num is %s", sms_content);
+				    rt_kprintf("车牌号:%s", sms_content); 
 					memset((u8*)&Vechicle_Info.Vech_Num,0,sizeof(Vechicle_Info.Vech_Num));	//clear	
 				    rt_memcpy(Vechicle_Info.Vech_Num,sms_content,strlen(sms_content));
-					DF_WriteFlashSector(DF_Vehicle_Struct_offset,0,(u8*)&Vechicle_Info,sizeof(Vechicle_Info));      
+					DF_WriteFlashSector(DF_Vehicle_Struct_offset,0,(u8*)&Vechicle_Info,sizeof(Vechicle_Info)); 					
+					WatchDog_Feed();
+					DF_WriteFlashSector(DF_VehicleBAK_Struct_offset,0,(u8*)&Vechicle_Info,sizeof(Vechicle_Info)); 
+					
+					WatchDog_Feed();
+					DF_WriteFlashSector(DF_VehicleBAK2_Struct_offset,0,(u8*)&Vechicle_Info,sizeof(Vechicle_Info)); 
+					
 					Add_SMS_Ack_Content(sms_ack_data,ACKstate);
+
+					Login_Menu_Flag=1;	   // clear  first flag 	 			
+			        DF_WriteFlashSector(DF_LOGIIN_Flag_offset,0,&Login_Menu_Flag,1); 
 
 					 //--------    清除鉴权码 -------------------
 					     idip("clear");		   
@@ -557,7 +624,13 @@ void   SMS_protocol (u8 *instr,u16 len, u8  ACKstate)   //  ACKstate
 						
 					Vechicle_Info.Dev_Color=u16Temp; 
 	        		rt_kprintf("\r\n 车辆颜色: %s ,%d \r\n",sms_content,Vechicle_Info.Dev_Color);          
-	        		DF_WriteFlashSector(DF_Vehicle_Struct_offset,0,(u8*)&Vechicle_Info,sizeof(Vechicle_Info));      
+	        		DF_WriteFlashSector(DF_Vehicle_Struct_offset,0,(u8*)&Vechicle_Info,sizeof(Vechicle_Info));  
+					
+					WatchDog_Feed();
+					DF_WriteFlashSector(DF_VehicleBAK_Struct_offset,0,(u8*)&Vechicle_Info,sizeof(Vechicle_Info)); 
+					
+					WatchDog_Feed();
+					DF_WriteFlashSector(DF_VehicleBAK2_Struct_offset,0,(u8*)&Vechicle_Info,sizeof(Vechicle_Info)); 
 				  	Add_SMS_Ack_Content(sms_ack_data,ACKstate);
 					}
 				}
@@ -567,9 +640,15 @@ void   SMS_protocol (u8 *instr,u16 len, u8  ACKstate)   //  ACKstate
 					if(j)
 					{
 						
-						JT808Conf_struct.Link_Frist_Mode=u16Temp;  
-		        		rt_kprintf("\r\n 首次连接方式 %s ,%d \r\n",sms_content,JT808Conf_struct.Link_Frist_Mode);          
-		        		Api_Config_Recwrite_Large(jt808,0,(u8*)&JT808Conf_struct,sizeof(JT808Conf_struct));
+						Vechicle_Info.Link_Frist_Mode=u16Temp;  
+		        		rt_kprintf("\r\n 首次连接方式 %s ,%d \r\n",sms_content,Vechicle_Info.Link_Frist_Mode);          
+						DF_WriteFlashSector(DF_Vehicle_Struct_offset,0,(u8*)&Vechicle_Info,sizeof(Vechicle_Info));		
+						
+						WatchDog_Feed();
+						DF_WriteFlashSector(DF_VehicleBAK_Struct_offset,0,(u8*)&Vechicle_Info,sizeof(Vechicle_Info)); 
+						
+						WatchDog_Feed();
+						DF_WriteFlashSector(DF_VehicleBAK2_Struct_offset,0,(u8*)&Vechicle_Info,sizeof(Vechicle_Info)); 
 					  	Add_SMS_Ack_Content(sms_ack_data,ACKstate);  
 						 //--------    清除鉴权码 -------------------
 					     idip("clear");		   
@@ -581,17 +660,59 @@ void   SMS_protocol (u8 *instr,u16 len, u8  ACKstate)   //  ACKstate
 					     idip("clear");		
                      DEV_regist.Enable_sd=1; // set 发送注册标志位
 			         DataLink_EndFlag=1; 
+					 Add_SMS_Ack_Content(sms_ack_data,ACKstate);  //  ack  state
            	    }
 		   //  20
 	        else if(strncmp(pstrTemp,"PASSWORD",8)==0)  //设置密码通过
        	    {
-                  j=sscanf(sms_content,"%d",&u16Temp);
-				if((j==0)||(j==1))
+                j=sscanf(sms_content,"%d",&u16Temp);
+				if(j)
 				{
-				  Vechicle_Info.loginpassword_flag=j;	   // clear  first flag 	 
-				  DF_WriteFlashSector(DF_Vehicle_Struct_offset,0,(u8*)&Vechicle_Info,sizeof(Vechicle_Info));    
+				  Login_Menu_Flag=(u8)u16Temp;	   // clear  first flag 	 			
+			      DF_WriteFlashSector(DF_LOGIIN_Flag_offset,0,&Login_Menu_Flag,1); 
+			
+				  Add_SMS_Ack_Content(sms_ack_data,ACKstate);  //  ack  state
+				    if(Login_Menu_Flag)
+				    	{
+				    	  //--------    清除鉴权码 -------------------
+					      idip("clear");
+						  DEV_regist.Enable_sd=1; // set 发送注册标志位
+			              DataLink_EndFlag=1; 
+				    	}
 				} 
        	    } 
+			else if(strncmp(pstrTemp,"RECOVER",7)==0)
+				{
+                     //------  界面回复出厂设置
+					 Login_Menu_Flag=0;	  // clear	first flag		 
+					 DF_WriteFlashSector(DF_LOGIIN_Flag_offset,0,&Login_Menu_Flag,1); 
+
+					 Add_SMS_Ack_Content(sms_ack_data,ACKstate);  //  ack  state                  
+                     Systerm_Reset_counter=Max_SystemCounter-30; //返回短信后恢复出厂设置
+					 
+				} //provinceid
+			else if(strncmp(pstrTemp,"PROVINCEID",10)==0)
+			{
+                  provinceid(sms_content);
+				  Add_SMS_Ack_Content(sms_ack_data,ACKstate);
+				 
+			}	
+			else if(strncmp(pstrTemp,"CITYID",6)==0)
+			{
+                  cityid(sms_content); 
+				  Add_SMS_Ack_Content(sms_ack_data,ACKstate); 
+				 
+			}
+		    else if(strncmp(pstrTemp,"ATAENABLE",9)==0)
+			{
+			    j=sscanf(sms_content,"%d",&u16Temp);
+				if(j)
+				{
+                  ata_enable(u16Temp); 
+				  Add_SMS_Ack_Content(sms_ack_data,ACKstate);  
+				}
+				 
+			}
 			else												
 				{
 				;
@@ -830,7 +951,6 @@ void SMS_Test(char * s)
 void SMS_PDU(char *s)
 {
 	u16 len;
-	u16 i,j;
 	char *pstrTemp;
 	pstrTemp=(char *)rt_malloc(160);	///短信解码后的完整内容，解码后汉子为GB码
 	len=GsmDecodePdu(s,strlen(s),&SMS_Service.Sms_Info,pstrTemp);

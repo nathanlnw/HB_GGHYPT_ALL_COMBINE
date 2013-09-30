@@ -1,5 +1,5 @@
----- FINSH_THREAD_PRIORITY Matches (4 in 3 files) ----
-Rtconfig.h (bsp\stm32f407vgt6_recdrv):// FINISH   有限级别是这个    11   #define FINSH_THREAD_PRIORITY    11
-Shell.c (components\finsh):		FINSH_THREAD_PRIORITY, 10);
-Shell.h (components\finsh):#ifndef FINSH_THREAD_PRIORITY
-Shell.h (components\finsh):#define FINSH_THREAD_PRIORITY    11 //20
+---- CSQ_Duration Matches (4 in 3 files) ----
+App_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):u16   CSQ_Duration=288;    //查询CSQ 的定时间隔   
+App_gsm.h (bsp\stm32f407vgt6_recdrv\app_712\gsm):extern u16  CSQ_Duration;    //查询CSQ 的定时间隔 
+Device_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):          if(CSQ_counter>=CSQ_Duration)
+Device_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):				CSQ_Duration=176;  // 查询间隔加长 
