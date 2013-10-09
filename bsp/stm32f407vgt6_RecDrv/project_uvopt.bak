@@ -1747,7 +1747,7 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>1</TopLine>
+      <TopLine>17</TopLine>
       <CurrentLine>17</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\app_712\protocol_808\protocol_808.c</PathWithFileName>
@@ -1779,7 +1779,7 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>1783</TopLine>
+      <TopLine>1790</TopLine>
       <CurrentLine>1790</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\app_712\protocol_808\Sys_config.c</PathWithFileName>
@@ -3307,7 +3307,7 @@
       <Focus>0</Focus>
       <ColumnNumber>36</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>117</TopLine>
+      <TopLine>126</TopLine>
       <CurrentLine>126</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\app_712\lcd\Menu_0_5_Colour.c</PathWithFileName>
