@@ -1,5 +1,6 @@
----- CSQ_Duration Matches (4 in 3 files) ----
-App_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):u16   CSQ_Duration=288;    //查询CSQ 的定时间隔   
-App_gsm.h (bsp\stm32f407vgt6_recdrv\app_712\gsm):extern u16  CSQ_Duration;    //查询CSQ 的定时间隔 
-Device_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):          if(CSQ_counter>=CSQ_Duration)
-Device_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):				CSQ_Duration=176;  // 查询间隔加长 
+---- Execute_enable Matches (5 in 4 files) ----
+App_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):			CommAT.Execute_enable=1;	 //  enable send   periodic 			   
+App_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):   	   //   CommAT.Execute_enable=1;      //  enable send   periodic  
+Device_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):	 if( CommAT.Execute_enable)
+Device_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):	    CommAT.Execute_enable=0;
+Device_gsm.h (bsp\stm32f407vgt6_recdrv\app_712\gsm):u8     Execute_enable; 

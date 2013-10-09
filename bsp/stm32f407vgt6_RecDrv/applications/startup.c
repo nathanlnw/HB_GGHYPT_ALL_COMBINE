@@ -97,7 +97,7 @@ void rtthread_startup(void)
  
 	 
     #endif 	 
-   rt_kprintf("\n\r   河北天地通 北斗车载终端 GGHYPT  TW703-BD--13-9-10   Version 1.1 双Module兼容版本  默认 up.gps960.com\r\n ");      
+   rt_kprintf("\n\r   河北天地通 北斗车载终端 GGHYPT  TW703-BD--13-10-9   Version 1.1 双Module兼容版本  默认 up.gps960.com \r\n ");       
 	/* show version */
 	rt_show_version(); 
 

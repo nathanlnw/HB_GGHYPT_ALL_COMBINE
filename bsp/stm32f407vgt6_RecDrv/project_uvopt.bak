@@ -1435,8 +1435,8 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>1375</TopLine>
-      <CurrentLine>1376</CurrentLine>
+      <TopLine>1</TopLine>
+      <CurrentLine>1</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\app_712\gps\gps.c</PathWithFileName>
       <FilenameWithoutPath>gps.c</FilenameWithoutPath>
@@ -1747,8 +1747,8 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>6</TopLine>
-      <CurrentLine>1</CurrentLine>
+      <TopLine>1</TopLine>
+      <CurrentLine>17</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\app_712\protocol_808\protocol_808.c</PathWithFileName>
       <FilenameWithoutPath>protocol_808.c</FilenameWithoutPath>
@@ -1779,8 +1779,8 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>1</TopLine>
-      <CurrentLine>1</CurrentLine>
+      <TopLine>1783</TopLine>
+      <CurrentLine>1790</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\app_712\protocol_808\Sys_config.c</PathWithFileName>
       <FilenameWithoutPath>Sys_config.c</FilenameWithoutPath>
@@ -2489,10 +2489,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>50</ColumnNumber>
+      <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>11</TopLine>
-      <CurrentLine>12</CurrentLine>
+      <TopLine>1</TopLine>
+      <CurrentLine>1</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\drivers\spi_TF\spi_sd.c</PathWithFileName>
       <FilenameWithoutPath>spi_sd.c</FilenameWithoutPath>
@@ -2649,10 +2649,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>15</ColumnNumber>
+      <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>20</TopLine>
-      <CurrentLine>21</CurrentLine>
+      <TopLine>1</TopLine>
+      <CurrentLine>1</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\app_712\CAN\Device_CAN2.c</PathWithFileName>
       <FilenameWithoutPath>Device_CAN2.c</FilenameWithoutPath>
@@ -3305,10 +3305,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>0</ColumnNumber>
+      <ColumnNumber>36</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>143</TopLine>
-      <CurrentLine>144</CurrentLine>
+      <TopLine>117</TopLine>
+      <CurrentLine>126</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\app_712\lcd\Menu_0_5_Colour.c</PathWithFileName>
       <FilenameWithoutPath>Menu_0_5_Colour.c</FilenameWithoutPath>
