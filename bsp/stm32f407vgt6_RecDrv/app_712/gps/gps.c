@@ -1110,7 +1110,7 @@ static void rt_thread_entry_gps( void* parameter )
 	//2.  main while
 	while( 1 )
 	{
-		res = rt_mq_recv( &mq_gps, (void*)&gps_rx, 124, RT_TICK_PER_SECOND / 20 ); //等待100ms,实际上就是变长的延时,最长100ms
+		res = rt_mq_recv( &mq_gps, (void*)&gps_rx, 124, 3 ); //等待100ms,实际上就是变长的延时,最长100ms
 		if( res == RT_EOK )                                                     //收到一包数据
 		{
 			if( flag_bd_upgrade_uart == 0 )

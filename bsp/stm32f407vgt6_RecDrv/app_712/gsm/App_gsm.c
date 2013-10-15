@@ -365,7 +365,6 @@ static void gsm_thread_entry(void* parameter)
 			}
 		     //---------  Step timer
 		     //  Dial_step_Single_10ms_timer();    
-		     rt_thread_delay(10);  
 		  	 //   TTS	
              TTS_Data_Play();		 
              //   Get  CSQ value
@@ -384,7 +383,7 @@ static void gsm_thread_entry(void* parameter)
 			 
 			 //   SMS  Service
 			 SMS_Process();            
-	         rt_thread_delay(15);    	      
+	         rt_thread_delay(15);     	      
 			   
 	}
 }

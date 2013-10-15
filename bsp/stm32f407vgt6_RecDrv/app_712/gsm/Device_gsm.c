@@ -779,7 +779,7 @@ void  GSM_Buffer_Read_Process(void)
 	rt_err_t	res;
 
 	{
-		res = rt_mq_recv( &mq_GSM,(void*)&GSM_RX_BUFF, 1400, RT_TICK_PER_SECOND / 20 ); //等待100ms,实际上就是变长的延时,最长100ms
+		res = rt_mq_recv( &mq_GSM,(void*)&GSM_RX_BUFF, 1400, 3 ); //等待100ms,实际上就是变长的延时,最长100ms
 		if( res == RT_EOK )                                                     //收到一包数据
 		{
 				GSM_Process(GSM_RX_BUFF.gsm_content, GSM_RX_BUFF.gsm_wr); 

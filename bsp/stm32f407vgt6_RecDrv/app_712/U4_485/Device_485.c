@@ -464,11 +464,33 @@ void  OpenDoor_TakePhoto(void)
 	  	{
 	            DoorOpen.currentState=1;
 		    //   rt_kprintf( "\r\n   门高!\r\n "); 
+		     //--------------------------------------
+	    if( (Car_Status[2]&0x20)==0x00)
+	      	{
+				Car_Status[2]|=0x20; 
+				PositionSD_Enable();					
+				Current_UDP_sd=1;	
+				rt_kprintf("\r\n  前门开启\r\n");	  
+		      	}	
+			   Car_Status[2]|=0x20; //  Bit(13)     Set  1  表示  前门开
+
+			 //--------------------------------------
 	  	}
 	  else
 	  	{
 	            DoorOpen.currentState=0;
  		    // rt_kprintf( "\r\n   门低!\r\n ");   
+ 		    //-------------------------------
+ 		     if( Car_Status[2]&0x20)
+	      	{
+				Car_Status[2]&=~0x20;
+				PositionSD_Enable();					
+				Current_UDP_sd=1;	
+				rt_kprintf("\r\n  前门关闭\r\n");	 	 
+	      	}
+	            Car_Status[2]&=~0x20; //  Bit(4)     Set  0  表示  飞翼开  0 营运状态 	
+
+			//-------------------------------
  	  	}
 	  if((DoorOpen.currentState!=DoorOpen.BakState)&&(DataLink_Status())) 
 	  	{	   
@@ -658,7 +680,7 @@ void  Pic_Data_Process(void)
 	       //  4.   填写存储图片内容数据  --------------------		
 	       WatchDog_Feed();  
 		   DF_WriteFlashDirect(pic_current_page,0,_485_content, PackageLen);// 写一次一个Page 512Bytes
-		   delay_ms(90);  
+		   rt_thread_delay(5); // delay_ms(90);  
 		   //rt_kprintf(" \r\n ---- write  pic_current_page=%d  \r\n",pic_current_page);   		   
 		   rt_kprintf(" \r\n ---- packet=%d  \r\n",CameraState.block_counter);     
 		  

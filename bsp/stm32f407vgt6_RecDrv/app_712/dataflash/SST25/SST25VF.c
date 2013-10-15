@@ -298,7 +298,7 @@ void SST25V_WriteStatusRegister(u8 Byte)
 void SST25V_WaitForWriteEnd(void)
 {
   u8 FLASH_Status = 0;
-  u32 count=0x250000; 
+  u32 count=0x100000;//0x250000;   
   
   SST25V_CS_LOW();
   SPI_Flash_SendByte(ReadStatusRegister);

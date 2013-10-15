@@ -5471,9 +5471,8 @@ u8  Stuff_MultiMedia_Data_0801H(void)
                    else
 		     if(Camera_Number==4)
 				      Api_DFdirectory_Read(camera_4, Original_info + Original_info_Wr, 512,1,MediaObj.Media_currentPacketNum);  
- 
-				   	
-      
+ 	   	
+                      rt_thread_delay(7); 
 				      inadd=(Photo_sdState.SD_packetNum-1)<<9; //乘以512
 				   	  if(PicFileSize>inadd)
 				   	  	{
@@ -9094,14 +9093,16 @@ void TCP_RX_Process( u8  LinkNum)  //  ---- 808  标准协议
                                   //  write area   
                                   WatchDog_Feed();
                                   SST25V_BufferWrite(BD_ISP.ContentData,ISP_StartArea+(BD_ISP.CurrentPacket_Num-1)*BD_ISP.PacketSizeGet,infolen);
-								  delay_ms(160);
+								  //delay_ms(160);
+								  rt_thread_delay(12);  
 								  WatchDog_Feed();
                             
 
 								  // read 
 								  memset(ISP_buffer,0,sizeof(ISP_buffer));
 								  SST25V_BufferRead(ISP_buffer,ISP_StartArea+(BD_ISP.CurrentPacket_Num-1)*BD_ISP.PacketSizeGet,infolen); 
-								  delay_ms(120);
+								  //delay_ms(120);
+								  rt_thread_delay(8); 
 
 								  for(i=0;i<infolen;i++)
 								  {

@@ -96,7 +96,7 @@ void  App_thread_timer(void)
 void  gps_thread_timer(void)
 {
    gps_thread_runCounter++;
-   if((gps_thread_runCounter>250)&&(BD_ISP.ISP_running==0))   // 400* app_thread_delay(dur)   
+   if((gps_thread_runCounter>300)&&(BD_ISP.ISP_running==0))   // 400* app_thread_delay(dur)   
     {
        rt_kprintf("\r\n  gps  thread  dead! \r\n");   
        reset();  
@@ -527,7 +527,7 @@ static void App808_thread_entry(void* parameter)
 	   {   
 	        Do_SendGPSReport_GPRS();    
 	   } 
-	    rt_thread_delay(8);
+	    rt_thread_delay(10);
        // 5. ---------------  Ë³Ðò´æ´¢ GPS  -------------------		    
 		if(GPS_getfirst)	 //------±ØÐëËÑË÷µ½¾­Î³¶È
 		{
@@ -560,7 +560,7 @@ static void App808_thread_entry(void* parameter)
 			   delay_ms(18); 
                Redial_reset_save=0;  
          	}
-		    rt_thread_delay(12);  	
+	   rt_thread_delay(8);    	
           //    485   related  over   	 	   
       //---------------------------------------- 
 	   app_thread_runCounter=0; 
