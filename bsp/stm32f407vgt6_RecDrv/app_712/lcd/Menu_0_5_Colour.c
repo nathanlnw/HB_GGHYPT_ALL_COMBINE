@@ -80,7 +80,7 @@ static void keypress(unsigned int key)
 				else
 					{
 					col_screen=2;
-					CarSet_0_counter=1;//
+					CarSet_0_counter=6;//
 					menu_color_flag=1;//车牌颜色设置完成
 					lcd_fill(0);
 					lcd_text12(20,3,(char *)car_col,13,LCD_MODE_SET);
@@ -121,6 +121,10 @@ static void keypress(unsigned int key)
 				lcd_text12(18,3,"保存已设置信息",14,LCD_MODE_SET);
 				lcd_text12(0,18,"按菜单键进入待机界面",20,LCD_MODE_SET);
 				lcd_update_all();
+				
+                // 保存速度类型
+                // gps速度JT808Conf_struct.Speed_GetType= 0:   传感器速度 JT808Conf_struct.Speed_GetType=1
+                spd_type(JT808Conf_struct.Speed_GetType);  
 
                             //车牌号
                 //rt_kprintf("\r\n(保存信息)Menu_Car_license=%s",Menu_Car_license);
@@ -161,6 +165,27 @@ static void keypress(unsigned int key)
 				//车辆设置完成
 				Login_Menu_Flag=1;     //  输入界面为0 
 		        DF_WriteFlashSector(DF_LOGIIN_Flag_offset,0,&Login_Menu_Flag,1); 
+
+				//  select mode
+
+				 if(Vechicle_Info.Vech_Type_Mark==1)   //两客一危
+				 	{
+				 	    Vechicle_Info.Link_Frist_Mode=1;
+                        dnsr_main("up.gps960.com"); 
+						port_main("8201");
+					    //--------    清除鉴权码 --------------------
+					     idip("clear");		
+
+				 	}
+				 else
+				 if(Vechicle_Info.Vech_Type_Mark==2)  //  公共货运平台
+				 	{
+                         Vechicle_Info.Link_Frist_Mode=0;
+						 dnsr_main("jt1.gghypt.net");
+						 port_main("7008");
+						 //--------    清除鉴权码 -------------------
+					     idip("clear");		
+				 	}
 				//  存储
 				//rt_kprintf("\r\n(保存4   )Vechicle_Info.Vech_Num=%s",Vechicle_Info.Vech_Num);
 				DF_WriteFlashSector(DF_Vehicle_Struct_offset,0,(u8*)&Vechicle_Info,sizeof(Vechicle_Info));         

@@ -135,7 +135,7 @@ void DF_WriteFlash(u16 page_counter,u16 page_offset,u8 *p,u16 length)//512bytes 
 	}	
 	
 	SST25V_SectorErase_4KByte((8*((u32)page_counter/8))*PageSIZE);
-	DF_delay_ms(80);          
+	DF_delay_ms(100);          
 	for(j=0;j<8;j++)
 	{
 	    if(j==(page_counter%8))

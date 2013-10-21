@@ -136,7 +136,6 @@
             <RestoreMemoryDisplay>1</RestoreMemoryDisplay>
             <RestoreFunctions>0</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
-            <RestoreTracepoints>0</RestoreTracepoints>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
           <TargetSelection>7</TargetSelection>
@@ -334,7 +333,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>3</Optim>
+            <Optim>4</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -345,7 +344,6 @@
             <Rwpi>0</Rwpi>
             <wLevel>0</wLevel>
             <uThumb>0</uThumb>
-            <uSurpInc>0</uSurpInc>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define>STM32F4XX, USE_STDPERIPH_DRIVER,HSE_VALUE=8000000,USE_USB_OTG_FS</Define>
@@ -361,7 +359,6 @@
             <SplitLS>0</SplitLS>
             <SwStkChk>0</SwStkChk>
             <NoWarn>0</NoWarn>
-            <uSurpInc>0</uSurpInc>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
@@ -1422,39 +1419,14 @@
               <FilePath>.\app_712\lcd\Menu_6_SetInfor.c</FilePath>
             </File>
             <File>
-              <FileName>Menu_8_1_MainDnsPort.c</FileName>
+              <FileName>Menu_0_0_SpdType.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\app_712\lcd\Menu_8_1_MainDnsPort.c</FilePath>
+              <FilePath>.\app_712\lcd\Menu_0_0_SpdType.c</FilePath>
             </File>
             <File>
-              <FileName>Menu_8_2_AuxDnsPort.c</FileName>
+              <FileName>Menu_0_0_Type.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\app_712\lcd\Menu_8_2_AuxDnsPort.c</FilePath>
-            </File>
-            <File>
-              <FileName>Menu_8_3_MainIpPort.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\app_712\lcd\Menu_8_3_MainIpPort.c</FilePath>
-            </File>
-            <File>
-              <FileName>Menu_8_4_AuxIpPort.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\app_712\lcd\Menu_8_4_AuxIpPort.c</FilePath>
-            </File>
-            <File>
-              <FileName>Menu_8_5_ProDnsIp.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\app_712\lcd\Menu_8_5_ProDnsIp.c</FilePath>
-            </File>
-            <File>
-              <FileName>Menu_8_6_Apn.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\app_712\lcd\Menu_8_6_Apn.c</FilePath>
-            </File>
-            <File>
-              <FileName>Menu_8_SetDNS.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\app_712\lcd\Menu_8_SetDNS.c</FilePath>
+              <FilePath>.\app_712\lcd\Menu_0_0_Type.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -285,6 +285,7 @@ extern u32  current_distance_meter;    //   当前距离
 //---------  SytemCounter ------------------
 extern u32  Systerm_Reset_counter; 
 extern u8   SYSTEM_Reset_FLAG;        // 系统复位标志位  
+extern u8   DistanceWT_Flag;  //  写里程标志位
 
 extern u32      Device_type;    // 硬件类型   STM32103  新A1 
 extern u32      Firmware_ver;   // 软件版本 

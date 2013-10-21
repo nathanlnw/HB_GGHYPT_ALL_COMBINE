@@ -229,7 +229,7 @@ static rt_size_t Device_GSM_write( rt_device_t dev, rt_off_t pos, const void* bu
         //     Data_Send(GPRS_info,GPRS_infoWr_Tx); 
         Data_Send((u8*)buff,(u16)count,(u8)pos);  
         return RT_EOK;
-  }
+ }
 
 
 /*
@@ -342,6 +342,7 @@ static void gsm_thread_entry(void* parameter)
               GSM_Module_TotalInitial();  
             // 3. Receivce & Process   Communication  Module   data ----
 	       GSM_Buffer_Read_Process(); 
+		   rt_thread_delay(20);      	
 	       DataLink_Process();		
              //------------------------------------------------
 		    if (Send_DataFlag== 1) 
@@ -352,7 +353,7 @@ static void gsm_thread_entry(void* parameter)
 			    Send_DataFlag=0;          
 	
 	         }    
-					//监听
+			//监听
 			if(CallState==CallState_rdytoDialLis)
 			{
              CallState=CallState_Dialing;
@@ -372,7 +373,7 @@ static void gsm_thread_entry(void* parameter)
 	         {
 	             if(Calling_ATA_flag==1)
 	             	{
-                         delay_ms(100);  
+                        delay_ms(10);  
 		                rt_hw_gsm_output("ATA\r\n");    //检查信号强度
 					    if(DispContent)	
 					        rt_kprintf(" 接听   ATA\r\n");   
@@ -383,7 +384,6 @@ static void gsm_thread_entry(void* parameter)
 			 
 			 //   SMS  Service
 			 SMS_Process();            
-	         rt_thread_delay(15);     	      
 			   
 	}
 }

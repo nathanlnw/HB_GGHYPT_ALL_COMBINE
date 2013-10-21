@@ -34,9 +34,9 @@ typedef enum DialStage {Dial_DialInit0, Dial_DialInit1, Dial_DialInit2, Dial_Dia
 #define GPRS_GSM_RST      GPIO_Pin_11
 
 
-#define  Dial_Timeout			   70		// 3 seconds        500 
-#define  Dial_Dial_Retry_Time	   70		// 6 seconds
-#define  Dial_max_Timeout		300		// 30 seconds        1000
+#define  Dial_Timeout			   50		// 3 seconds        500 
+#define  Dial_Dial_Retry_Time	   50		// 6 seconds
+#define  Dial_max_Timeout		200		// 30 seconds        1000 
 #define  Dial_Step_MAXRetries			4
 
 //
@@ -170,7 +170,6 @@ extern   TTS              TTS_Var;  //  TTS 类型变量
 
 extern COMM_AT       CommAT; 
 extern DATA_DIAL     DataDial;  
-
 
 //-------- TCP2 send ---------
 extern u8       TCP2_ready_dial;  
