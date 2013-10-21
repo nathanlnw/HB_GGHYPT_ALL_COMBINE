@@ -97,7 +97,7 @@ void rtthread_startup(void)
  
 	 
     #endif 	 
-   rt_kprintf("\n\r   河北天地通 北斗车载终端 GGHYPT  TW703-BD--13-10-9   Version 1.1 双Module兼容版本  默认 up.gps960.com \r\n ");       
+   rt_kprintf("\n\r   河北天地通 北斗车载终端 GGHYPT  TW703-BD--13-11-25   Version 1.2 双Module兼容版本  默认 up.gps960.com  Spd Sensor df_drive \r\n ");        
 	/* show version */
 	rt_show_version(); 
 
@@ -142,7 +142,7 @@ void rtthread_startup(void)
  // #endif
  
  // #ifdef _485_DEVICE
-      _485_startup();
+       _485_startup();
  // #endif
 
  // #ifdef GPS_UART
@@ -150,7 +150,7 @@ void rtthread_startup(void)
        mma8451_driver_init();      
  // #endif
 
-     printer_driver_init();   
+      printer_driver_init();    
 
    //---  RTC  device Register--------------- 
     if( rt_hw_rtc_init()==1)

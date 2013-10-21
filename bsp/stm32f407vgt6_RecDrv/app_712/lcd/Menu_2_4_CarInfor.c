@@ -9,12 +9,18 @@ static unsigned char  vech_VIN[20]={"VIN                 "};
 static unsigned char  device_ID[19]={"设备ID:            "};
 static unsigned char  device_ID_7[19]={"终端ID:       "};
 
+static unsigned char  Dis_speed_sensor[19]={"传感器速度:   KM/H"};
+static unsigned char  Dis_speed_gps_bd[19]={"GPS/BD速度:   KM/H"};
+static unsigned char  Dis_speed_pulse[19]={"速度脉冲系数:00000"};
 static unsigned char updown_flag=0;
 
 //驾驶员代码
 void Display_driver(u8 drivercar)
 {
     u8 color_disp[4];
+	u8 disp_spd=0,i=0;
+	u16 speed_pulse=0;
+	
 switch(drivercar)
 	{
 	case 1:
@@ -53,7 +59,8 @@ switch(drivercar)
 		lcd_text12(0,3,(char *)vech_type,19,LCD_MODE_SET);		
 		//读取设备速度取得是GPS速度还是速度线速度
 		//读取设备速度取得是GPS速度还是速度线速度
-		if(JT808Conf_struct.DF_K_adjustState)
+		//if(JT808Conf_struct.DF_K_adjustState)
+		if(JT808Conf_struct.Speed_GetType==1)
 			lcd_text12(0,18,"设备速度:传感器速度",19,LCD_MODE_SET);
 		else
 			lcd_text12(0,18,"设备速度:GPS速度",16,LCD_MODE_SET);
@@ -66,7 +73,7 @@ switch(drivercar)
         memcpy(vech_VIN+3,Vechicle_Info.Vech_VIN,17); //车辆VIN
         lcd_text12(0,19,(char *)vech_VIN,20,LCD_MODE_SET);
         lcd_update_all();   
-		rt_kprintf("\r\n 显示:%s",SimID_12D+1);
+		//rt_kprintf("\r\n 显示:%s",SimID_12D+1);
 		 break;
 	case 4:  //  设备ID
         lcd_fill(0);
@@ -76,6 +83,61 @@ switch(drivercar)
         lcd_text12(0,18,(char *)device_ID_7,14,LCD_MODE_SET);
         lcd_update_all();   
 		 break;
+	case 5:
+		disp_spd=Speed_gps/10;
+		if((disp_spd>=100)&&(disp_spd<200))
+			{
+			Dis_speed_gps_bd[11]=disp_spd/100+'0';
+			Dis_speed_gps_bd[12]=(disp_spd%100)/10+'0';
+			Dis_speed_gps_bd[13]=disp_spd%10+'0';	     				
+			}
+		else if((disp_spd>=10)&&(disp_spd<100))
+			{
+			Dis_speed_gps_bd[11]=' ';
+			Dis_speed_gps_bd[12]=(disp_spd/10)+'0';
+			Dis_speed_gps_bd[13]=disp_spd%10+'0';	
+			}
+		else if(disp_spd<10)
+			{
+			Dis_speed_gps_bd[11]=' ';
+			Dis_speed_gps_bd[12]=' ';
+			Dis_speed_gps_bd[13]=disp_spd%10+'0';
+			}
+		disp_spd=Speed_cacu/10;
+		if((disp_spd>=100)&&(disp_spd<200))
+			{
+			Dis_speed_sensor[11]=disp_spd/100+'0';
+			Dis_speed_sensor[12]=(disp_spd%100)/10+'0';
+			Dis_speed_sensor[13]=disp_spd%10+'0';	     				
+			}
+		else if((disp_spd>=10)&&(disp_spd<100))
+			{
+			Dis_speed_sensor[11]=' ';
+			Dis_speed_sensor[12]=(disp_spd/10)+'0';
+			Dis_speed_sensor[13]=disp_spd%10+'0';	
+			}
+		else if(disp_spd<10)
+			{
+			Dis_speed_sensor[11]=' ';
+			Dis_speed_sensor[12]=' ';
+			Dis_speed_sensor[13]=disp_spd%10+'0';
+			}
+		lcd_fill(0); 
+        lcd_text12(0, 3,(char *)Dis_speed_gps_bd,18,LCD_MODE_SET);
+        lcd_text12(0,18,(char *)Dis_speed_sensor,18,LCD_MODE_SET);
+        lcd_update_all(); 
+		break;
+	case 6:
+		speed_pulse=(u16)JT808Conf_struct.Vech_Character_Value;
+		Dis_speed_pulse[13]=speed_pulse/10000+'0';
+		Dis_speed_pulse[14]=speed_pulse%10000/1000+'0';
+		Dis_speed_pulse[15]=speed_pulse%1000/100+'0';
+		Dis_speed_pulse[16]=speed_pulse%100/10+'0';
+		Dis_speed_pulse[17]=speed_pulse%10+'0';
+		lcd_fill(0); 
+        lcd_text12(0, 3,(char *)Dis_speed_pulse,18,LCD_MODE_SET);
+        lcd_update_all();
+		break;
 	default:
 		break;
 	}
@@ -112,47 +174,18 @@ static void keypress(unsigned int key)
 			break;
 		case KeyValueUP:
 			if(updown_flag==1)
-			  {
-			  Display_driver(4);
-			  updown_flag=4;
-			  }
-			else if(updown_flag==2)
-			  {	
-			  Display_driver(1);
-			  updown_flag=1;
-			  }	
-			else if(updown_flag==3)
-			  {	
-			  Display_driver(2);
-			  updown_flag=2;
-			  }
-			else if(updown_flag==4)
-			  {	
-			  Display_driver(3);
-			  updown_flag=3;
-			  }
+				updown_flag=6;
+			else
+				updown_flag--;
+			Display_driver(updown_flag);
+		
 			break;
 		case KeyValueDown:
-			if(updown_flag==1)
-			  {	
-			  Display_driver(2);
-			  updown_flag=2;
-			  }
-			else if(updown_flag==2)
-			  {	
-			  Display_driver(3);
-			  updown_flag=3;
-			  }	
-			else if(updown_flag==3)
-			  {	
-			  Display_driver(4);
-			  updown_flag=4;
-			  }
-			else if(updown_flag==4)
-			  {	
-			  Display_driver(1);
-			  updown_flag=1;
-			  }
+			if(updown_flag==6)
+				updown_flag=1;
+			else
+				updown_flag++;
+			Display_driver(updown_flag);
 			break;
 		}
 	KeyValue=0;

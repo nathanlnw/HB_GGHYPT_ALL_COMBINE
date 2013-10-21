@@ -367,7 +367,7 @@
 
   <Group>
     <GroupName>STM32_StdPeriph</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -1463,7 +1463,7 @@
 
   <Group>
     <GroupName>gsm_uart2</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -2703,7 +2703,7 @@
 
   <Group>
     <GroupName>Lcd</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -2809,10 +2809,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>0</ColumnNumber>
+      <ColumnNumber>36</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>1</TopLine>
-      <CurrentLine>1</CurrentLine>
+      <TopLine>204</TopLine>
+      <CurrentLine>207</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\app_712\lcd\Menu_1_Idle.c</PathWithFileName>
       <FilenameWithoutPath>Menu_1_Idle.c</FilenameWithoutPath>
@@ -3305,10 +3305,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>36</ColumnNumber>
+      <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>125</TopLine>
-      <CurrentLine>126</CurrentLine>
+      <TopLine>1</TopLine>
+      <CurrentLine>1</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\app_712\lcd\Menu_0_5_Colour.c</PathWithFileName>
       <FilenameWithoutPath>Menu_0_5_Colour.c</FilenameWithoutPath>
@@ -3353,109 +3353,13 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>6</ColumnNumber>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>129</TopLine>
-      <CurrentLine>130</CurrentLine>
-      <bDave2>0</bDave2>
-      <PathWithFileName>.\app_712\lcd\Menu_8_1_MainDnsPort.c</PathWithFileName>
-      <FilenameWithoutPath>Menu_8_1_MainDnsPort.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>21</GroupNumber>
-      <FileNumber>188</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <Focus>0</Focus>
-      <ColumnNumber>4</ColumnNumber>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>131</TopLine>
-      <CurrentLine>132</CurrentLine>
-      <bDave2>0</bDave2>
-      <PathWithFileName>.\app_712\lcd\Menu_8_2_AuxDnsPort.c</PathWithFileName>
-      <FilenameWithoutPath>Menu_8_2_AuxDnsPort.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>21</GroupNumber>
-      <FileNumber>189</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
       <TopLine>0</TopLine>
       <CurrentLine>0</CurrentLine>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\app_712\lcd\Menu_8_3_MainIpPort.c</PathWithFileName>
-      <FilenameWithoutPath>Menu_8_3_MainIpPort.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>21</GroupNumber>
-      <FileNumber>190</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <Focus>0</Focus>
-      <ColumnNumber>0</ColumnNumber>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>0</TopLine>
-      <CurrentLine>0</CurrentLine>
-      <bDave2>0</bDave2>
-      <PathWithFileName>.\app_712\lcd\Menu_8_4_AuxIpPort.c</PathWithFileName>
-      <FilenameWithoutPath>Menu_8_4_AuxIpPort.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>21</GroupNumber>
-      <FileNumber>191</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <Focus>0</Focus>
-      <ColumnNumber>0</ColumnNumber>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>1</TopLine>
-      <CurrentLine>1</CurrentLine>
-      <bDave2>0</bDave2>
-      <PathWithFileName>.\app_712\lcd\Menu_8_5_ProDnsIp.c</PathWithFileName>
-      <FilenameWithoutPath>Menu_8_5_ProDnsIp.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>21</GroupNumber>
-      <FileNumber>192</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <Focus>0</Focus>
-      <ColumnNumber>0</ColumnNumber>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>0</TopLine>
-      <CurrentLine>0</CurrentLine>
-      <bDave2>0</bDave2>
-      <PathWithFileName>.\app_712\lcd\Menu_8_6_Apn.c</PathWithFileName>
-      <FilenameWithoutPath>Menu_8_6_Apn.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>21</GroupNumber>
-      <FileNumber>193</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <Focus>0</Focus>
-      <ColumnNumber>0</ColumnNumber>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>0</TopLine>
-      <CurrentLine>0</CurrentLine>
-      <bDave2>0</bDave2>
-      <PathWithFileName>.\app_712\lcd\Menu_8_SetDNS.c</PathWithFileName>
-      <FilenameWithoutPath>Menu_8_SetDNS.c</FilenameWithoutPath>
+      <PathWithFileName>.\app_712\lcd\Menu_0_0_SpdType.c</PathWithFileName>
+      <FilenameWithoutPath>Menu_0_0_SpdType.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -3463,13 +3367,13 @@
 
   <Group>
     <GroupName>ICcard</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
     <File>
       <GroupNumber>22</GroupNumber>
-      <FileNumber>194</FileNumber>
+      <FileNumber>188</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
@@ -3485,7 +3389,7 @@
     </File>
     <File>
       <GroupNumber>22</GroupNumber>
-      <FileNumber>195</FileNumber>
+      <FileNumber>189</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>

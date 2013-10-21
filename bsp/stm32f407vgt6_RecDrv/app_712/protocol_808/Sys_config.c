@@ -13,7 +13,7 @@
 #include  "Vdr.h"
 
  
-#define   SYSID            0x016B      
+#define   SYSID            0x0A1A      
                                 /*        
                                                         0x0000   -----   0x00FF  生产和研发用
                                                         0x0100   -----   0x0FFF  产品出货用
@@ -111,6 +111,7 @@ u32  current_distance_meter=0;    //   当前距离
 
 //---------  SytemCounter ------------------
 u32  Systerm_Reset_counter=0;
+u8   DistanceWT_Flag=0;  //  写里程标志位
 u8   SYSTEM_Reset_FLAG=0;        // 系统复位标志位 
 u32  Device_type=0x00000001; //硬件类型   STM32103  新A1 
 u32  Firmware_ver=0x0000001; // 软件版本
@@ -1325,7 +1326,23 @@ void  SendMode_ConterProcess(void)         //  定时发送处理程序
 }
 
 
+//----------  
+void  Rails_Routline_Read(void)
+{
+   u16  i=0;
+   
+            //-----------读取围栏状态-------
+           
+		   for(i=0;i<8;i++)
+		   {
+				Api_RecordNum_Read(Rail_rect,i+1, (u8*)&Rail_Rectangle_multi[i], sizeof(Rail_Rectangle));
+				delay_ms(2);
+				Api_RecordNum_Read(Rail_cycle,i+1, (u8*)&Rail_Cycle_multi[i],sizeof(Rail_Cycle));	
 
+				
+		   }  
+
+} 
 
 
 //-----------------------------------------------------------------
@@ -1493,10 +1510,10 @@ void SetConfig(void)
  		   //RouteLine_Read();   
                  TEXTMsg_Read();	 
                  BD_EXT_Read();   
-		   Api_Read_var_rd_wr();	  	  	   
+		   Api_Read_var_rd_wr();	   	  	   
 
            //  Vechicle  compare
-		   DF_ReadFlash(DF_Vehicle_Struct_offset,0,(u8*)&Vechicle_Info,sizeof(Vechicle_Info));  
+		   DF_ReadFlash(DF_Vehicle_Struct_offset,0,(u8*)&Vechicle_Info,sizeof(Vechicle_Info));   
 		   
 		   WatchDog_Feed();
 		   DF_ReadFlash(DF_VehicleBAK_Struct_offset,0,(u8*)&Vechicle_Info_BAK,sizeof(Vechicle_Info_BAK)); 
@@ -1587,12 +1604,13 @@ void SetConfig(void)
 		   
 		   if(JT808Conf_struct.DF_K_adjustState)  
 		   {
-                             ModuleStatus|=Status_Pcheck; 
+                      ModuleStatus|=Status_Pcheck; 
 		   }
-                 else 
+           else 
 		   {
 		              ModuleStatus&=~Status_Pcheck;
-                  } 
+           } 
+           Rails_Routline_Read();
                  
           DF_LOCK=0;  // unlock 
     rt_kprintf("\r\n Read Config Over \r\n");   
@@ -1670,11 +1688,13 @@ void DefaultConfig(void)
 
          rt_kprintf("\r\n		   特征系数校准状态: %d :",JT808Conf_struct.DF_K_adjustState);	    
          if(JT808Conf_struct.DF_K_adjustState)					  	 
-                  rt_kprintf(" 特征系数--校准成功!\r\n");
+                  rt_kprintf(" 特征系数--校准成功!\r\n"); 
          else
                   rt_kprintf("特征系数--尚未校准!\r\n");   
 
 	  //   里程
+		  JT808Conf_struct.DayStartDistance_32=DayStartDistance_32;
+		  JT808Conf_struct.Distance_m_u32=Distance_m_u32;		
          rt_kprintf("\r\n		   累计里程: %d  米   ,  当日里程:   %d米\r\n",JT808Conf_struct.Distance_m_u32,JT808Conf_struct.Distance_m_u32-JT808Conf_struct.DayStartDistance_32);  	
          //  速度限制
          rt_kprintf("		   允许最大速度: %d  Km/h    超速报警持续时间门限: %d  s \r\n", JT808Conf_struct.Speed_warn_MAX,JT808Conf_struct.Spd_Exd_LimitSeconds);  		 
@@ -1818,6 +1838,8 @@ void DefaultConfig(void)
 void RstWrite_ACConoff_counter(void) 
 {
  
+ if(DF_LOCK)
+	   return ; 
   if(TiredConf_struct.Tired_drive.Status_TiredwhRst==0)
   	return;
     Api_Config_write(tired_config,0,(u8*)&TiredConf_struct,sizeof(TiredConf_struct));
@@ -1861,7 +1883,7 @@ void  idip(u8 *str)
                   Api_Config_Recwrite_Large(jt808,0,(u8*)&JT808Conf_struct,sizeof(JT808Conf_struct));   
       }
 }
-//FINSH_FUNCTION_EXPORT(idip, id code set);
+FINSH_FUNCTION_EXPORT(idip, id code set);
 
 
 

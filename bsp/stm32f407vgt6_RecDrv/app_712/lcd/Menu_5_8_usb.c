@@ -211,7 +211,6 @@ static void keypress(unsigned int key)
 	switch(KeyValue)
 		{
 		case KeyValueMenu:
-			DF_LOCK=0;
 			CounterBack=0;
 			//USB_data_flag=0;
 			//if((data_fetch_comp==1)||(usb_error==1))

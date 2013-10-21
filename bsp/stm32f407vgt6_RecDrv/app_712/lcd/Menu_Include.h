@@ -121,6 +121,7 @@ extern u8 MENU_set_carinfor_flag;
 
 ALIGN(RT_ALIGN_SIZE)extern  MENUITEM    *pMenuItem;
 ALIGN(RT_ALIGN_SIZE)extern  MENUITEM	Menu_0_0_password;
+ALIGN(RT_ALIGN_SIZE)extern  MENUITEM    Menu_0_0_SpdType;
 ALIGN(RT_ALIGN_SIZE)extern  MENUITEM	Menu_0_1_license;
 ALIGN(RT_ALIGN_SIZE)extern  MENUITEM	Menu_0_2_CarType;
 ALIGN(RT_ALIGN_SIZE)extern  MENUITEM	Menu_0_3_Sim;

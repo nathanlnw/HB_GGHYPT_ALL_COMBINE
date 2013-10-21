@@ -121,6 +121,10 @@ static void keypress(unsigned int key)
 				lcd_text12(18,3,"保存已设置信息",14,LCD_MODE_SET);
 				lcd_text12(0,18,"按菜单键进入待机界面",20,LCD_MODE_SET);
 				lcd_update_all();
+				
+                // 保存速度类型
+                // gps速度JT808Conf_struct.Speed_GetType= 0:   传感器速度 JT808Conf_struct.Speed_GetType=1
+                spd_type(JT808Conf_struct.Speed_GetType);  
 
                             //车牌号
                 //rt_kprintf("\r\n(保存信息)Menu_Car_license=%s",Menu_Car_license);

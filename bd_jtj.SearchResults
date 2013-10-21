@@ -1,6 +1,3 @@
----- Execute_enable Matches (5 in 4 files) ----
-App_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):			CommAT.Execute_enable=1;	 //  enable send   periodic 			   
-App_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):   	   //   CommAT.Execute_enable=1;      //  enable send   periodic  
-Device_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):	 if( CommAT.Execute_enable)
-Device_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):	    CommAT.Execute_enable=0;
-Device_gsm.h (bsp\stm32f407vgt6_recdrv\app_712\gsm):u8     Execute_enable; 
+---- DF_WriteFlashRemote Matches (2 in 2 files) ----
+DF_Oper.c (bsp\stm32f407vgt6_recdrv\app_712\dataflash):void DF_WriteFlashRemote(u16 page_counter,u16 page_offset,u8 *p,u16 length)//512bytes 直接存储
+DF_Oper.h (bsp\stm32f407vgt6_recdrv\app_712\dataflash):extern void DF_WriteFlashRemote(u16 page_counter,u16 page_offset,u8 *p,u16 length);//512bytes 直接存储

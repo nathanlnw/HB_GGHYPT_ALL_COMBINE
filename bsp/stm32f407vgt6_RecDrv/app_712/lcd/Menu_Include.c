@@ -16,7 +16,7 @@ unsigned int CounterBack=0;
 unsigned char UpAndDown=1;//参数设置主菜单选择序号
 
 unsigned char Dis_date[22]={"2000/00/00  00:00:00"};//20
-unsigned char Dis_speDer[20]={"000 km/h    000 度"};
+unsigned char Dis_speDer[20]={" 000 km/h   000 度"};
 
 unsigned char GPS_Flag=0,Gprs_Online_Flag=0;//记录gps gprs状态的标志
 
@@ -79,9 +79,9 @@ unsigned char UpdataDisp[8]={"001/000"};//北斗升级进度
 unsigned char BD_updata_flag=0;//北斗升级度u盘文件的标志
 unsigned int  FilePageBD_Sum=0;//记录文件大小，读文件大小/514
 unsigned int  bd_file_exist=0;//读出存在要升级的文件
-unsigned char device_version[30]={"主机版本:gghypt V1.1"};  //{"主机版本:V BD 2.00"};   // 北斗货运平台对接  
+unsigned char device_version[30]={"主机版本:gghypt V1.2"};  //{"主机版本:V BD 2.00"};   // 北斗货运平台对接  
 unsigned char bd_version[20]={"模块版本:V 17.00.002"};
-unsigned char bd_version2[20]={"模块版本:V 20.00.002"};    
+unsigned char bd_version2[20]={"模块版本:V 20.00.003"};     
 
 
 
@@ -94,7 +94,7 @@ unsigned char print_rec_flag=0;  // 打印记录标志
 
 u8  print_workingFlag=0;  // 打印进行中。。
 
-u8 CarSet_0_counter=1;//记录设置车辆信息的设置内容1:车牌号2:类型3:颜色
+u8 CarSet_0_counter=0;//记录设置车辆信息的设置内容1:车牌号2:类型3:颜色
 
 //------------ 使用前锁定相关 ------------------
 unsigned char Menu_Car_license[10];//存放车牌号码

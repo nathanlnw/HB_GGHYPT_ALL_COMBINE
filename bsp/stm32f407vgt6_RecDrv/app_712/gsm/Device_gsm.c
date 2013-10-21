@@ -355,7 +355,6 @@ void VOC_REC_dataGet(u8 *instr )
                       VocREC.Sate=VOICEREC_DEL;  // 删除文件  
 		        VocREC.ExcuteFlag=1;  
 			 VocREC.file_read=0;   // clear  
-                        DF_LOCK=disable; 
 			 //   开始准备上传 录音
 			  Sound_send_start(); //开始上传
 			 //--------------------------------------------------------------------------
@@ -749,6 +748,7 @@ void Dial_Stage(T_Dial_Stage  Stage)
 }
 void  GSM_RxHandler(u8 data)
 {
+   rt_interrupt_enter( );   
    		if( ( data==0x0a)&&(former_byte==0x0d ) ) /*遇到0d 0a 表明结束*/
 		{
 			GSM_INT_BUFF.gsm_content[GSM_INT_BUFF.gsm_wr++] = data;
@@ -767,7 +767,9 @@ void  GSM_RxHandler(u8 data)
 			}
 			GSM_INT_BUFF.gsm_content[GSM_INT_BUFF.gsm_wr]=0;  
 		}
-		former_byte = data;   
+		former_byte = data;  
+		
+  rt_interrupt_leave( );	 
 	  
 }
 
@@ -1232,7 +1234,7 @@ void  Get_GSM_HexData(u8*  Src_str,u16 Src_infolen,u8 link_num)
 {
     // u16   i=0;
      //  1.  Check wether   Instr   is  need   to  convert     Exam:  ASCII_2_HEX	 
-                GSM_HEX_len= GSM_AsciitoHEX_Convert(Src_str,Src_infolen,GSM_HEX); 
+        GSM_HEX_len= GSM_AsciitoHEX_Convert(Src_str,Src_infolen,GSM_HEX); 
      //  2 .  Realse   sem
 		App_rxGsmData_SemRelease(GSM_HEX,GSM_HEX_len,link_num); 
 } 
@@ -1612,12 +1614,12 @@ static void GSM_Process(u8 *instr, u16 len)
 			}
 		}
 		//rt_kprintf( "\r\n  短息来源号码:%s \r\n", reg_str );
-		if( RT_EOK == rt_mq_recv( &mq_GSM, (void*)&GSM_RX_BUFF, GSM_TYPEBUF_SIZE, RT_TICK_PER_SECOND ) )    //等待1000ms,实际上就是变长的延时,最长1000ms
+    	if( RT_EOK == rt_mq_recv( &mq_GSM, (void*)&GSM_RX_BUFF, GSM_TYPEBUF_SIZE, RT_TICK_PER_SECOND ) )    //等待1000ms,实际上就是变长的延时,最长1000ms
 		{
 			memset( GSM_rx, 0, sizeof( GSM_rx ) );
 			memcpy( GSM_rx, GSM_RX_BUFF.gsm_content, GSM_RX_BUFF.gsm_wr );
 			len=GSM_RX_BUFF.gsm_wr;
-			SMS_Rx_Text(GSM_rx,reg_str);			
+			SMS_Rx_Text(GSM_rx,reg_str);		
 		}
 	}
 #endif
@@ -1941,7 +1943,7 @@ static void GSM_Process(u8 *instr, u16 len)
 				 if(DataDial.Dial_step ==Dial_MainLnk)    //mainlink  to  auxlink
 				{      
 				        // GSM_PutStr("AT%IPCLOSE=1\r\n");  
-					//  AT_Stage(AT_Dial_AuxLnk);//AT_Dial_AuxLnk  
+					//  AT_Stage(AT_Dial_AuxLnk);//AT_Dial_AuxLnk   
 					 rt_thread_delay(10);
 					 Dial_Stage(Dial_AuxLnk);//  ready to connect auxlink
 					
@@ -2055,10 +2057,18 @@ RXOVER:
 								                rt_kprintf("\r\n Aux 连接成功TCP---\r\n");
 								   //     1.   登陆成功后相关操作	 
 								    // <--  注册状态
-								    if(1==JT808Conf_struct.Regsiter_Status)  
-								             DEV_Login.Operate_enable=1;  
+								    if(1==JT808Conf_struct.Regsiter_Status)   
+								        {
+								           DEV_Login.Operate_enable=1;  
+										   if(DEV_Login.Sd_counter==0)
+                                               DEV_Login.Enable_sd=1;    
+								    	}
 									else
-										 JT808Conf_struct.Regsiter_Status=0;     
+										{
+										  JT808Conf_struct.Regsiter_Status=0;  
+										  if(DEV_regist.Sd_counter==0)
+										     DEV_regist.Enable_sd=1; 
+										}
 									 
 								   // connect = true;
 								         //  -----  Data  Dial Related ------

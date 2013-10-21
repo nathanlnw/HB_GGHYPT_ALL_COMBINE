@@ -509,7 +509,8 @@ void  OpenDoor_TakePhoto(void)
 void  _485_RxHandler(u8 data)
 {
     //      Large   LCD   Data 
- 
+    
+	rt_interrupt_enter( );
       _485_dev_rx[_485dev_wr++]=data;
 	
 
@@ -588,7 +589,8 @@ void  _485_RxHandler(u8 data)
 					  _485_RXstatus._485_receiveflag=	IDLE_485; 
 					  break ;
      } 
-
+  
+  rt_interrupt_leave( );   
 }
 
 
@@ -673,27 +675,27 @@ void  Pic_Data_Process(void)
                                  rt_kprintf(" \r\n udiskfile: %s  open res=%d   \r\n",PictureName, udisk_fd);  
 		              }  */		              
 				 WatchDog_Feed();         
-                      // -----    写图片索引 -------
-                      Save_MediaIndex(0,PictureName,Camera_Number,0);  					  
-               	}  
+                  // -----    写图片索引 -------
+                 Save_MediaIndex(0,PictureName,Camera_Number,0);  					  
+             }  
 			
 	       //  4.   填写存储图片内容数据  --------------------		
 	       WatchDog_Feed();  
 		   DF_WriteFlashDirect(pic_current_page,0,_485_content, PackageLen);// 写一次一个Page 512Bytes
-		   rt_thread_delay(5); // delay_ms(90);  
+		   delay_ms(150);   
 		   //rt_kprintf(" \r\n ---- write  pic_current_page=%d  \r\n",pic_current_page);   		   
-		   rt_kprintf(" \r\n ---- packet=%d  \r\n",CameraState.block_counter);     
+		   rt_kprintf(" \r\n ---- pkg=%d  \r\n",CameraState.block_counter);     
 		  
-                         //---  read compare 
+            //---  read compare 
 		    memset(pic_buf,0,600);
-		    DF_ReadFlash(pic_current_page,0,pic_buf, PackageLen);
-			delay_ms(30);
+		    DF_ReadFlash(pic_current_page,0,pic_buf, PackageLen); 
+			delay_ms(10);
 		    for(i=0;i<PackageLen;i++)
 		   {		if(pic_buf[i]!=_485_content[i])
 		    	       {
 		    	          rt_kprintf(" \r\n ----read not equal write  where i=%d  Rd[i]=%2X  WR[i]=%2X \r\n",i,pic_buf[i],_485_content[i]); 
 						  DF_WriteFlashDirect(pic_current_page,0,_485_content, PackageLen);// 再写一次一个Page 512Bytes
-		                  delay_ms(85);   
+		                  delay_ms(100);  
 					      break;		  
 		    	       }
 		   }	 
@@ -709,7 +711,7 @@ void  Pic_Data_Process(void)
 				   pic_size+=PackageLen;// 图片大小累加	 				   
 				   pic_current_page++; //写一页加一
 				  // pic_PageIn_offset+=PackageLen;  
-				   DF_delay_ms(50);   
+				 //  DF_delay_ms(50);   
 	   //   5.   最后一包 ，即拍照结束
 		  if(last_package==1)
 		 {
@@ -745,7 +747,7 @@ void  Pic_Data_Process(void)
 		        SingleCamra_TakeResualt_BD=0;	    //  单路摄像头拍照		
 		        SD_ACKflag.f_BD_CentreTakeAck_0805H=1;  //  发送中心拍照命令应答
 		        //----------  Normal process ---------------------
-			 End_Camera(); 
+			  End_Camera(); 
 
 				
 		        // 5.2   拍照完成后检查有没有多路 拍-----------Multi Take process--------------------

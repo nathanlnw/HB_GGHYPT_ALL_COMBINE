@@ -51,18 +51,8 @@ static void keypress(unsigned int key)
 				if(set_car_codetype==1)
 					{
 					set_car_codetype=0;
-					CarSet_0_counter=1;//设置第1项
+					CarSet_0_counter=0;//设置第1项
 					pMenuItem=&Menu_0_loggingin;
-					}
-				else if((NET_SET_FLAG==1)&&(Exit_to_Idle==1))
-					{
-					Exit_to_Idle=0;
-					pMenuItem=&Menu_1_Idle;
-					}
-				else if(NET_SET_FLAG==1)
-					{
-					NET_SET_FLAG=2;
-					pMenuItem=&Menu_8_SetDNS;
 					}
 				else
 					pMenuItem=&Menu_1_Idle;
@@ -70,13 +60,6 @@ static void keypress(unsigned int key)
 				memset(password_Code,0,sizeof(password_Code));
 				password_SetFlag=1;
 				password_Counter=0;
-				}
-			else if(CAR_SET_FLAG==1)
-				{
-				pMenuItem=&Menu_8_SetDNS;
-				pMenuItem->show();
-
-				CAR_SET_FLAG=0;
 				}
 			break;
 		case KeyValueOk:
@@ -93,18 +76,6 @@ static void keypress(unsigned int key)
 				{
 				if(strncmp((char *)password_Code,ENTER_CODE,6)==0)    
 					{
-					if(NET_SET_FLAG==1)
-						{
-						NET_SET_FLAG=2;
-						password_SetFlag=0;/////
-						
-						lcd_fill(0);
-						lcd_text12(36,3,"密码正确",8,LCD_MODE_SET);
-						lcd_text12(6,19,"按确认设置网络信息",18,LCD_MODE_SET);
-						lcd_update_all();
-						}
-					else
-						{
 						password_SetFlag=8;	
 						Password_correctFlag=1;
 						set_car_codetype=1;
@@ -113,7 +84,6 @@ static void keypress(unsigned int key)
 						lcd_text12(36,3,"密码正确",8,LCD_MODE_SET);
 						lcd_text12(0,19,"按菜单键进入设置信息",20,LCD_MODE_SET);
 						lcd_update_all();
-						}
 					}
 				else
 					{
@@ -127,12 +97,6 @@ static void keypress(unsigned int key)
 			else if(password_SetFlag==9)
 				{
 				pMenuItem=&Menu_0_0_password;
-				pMenuItem->show();
-				}
-			else if(NET_SET_FLAG==2)
-				{
-				NET_SET_FLAG=3;
-				pMenuItem=&Menu_8_SetDNS;
 				pMenuItem->show();
 				}
 			break;

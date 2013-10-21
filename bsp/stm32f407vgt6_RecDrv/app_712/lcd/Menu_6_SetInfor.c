@@ -32,9 +32,8 @@ static void keypress(unsigned int key)
 			Exit_to_Idle=1;
 			
 			Dis_screen_6_flag=0;
-			CAR_SET_FLAG=0;
 		
-			pMenuItem=&Menu_8_SetDNS;
+			pMenuItem=&Menu_1_Idle;
 			pMenuItem->show();
 			break;
 		case KeyValueOk:
@@ -46,7 +45,6 @@ static void keypress(unsigned int key)
 				Dis_screen_6_flag=0;
 				pMenuItem=&Menu_0_0_password;
 				pMenuItem->show();
-				CAR_SET_FLAG=1;
 				}	
 			break;
 		case KeyValueUP:

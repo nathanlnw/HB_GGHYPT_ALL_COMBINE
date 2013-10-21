@@ -54,7 +54,7 @@ u8 SaveCycleGPS(u32 cyclewr,u8 *content ,u16 saveLen)
   SV_RTRY:
       if(retry>=2)
 	  	  return false;
-	  
+	   delay_ms(5);
 	   WatchDog_Feed(); 
 	   DF_WriteFlashDirect(pageoffset+CycleStart_offset,InPageAddr,content,saveLen);  //   –¥»Î–≈œ¢
 	   DF_delay_us(30);   
