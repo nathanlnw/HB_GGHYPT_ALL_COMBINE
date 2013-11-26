@@ -1014,6 +1014,8 @@ extern POINT        POINT_Obj;      // 路线的拐点
 extern ROUTE        ROUTE_Obj;      // 路线相关
 extern POLYGEN_RAIL Rail_Polygen;   // 多边形围栏
 extern RECT_RAIL    Rail_Rectangle; // 矩形围栏
+extern RECT_RAIL    Rail_Rectangle_multi[8]; // 矩形围栏
+extern CIRCLE_RAIL  Rail_Cycle_multi[8];     // 圆形围栏 
 extern CIRCLE_RAIL  Rail_Cycle;  // 圆形围栏
 extern VEHICLE_CONTROL Vech_Control; //  车辆控制
 extern PHONE_BOOK    PhoneBook;  //  电话本

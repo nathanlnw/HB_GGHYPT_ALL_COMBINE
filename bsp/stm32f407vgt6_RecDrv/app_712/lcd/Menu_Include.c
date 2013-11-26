@@ -94,7 +94,7 @@ unsigned char print_rec_flag=0;  // 打印记录标志
 
 u8  print_workingFlag=0;  // 打印进行中。。
 
-u8 CarSet_0_counter=6;//记录设置车辆信息的设置内容1:车牌号2:类型3:颜色
+u8 CarSet_0_counter=0;//记录设置车辆信息的设置内容1:车牌号2:类型3:颜色
 
 //------------ 使用前锁定相关 ------------------
 unsigned char Menu_Car_license[10];//存放车牌号码

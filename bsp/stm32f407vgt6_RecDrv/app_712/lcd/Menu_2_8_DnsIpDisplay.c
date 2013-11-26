@@ -8,7 +8,7 @@ void Disp_DnsIP(u8 counter)
 u8 apn[20] ={"APN: "};
 u8 dns1[20]={"DNS1:jt1.gghypt.net"};
 u8 dns2[20]={"DNS2:jt2.gghypt.net"};
-u8 dns3[20]={"DNS1:up.gps960.net"};
+u8 dns3[20]={"DNS1:up.gps960.com"};
 u8 dns4[20]={"DNS2:up.soo8.com"};
 u8 len1=0,len2=0;	
 

@@ -133,7 +133,7 @@
 
 
 
-#define   Max_SystemCounter            20400// 28800 // 86400   //定时重启时间24小时 一天  
+#define   Max_SystemCounter            86400// 28800 // 86400   //定时重启时间24小时 一天   
 
 //-----------------------  Max  Add    ---------------------------------
 #define   Max_CycleNum                  16384
@@ -321,7 +321,7 @@ extern void  ProductAttribute_init(void);
 
 
 
-
+extern void Rails_Routline_Read(void);        
 extern void SysConfiguration(void);
 extern void SetConfig(void);
 extern void DefaultConfig(void);

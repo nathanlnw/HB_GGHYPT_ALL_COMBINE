@@ -51,7 +51,7 @@ static void keypress(unsigned int key)
 				if(set_car_codetype==1)
 					{
 					set_car_codetype=0;
-					CarSet_0_counter=6;//设置第1项
+					CarSet_0_counter=0;//设置第1项
 					pMenuItem=&Menu_0_loggingin;
 					}
 				else

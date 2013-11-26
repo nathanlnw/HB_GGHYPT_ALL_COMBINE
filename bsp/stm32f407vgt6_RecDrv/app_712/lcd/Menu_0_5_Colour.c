@@ -80,7 +80,7 @@ static void keypress(unsigned int key)
 				else
 					{
 					col_screen=2;
-					CarSet_0_counter=6;//
+					CarSet_0_counter=0;//
 					menu_color_flag=1;//车牌颜色设置完成
 					lcd_fill(0);
 					lcd_text12(20,3,(char *)car_col,13,LCD_MODE_SET);

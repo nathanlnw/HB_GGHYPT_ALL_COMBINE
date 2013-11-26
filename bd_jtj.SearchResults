@@ -1,55 +1,7 @@
----- CarSet_0_counter Matches (26 in 11 files) ----
-Menu_0_0_password.c (bsp\...\lcd):54
-					CarSet_0_counter=0;//设置第1项
-Menu_0_0_SpdType.c (bsp\...\lcd):67
-				CarSet_0_counter=1;//
-Menu_0_0_Type.c (bsp\...\lcd):82
-				CarSet_0_counter=1;
-Menu_0_1_License.c (bsp\...\lcd):237
-					CarSet_0_counter=2;//设置第2项
-Menu_0_1_License.c (bsp\...\lcd):422
-					CarSet_0_counter=2;//设置第2项
-Menu_0_2_CarType.c (bsp\...\lcd):138
-					CarSet_0_counter=3;//设置第3项
-Menu_0_2_CarType.c (bsp\...\lcd):148
-				CarSet_0_counter=3;//设置第3项
-Menu_0_3_Sim.c (bsp\...\lcd):143
-					CarSet_0_counter=4;
-Menu_0_4_VIN.c (bsp\...\lcd):296
-					CarSet_0_counter=5;
-Menu_0_5_Colour.c (bsp\...\lcd):83
-					CarSet_0_counter=1;//
-Menu_0_loggingin.c (bsp\...\lcd):74
- CarSet_0_fun(CarSet_0_counter);
-Menu_0_loggingin.c (bsp\...\lcd):92
-		if(CarSet_0_counter==6)
-Menu_0_loggingin.c (bsp\...\lcd):97
-		else if(CarSet_0_counter==0)
-Menu_0_loggingin.c (bsp\...\lcd):102
-		else if(CarSet_0_counter==1)
-Menu_0_loggingin.c (bsp\...\lcd):107
-		else if(CarSet_0_counter==2)
-Menu_0_loggingin.c (bsp\...\lcd):112
-		else if(CarSet_0_counter==3)
-Menu_0_loggingin.c (bsp\...\lcd):117
-		else if(CarSet_0_counter==4)
-Menu_0_loggingin.c (bsp\...\lcd):122
-		else if(CarSet_0_counter==5)
-Menu_0_loggingin.c (bsp\...\lcd):131
-			if(CarSet_0_counter==0)
-				CarSet_0_counter=6;
-Menu_0_loggingin.c (bsp\...\lcd):134
-				CarSet_0_counter--;
-Menu_0_loggingin.c (bsp\...\lcd):136
-			CarSet_0_fun(CarSet_0_counter);
-Menu_0_loggingin.c (bsp\...\lcd):142
-			if(CarSet_0_counter==6)
-				CarSet_0_counter=0;
-Menu_0_loggingin.c (bsp\...\lcd):145
-				CarSet_0_counter++;
-Menu_0_loggingin.c (bsp\...\lcd):147
-			CarSet_0_fun(CarSet_0_counter);
-Menu_Include.c (bsp\...\lcd):97
-u8 CarSet_0_counter=0;//记录设置车辆信息的设置内容1:车牌号2:类型3:颜色
-Menu_Include.h (bsp\...\lcd):118
-extern u8 CarSet_0_counter;//记录设置车辆信息的设置内容1:车牌号2:类型3:颜色
+---- CarType_Type Matches (3 in 1 files) ----
+Menu_0_2_CarType.c (bsp\...\lcd):8
+unsigned char CarType_Type=0;
+Menu_0_2_CarType.c (bsp\...\lcd):58
+			CarType_Type=0;
+Menu_0_2_CarType.c (bsp\...\lcd):132
+				CarType_Type=0;

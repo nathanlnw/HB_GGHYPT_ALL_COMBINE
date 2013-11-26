@@ -244,6 +244,8 @@ VEHICLE_CONTROL Vech_Control; //  车辆控制
 //-----  电子围栏  -----
 POLYGEN_RAIL Rail_Polygen;   // 多边形围栏
 RECT_RAIL    Rail_Rectangle; // 矩形围栏
+RECT_RAIL    Rail_Rectangle_multi[8]; // 矩形围栏
+CIRCLE_RAIL  Rail_Cycle_multi[8];     // 圆形围栏
 CIRCLE_RAIL  Rail_Cycle;     // 圆形围栏
 //------- 线路设置 -----
 POINT        POINT_Obj;      // 路线的拐点
@@ -1503,7 +1505,8 @@ void  GPS_Delta_DurPro(void)    //告GPS 触发上报处理函数
       if((Temp_Gps_Gprs.Time[2]%5)==0) //    
     {
           // printf("\r\n --- 判断圆形电子围栏");
-           RouteRail_Judge(Temp_Gps_Gprs.Latitude,Temp_Gps_Gprs.Longitude);
+          // RouteRail_Judge(Temp_Gps_Gprs.Latitude,Temp_Gps_Gprs.Longitude); 
+          ;
     }
 	//rt_kprintf("\r\n Delta_seconds %d \r\n",delta_time_seconds);    
   //----------------------------------------------------------------------------------------	
@@ -8212,8 +8215,10 @@ void TCP_RX_Process( u8  LinkNum)  //  ---- 808  标准协议
                                            	{                                                
 												memset((u8*)&Rail_Cycle,0,sizeof(Rail_Cycle));
 												Api_RecordNum_Write(Rail_cycle,Rail_Cycle.Area_ID, (u8*)&Rail_Cycle,sizeof(Rail_Cycle)); 	 
+                                                Rails_Routline_Read();  
 												if(Rail_Cycle.Area_attribute) // 找出来未使用的
 													break;
+												
                                            	}
 										   if(8==i)  //  如果都满了，那么用 0
 										   	{
@@ -8237,7 +8242,8 @@ void TCP_RX_Process( u8  LinkNum)  //  ---- 808  标准协议
 										   if((Rail_Cycle.Area_ID>8)||(Rail_Cycle.Area_ID==0))
 										   	Rail_Cycle.Area_ID=1;										   
 										    Api_RecordNum_Write(Rail_cycle,Rail_Cycle.Area_ID, (u8*)&Rail_Cycle,sizeof(Rail_Cycle)); 	 
-									   
+
+									       Rails_Routline_Read();
 								           break;
 									default:
 										    break;
@@ -8266,8 +8272,9 @@ void TCP_RX_Process( u8  LinkNum)  //  ---- 808  标准协议
                                 if((Rail_Cycle.Area_ID>8)||(Rail_Cycle.Area_ID==0))
 										   	Rail_Cycle.Area_ID=1;	
 								Rail_Cycle.Effective_flag=0; // clear
-								 Api_RecordNum_Write(Rail_cycle,Rail_Cycle.Area_ID, (u8*)&Rail_Cycle,sizeof(Rail_Cycle)); // 删除对应的围栏
-						 	  }
+								Api_RecordNum_Write(Rail_cycle,Rail_Cycle.Area_ID, (u8*)&Rail_Cycle,sizeof(Rail_Cycle)); // 删除对应的围栏
+                                Rails_Routline_Read();  
+							  }
 
 						 	}
 
@@ -8305,7 +8312,10 @@ void TCP_RX_Process( u8  LinkNum)  //  ---- 808  标准协议
 										   	Rail_Rectangle.Area_ID=1;										   
 										   Api_RecordNum_Write(Rail_rect,Rail_Rectangle.Area_ID, (u8*)&Rail_Rectangle,sizeof(Rail_Rectangle)); 	 
 
-										   rt_kprintf("\r\n   中心设置  矩形围栏 leftLati=%d leftlongi=%d\r\n",Rail_Rectangle.LeftUp_Latitude,Rail_Rectangle.LeftUp_Longitude);  
+										   rt_kprintf("\r\n   中心设置  矩形围栏 leftLati=%d leftlongi=%d\r\n",Rail_Rectangle.LeftUp_Latitude,Rail_Rectangle.LeftUp_Longitude); 
+										   
+										   rt_kprintf("\r\n    attribute:%X         矩形围栏 rightLati=%d rightlongi=%d\r\n",Rail_Rectangle.Area_attribute,Rail_Rectangle.RightDown_Latitude,Rail_Rectangle.RightDown_Longitude);   
+                                           Rails_Routline_Read();   
 										   break;
 									default:
 										    break;
@@ -8324,7 +8334,10 @@ void TCP_RX_Process( u8  LinkNum)  //  ---- 808  标准协议
 		   case  0x8603:    //  删除矩形区域
                            rt_kprintf("\r\n  删除矩形区域 \r\n");    
 					   	  if(0==UDP_HEX_Rx[13])   // 区域数
-                             RailRect_Init();  // 删除所有区域
+                           {
+                              RailRect_Init();  // 删除所有区域
+                              Rails_Routline_Read();  
+					   	   }
 						   else
 						 	{						 	  
 							  memset((u8*)&Rail_Rectangle,0,sizeof(Rail_Rectangle));  //  clear all  first
@@ -8335,7 +8348,8 @@ void TCP_RX_Process( u8  LinkNum)  //  ---- 808  标准协议
 										   	Rail_Rectangle.Area_ID=1;	
 								Rail_Rectangle.Effective_flag=0;
 								Api_RecordNum_Write(Rail_rect,Rail_Rectangle.Area_ID, (u8*)&Rail_Rectangle,sizeof(Rail_Rectangle)); // 删除对应的围栏
-						 	  }  
+                                Rails_Routline_Read();  
+							  }  
 						 	}
 
 
@@ -10003,7 +10017,8 @@ void CycleRail_Judge(u8* LatiStr,u8* LongiStr)
   {
          InOutState=0; 
 		 memset((u8*)&Rail_Cycle,0,sizeof(Rail_Cycle));
-		Api_RecordNum_Read(Rail_cycle,i+1, (u8*)&Rail_Cycle,sizeof(Rail_Cycle)); 	 
+		//Api_RecordNum_Read(Rail_cycle,i+1, (u8*)&Rail_Cycle,sizeof(Rail_Cycle)); 	 
+		memcpy((u8*)&Rail_Cycle,(u8*)&Rail_Cycle_multi[i],sizeof(Rail_Cycle));
 		// rt_kprintf("\r\n\r\n 圆形围栏 有效状态:%d  TYPE: %d    atrri=%d  lati: %d  longiti:%d  radicus:%d  maxspd: %d  keepdur:%d \r\n",Rail_Cycle.Effective_flag,Rail_Cycle.Area_ID,Rail_Cycle.Area_attribute,Rail_Cycle.Center_Latitude,Rail_Cycle.Center_Longitude,Rail_Cycle.Radius,Rail_Cycle.MaxSpd,Rail_Cycle.KeepDur);  
          
 
@@ -10120,7 +10135,8 @@ void RectangleRail_Judge(u8* LatiStr,u8* LongiStr)
 	for(i=0;i<8;i++)
 	{
 	    InOutState=1;
-		 Api_RecordNum_Read(Rail_rect,i+1, (u8*)&Rail_Rectangle, sizeof(Rail_Rectangle));		  
+		// Api_RecordNum_Read(Rail_rect,i+1, (u8*)&Rail_Rectangle, sizeof(Rail_Rectangle)); 
+		 memcpy((u8*)&Rail_Rectangle,(u8*)&Rail_Rectangle_multi[i],sizeof(Rail_Rectangle));		
         
 		if(Rail_Rectangle.Effective_flag==1) 
 		{

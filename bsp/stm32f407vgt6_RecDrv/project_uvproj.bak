@@ -1423,11 +1423,6 @@
               <FileType>1</FileType>
               <FilePath>.\app_712\lcd\Menu_0_0_SpdType.c</FilePath>
             </File>
-            <File>
-              <FileName>Menu_0_0_Type.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\app_712\lcd\Menu_0_0_Type.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>

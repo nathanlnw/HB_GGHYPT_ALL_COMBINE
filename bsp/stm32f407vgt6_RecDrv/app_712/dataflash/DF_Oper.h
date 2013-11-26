@@ -275,7 +275,6 @@ extern void DF_ReadFlash(u16 page_counter,u16 page_offset,u8 *p,u16 length);
 extern void DF_WriteFlash(u16 page_counter,u16 page_offset,u8 *p,u16 length);
 extern void DF_ReadFlash(u16 page_counter,u16 page_offset,u8 *p,u16 length);
 extern void DF_WriteFlashSector(u16 page_counter,u16 page_offset,u8 *p,u16 length);//512bytes 直接存储
-extern void DF_WriteFlashRemote(u16 page_counter,u16 page_offset,u8 *p,u16 length);//512bytes 直接存储
 extern void DF_WriteFlashDirect(u16 page_counter,u16 page_offset,u8 *p,u16 length);
 extern void DF_Erase(void);
 extern void DF_init(void); 
