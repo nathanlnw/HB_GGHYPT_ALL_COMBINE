@@ -402,7 +402,7 @@ else if(Dis_deviceid_flag>=2)
 else
 	{
 	//主电源掉电
-	if(Warn_Status[1]&0x01)  
+	if(Warn_Status[2]&0x01)   
 		{
 		BuzzerFlag=11;
 		lcd_fill(0);
