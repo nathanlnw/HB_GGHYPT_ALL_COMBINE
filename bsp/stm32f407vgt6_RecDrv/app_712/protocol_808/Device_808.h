@@ -56,11 +56,11 @@
 #define FARLIGHT_IO_Group           GPIOC              // 远光灯
 #define FARLIGHT_Group_NUM        GPIO_Pin_0 
 
-#define NEARLIGHT_IO_Group          GPIOC             // 近光灯
-#define NEARLIGHT_Group_NUM       GPIO_Pin_1 
+#define NEARLIGHT_IO_Group          GPIOC             // 近光灯  (20131219 改成 PC3 绿线)
+#define NEARLIGHT_Group_NUM       GPIO_Pin_3 
 
 #define FOGLIGHT_IO_Group            GPIOC             //  雾灯
-#define FOGLIGHT_Group_NUM         GPIO_Pin_3    
+#define FOGLIGHT_Group_NUM         GPIO_Pin_1    
 
 #define DOORLIGHT_IO_Group          GPIOA             // 车门灯   预留
 #define DOORLIGHT_Group_NUM       GPIO_Pin_1

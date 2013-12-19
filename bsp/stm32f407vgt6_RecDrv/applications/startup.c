@@ -91,13 +91,13 @@ void rtthread_startup(void)
   {
      DF_delay_us(1000);
     /* Reload IWDG counter */
-    //IWDG_ReloadCounter();  
+    //IWDG_ReloadCounter();      
   }
 	 
  
 	 
     #endif 	 
-   rt_kprintf("\n\r   河北天地通 北斗车载终端 GGHYPT  TW703-BD--13-11-25   Version 1.2 双Module兼容版本  默认 up.gps960.com  Spd Sensor df_drive \r\n ");        
+    rt_kprintf("\n\r   河北天地通 北斗车载终端 GGHYPT  TW703-BD--13-12-19   Version 1.2 双Module兼容版本  默认 up.gps960.com  Spd Sensor df_drive  --QHDver \r\n ");        
 	/* show version */
 	rt_show_version(); 
 
@@ -110,7 +110,7 @@ void rtthread_startup(void)
 	/* init timer system */
 	rt_system_timer_init();
 
-      rt_system_heap_init((void*)STM32_SRAM_BEGIN, (void*)STM32_SRAM_END);
+    rt_system_heap_init((void*)STM32_SRAM_BEGIN, (void*)STM32_SRAM_END);  
 
 	/* init scheduler system */
 	rt_system_scheduler_init();

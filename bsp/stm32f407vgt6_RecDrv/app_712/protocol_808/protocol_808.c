@@ -2122,8 +2122,8 @@ u8  Stuff_Normal_Data_0200H(void)
   //  附加信息长度
   Original_info[Original_info_Wr++]=2;
   //  类型
-  Original_info[Original_info_Wr++]=(u8)(Speed_cacu>>8); 
-  Original_info[Original_info_Wr++]=(u8)(Speed_cacu);	   
+  Original_info[Original_info_Wr++]=(u8)(Spd_Using>>8); 
+  Original_info[Original_info_Wr++]=(u8)(Spd_Using);	   
   //rt_kprintf("\r\n GPS速度=%d km/h , 传感器速度=%d km/h\r\n",Speed_gps,Speed_cacu); 
    //  附加信息 2  -----------------------------	
    //  附加信息 ID
@@ -2259,8 +2259,8 @@ u8  Stuff_Current_Data_0200H(void)   //  发送即时数据不存储到存储器中
 	//	附加信息长度
 	Original_info[Original_info_Wr++]=2;
 	//	类型
-	Original_info[Original_info_Wr++]=(u8)(Speed_cacu>>8); 
-	Original_info[Original_info_Wr++]=(u8)(Speed_cacu);	     
+	Original_info[Original_info_Wr++]=(u8)(Spd_Using>>8); 
+	Original_info[Original_info_Wr++]=(u8)(Spd_Using);	     
 	//rt_kprintf("\r\n GPS速度=%d km/h , 传感器速度=%d km/h\r\n",Speed_gps,Speed_cacu); 
      //  附加信息 2  -----------------------------	  
 	 //  附加信息 ID
@@ -2402,8 +2402,8 @@ u8  Stuff_Current_Data_0201H(void)   //   位置信息查询回应
 	//	附加信息长度
 	Original_info[Original_info_Wr++]=2;
 	//	类型
-	Original_info[Original_info_Wr++]=(u8)(Speed_cacu>>8); 
-	Original_info[Original_info_Wr++]=(u8)(Speed_cacu);	     
+	Original_info[Original_info_Wr++]=(u8)(Spd_Using>>8); 
+	Original_info[Original_info_Wr++]=(u8)(Spd_Using);	     
 	//rt_kprintf("\r\n GPS速度=%d km/h , 传感器速度=%d km/h\r\n",Speed_gps,Speed_cacu); 
      //  附加信息 2  -----------------------------	  
 	 //  附加信息 ID
