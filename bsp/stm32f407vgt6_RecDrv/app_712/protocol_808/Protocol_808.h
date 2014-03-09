@@ -25,6 +25,8 @@
 #define  transfer             3 
 
 
+//---------------------------
+#define  Max_PKGRecNum_0704     17   // 0704 单包最大记录数目   58 *16 =986  单包不超过1024  
 
 //------------  GPS function------
 #define  INIT         1
@@ -1058,7 +1060,7 @@ extern u8          IP_change_counter;           //   中心修改IP 计数器
 extern u8		   Down_Elec_Flag;				 //   断油断电使能标志位 
 
 
-extern ALIGN(RT_ALIGN_SIZE) u8          GPRS_info[900]; 
+extern ALIGN(RT_ALIGN_SIZE) u8          GPRS_info[1400]; 
 extern u16         GPRS_infoWr_Tx;
 
 

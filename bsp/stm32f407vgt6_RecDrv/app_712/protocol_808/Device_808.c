@@ -939,12 +939,20 @@ else
        u8     Api_cycle_Update(void)
        {
            	 if( ReadCycle_status==RdCycle_SdOver)	 // 发送成功判断 
-				 {		 
-					 cycle_read++;	 //  收到应答才递增
+				 {	
+				     // process   0704
+				     if(delta_0704_rd==0)   
+					     cycle_read++;	 //  收到应答才递增
 					 if(cycle_read>=Max_CycleNum)
 							cycle_read=0;
 					 ReadCycle_status=RdCycle_Idle; 
-					  rt_kprintf("\r\n 发送 GPS --saved  OK!\r\n");    
+
+					 if(delta_0704_rd)
+					 	{  delta_0704_rd=0;  // clear 
+					       rt_kprintf("\r\n 发送 GPS --0704  OK!\r\n");  
+					 	}
+					 else
+					      rt_kprintf("\r\n 发送 GPS --saved  OK!\r\n");    
 					   ReadCycle_timer=0; 
 				 }	
 				 return 1;
@@ -1109,19 +1117,8 @@ else
 			  DF_Write_RecordAdd(TiredDrv_write,TiredDrv_read,TYPE_TiredDrvAdd);   
 			  //-------------------------
 			  return  true;
-                }
-				
-		 if(strcmp((const char*)name,doubt_data)==0)
-		{ 
-		       Save_DrvRecoder(Recorder_write, buffer, len );   
-			//-----  Record update----	    
-			   Recorder_write++; 
-			   if(Recorder_write>=Max_RecoderNum)  
-			   	 Recorder_write=0;
-			   DF_Write_RecordAdd(Recorder_write,Recorder_Read,TYPE_VechRecordAdd); 	
-		       //-------------------------		   
-			return true;
-               }	
+                }	
+		
 		 //------- MultiMedia   RAW  data  ---------
 		 if(strcmp((const char*)name,voice)==0)
 		{
@@ -1211,27 +1208,8 @@ else
 
 			  //-------------------------
 			  return  true;
-                }
-				
-		 if(strcmp((const char*)name,doubt_data)==0)
-		{ 
-		        if(style==1)
-					read_addr=0+numPacket;
-			 else
-			 { 
-			      if(Recorder_write==0)
-				  	    return   false; 
-				else  
-			      if(Recorder_write>=(numPacket+1))		
-			            read_addr=Recorder_write-1-numPacket;
-				else
-					 return false;
-			 }  
-		       Read_DrvRecoder(read_addr, buffer, len );   
+                }		
 	
-		       //-------------------------		   
-			return true;
-               }	
 		 //------- MultiMedia   RAW  data  ---------
 		 if(strcmp((const char*)name,voice)==0)
 		{
@@ -1578,12 +1556,6 @@ else
 	 	 DF_delay_ms(50); 
 	 	 DF_Write_RecordAdd(AvrgSpdPerMin_write,AvrgSpdPerMin_Read,TYPE_AvrgSpdAdd); 
 		
-		Recorder_write=0;
-		Recorder_Read=0;  
-		DF_Write_RecordAdd(Recorder_write,Recorder_Read,TYPE_VechRecordAdd); 
-
-
-
     	}
       void  Api_Read_var_rd_wr(void)    //   读初始化话各类型读写记录地址
     	{
@@ -1604,8 +1576,7 @@ else
 	 	 DF_Read_RecordAdd(TiredDrv_write,TiredDrv_read,TYPE_TiredDrvAdd); 
 	 	 DF_delay_ms(50); 
 	 	 DF_Read_RecordAdd(AvrgSpdPerMin_write,AvrgSpdPerMin_Read,TYPE_AvrgSpdAdd); 
- 		 DF_Read_RecordAdd(Recorder_write,Recorder_Read,TYPE_VechRecordAdd); 
-
+ 
 
     	}
 

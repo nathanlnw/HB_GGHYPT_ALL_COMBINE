@@ -125,7 +125,7 @@ Crystal: 3.6864Mhz
 #define       DF_PhoneBook_Page                        1440                           // Block 起始- 电话本相关
 #define       DF_CircleRail_Page                       1448                           // Block 起始- 圆形围栏
 
-#define       DF_RectangleRail_Page                    3000                           // Block 起始- 矩形围栏  1288  --过检验就用7000 了 24个 
+#define       DF_RectangleRail_Page                    4056                           // Block 起始- 矩形围栏  1288  --过检验就用7000 了 24个 
 
 #define       DF_PolygenRail_Page                      1464                           // Block 起始- 多边形围栏
 #define       DF_PicIndex_Page                         1480                           // Block 起始- 图像检索
@@ -138,7 +138,6 @@ Crystal: 3.6864Mhz
 //17.  域名
 #define       DF_DomainName_Page                        1512            
 
-#define       DF_question_Page                         4000        //16m 4000  32m 4600                     // 提问信息存储起始页               
 
     //该区域结束     
 
@@ -148,51 +147,30 @@ Crystal: 3.6864Mhz
 
 /*  I.  Function App Area                  注: 以下Page 规划基于   SST25VF16     用于临时Test                   */
 
-//                     Name                                     PageNum                	 	                     Description                             
+//                     Name                                     PageNum                	 	                     Description             
+//     2048  个 Page         1768+2048=3816          2048*4=8192  条记录
 // 1.  Cycle Save Send Area
-#define       CycleStart_offset                       1768                          // 循环存储上报存储区域(Basic 基本必备)        1 record=32 Bytes
+#define       CycleStart_offset                       1768                          // 循环存储上报存储区域(Basic 基本必备)        1 record=128 Bytes
 
 
 
 
-// 2. Vehicle  Status Record Area 
-#define       VehicleRecStart_offset                  2792                         // 行车记录仪数据存储区域(事故疑点数据)  1 record=256Bytes
 
 // 3. Average Speed Per Minute
-#define       AverageSpdStart_offset                  2992                         // 车辆每分钟平均速度(要求记录至少360h)          1 record =70 Bytes
+#define       AverageSpdStart_offset                  3824                         // 车辆每分钟平均速度(要求记录至少360h)          1 record =70 Bytes
 
 // 4. Tired Driving Record
-#define       TiredDrvStart_offset                    3392                          //  疲劳驾驶记录起始偏移
+#define       TiredDrvStart_offset                    3952                          //  疲劳驾驶记录起始偏移
 
 // 5. Exp  Speed  Record
-#define       ExpSpdStart_offset                      3400                          //  超速报警偏移
+#define       ExpSpdStart_offset                      4016                          //  超速报警偏移
 
 // 6. Average Minte position
-#define      AvrgMintPosit_offset                     3408                         // 车辆每小时内每分钟位置记录   1 record =512 Bytes
-
-
-// 7. Average Speed Per Second
-#define      AvrgSpdSec_offset                        3432                         // 车辆每秒钟平均速度记录       1 record =70 Bytes
-
-// 8. Acc  Work  On  Record
-#define       AccWorkOnStart_offset                 3512                          // 打火记录
-
-// 9. Abnormal  Record 
-#define       AbNormalStart_offset                    3420                         // 设备异常Log存储
-
-// 10.  LogIn  Record
-#define      LogIn_offset                             3528                         // 用户登录记录
-
-// 11. PowerCut Record
-#define      PowerCut_offset                          3536                         // 外部电源断开记录
-
-
-// 12. Setting Change Record
-#define     SettingChg_offset                         3544                    // 参数修改记录
+#define      AvrgMintPosit_offset                     4032                         // 车辆每小时内每分钟位置记录   1 record =512 Bytes
 
 
 // 13. GPS MODULE
-#define     DF_GPS_MODULE_offset                         3600                   // GPS 定位模块判断 
+#define     DF_GPS_MODULE_offset                      4040                   // GPS 定位模块判断 
 
 // 14. Picture   Area
                                                      /* 

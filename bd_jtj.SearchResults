@@ -1,5 +1,24 @@
----- MultiTake_Start Matches (4 in 4 files) ----
-App_485.c (bsp\stm32f407vgt6_recdrv\app_712\u4_485):void MultiTake_Start(void)
-App_485.h (bsp\stm32f407vgt6_recdrv\app_712\u4_485):extern  void  MultiTake_Start(void);
-App_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):					 // MultiTake_Start();
-Device_485.c (bsp\stm32f407vgt6_recdrv\app_712\u4_485):					MultiTake_Start();    
+---- JT808Conf_struct.Speed_GetType Matches (23 in 9 files) ----
+App_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):	   rt_kprintf("\r\n GPS速度=%d  , 传感器速度=%d  上报速度: %d  速度脉冲系数:%d  获取速度方式:%d  adjust:%d \r\n",Speed_gps,Speed_cacu,Spd_Using,JT808Conf_struct.Vech_Character_Value,JT808Conf_struct.Speed_GetType,JT808Conf_struct.DF_K_adjustState);   
+App_hmi.c (bsp\stm32f407vgt6_recdrv\app_712\hmi):			   if((ModuleStatus&Status_GPS)||((JT808Conf_struct.DF_K_adjustState==1)&&(JT808Conf_struct.Speed_GetType==1)))
+Menu_0_0_SpdType.c (bsp\stm32f407vgt6_recdrv\app_712\lcd):                JT808Conf_struct.Speed_GetType=0;
+Menu_0_0_SpdType.c (bsp\stm32f407vgt6_recdrv\app_712\lcd):                JT808Conf_struct.Speed_GetType=1;
+Menu_0_5_Colour.c (bsp\stm32f407vgt6_recdrv\app_712\lcd):                // gps速度JT808Conf_struct.Speed_GetType= 0:   传感器速度 JT808Conf_struct.Speed_GetType=1
+Menu_0_5_Colour.c (bsp\stm32f407vgt6_recdrv\app_712\lcd):                spd_type(JT808Conf_struct.Speed_GetType);  
+Menu_1_Idle.c (bsp\stm32f407vgt6_recdrv\app_712\lcd):     if((JT808Conf_struct.Speed_GetType==1)&&(JT808Conf_struct.DF_K_adjustState==1)) //从传感器取速度
+Menu_2_4_CarInfor.c (bsp\stm32f407vgt6_recdrv\app_712\lcd):		if(JT808Conf_struct.Speed_GetType==1)
+Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):			     if(JT808Conf_struct.Speed_GetType==0)
+Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):       if(JT808Conf_struct.Speed_GetType)  // 通过速度传感器 获取速度
+Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):       if(0==JT808Conf_struct.Speed_GetType)  
+Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):        if(JT808Conf_struct.Speed_GetType)  // 通过速度传感器 获取速度
+Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):   if((JT808Conf_struct.DF_K_adjustState)&&(JT808Conf_struct.Speed_GetType)&&(Speed_gps>=400)&&(UDP_dataPacket_flag==0x02 ))
+Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):					 if(JT808Conf_struct.Speed_GetType==1) //选择传感器速度才有该字段
+Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808): if(JT808Conf_struct.Speed_GetType==1) //选择传感器速度才有该字段
+Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):		if(JT808Conf_struct.Speed_GetType==1) //选择传感器速度才有该字段
+Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):		if((UDP_dataPacket_flag==0x02)||((JT808Conf_struct.DF_K_adjustState==1)&&(JT808Conf_struct.Speed_GetType==1)))
+Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):  	  JT808Conf_struct.Speed_GetType=0;
+Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):       JT808Conf_struct.Speed_GetType=1;
+SMS.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):							       sprintf(SMS_Service.SMS_sd_Content+strlen(SMS_Service.SMS_sd_Content),"%d)", JT808Conf_struct.Speed_GetType); 
+Sys_config.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):                JT808Conf_struct.Speed_GetType=0;             //  记录仪获取速度的方式  00  gps取速度  01 表示从传感器去速度 
+Sys_config.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):         rt_kprintf("\r\n		   上报速度获取方式: %d :",JT808Conf_struct.Speed_GetType);	  
+Sys_config.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):         if(JT808Conf_struct.Speed_GetType)							

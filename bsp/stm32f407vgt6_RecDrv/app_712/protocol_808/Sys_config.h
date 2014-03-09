@@ -136,10 +136,10 @@
 #define   Max_SystemCounter            86400// 28800 // 86400   //定时重启时间24小时 一天   
 
 //-----------------------  Max  Add    ---------------------------------
-#define   Max_CycleNum                  16384
+#define   Max_CycleNum                  8192
                                                  /*
-												   每一条记录为31字节，这里取每条记录32个字节，每page 16条记录
-												   1024page=1024x512 Bytes=1024*16=16284Record 
+												   每一条记录为31字节，这里取每条记录128个字节，每page4条记录
+												   2048page=2048x512 Bytes=2048*4=8192Record 
                                                          */
 #define   Max_PicNum                    400
                                                  /*
@@ -154,7 +154,7 @@
                                                  /*
                                                              1page=64Records    2048 page =131072 Records 
                                                          */
-#define  Max_SPDSperMin                  2800
+#define  Max_SPDSperMin                  800
                                                  /*
                                                              1record=70Bytes   1page=29Records  2048 page=59292 Records   
                                                          */

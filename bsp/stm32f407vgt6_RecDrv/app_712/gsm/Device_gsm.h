@@ -45,7 +45,7 @@ typedef enum DialStage {Dial_DialInit0, Dial_DialInit1, Dial_DialInit2, Dial_Dia
 
  //-----------  GSM_RX  buffer size -------------
 #define GSMRX_SIZE		2500
-#define GSM_AsciiTX_SIZE   2500 
+#define GSM_AsciiTX_SIZE   2800 
 
 
 

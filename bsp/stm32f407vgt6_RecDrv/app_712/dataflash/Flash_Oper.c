@@ -8,12 +8,10 @@ u8    ReadCycle_status=RdCycle_Idle;
 u8    ReadCycle_timer=0;   // 超时判断
 
 
-u32     cycle_write=0, cycle_read=0;  // 循环存储记录
+u32     cycle_write=0, cycle_read=0,delta_0704_rd=0;  // 循环存储记录
 u32    AvrgSpdPerMin_write=0,AvrgSpdPerMin_Read=0; // 车辆每分钟平均速度记录
-u32    AvrgSpdPerSec_write=0,AvrgSpdPerSec_Read=0; // 车辆每秒平均速度记录
 u32    AvrgMintPosit_write=0,AvrgMintPosit_Read=0; // 车辆单位小时内每分钟位置记录
 u32    ErrorLog_write=0,ErrorLog_Read=0;           // 设备异常记录
-u32    Recorder_write=0,Recorder_Read=0;           // 事故疑点
 u32    Login_write=0,Login_Read=0;                 // 登录记录
 u32    Powercut_write=0,Powercut_read=0;           // 外部电源断开
 u32    Settingchg_write=0,Settingchg_read=0;       // 参数修改
@@ -28,21 +26,22 @@ u32     DayStartDistance_32=0; //每天起始里程数目
 u8 SaveCycleGPS(u32 cyclewr,u8 *content ,u16 saveLen) 
 {
   /*
-     NOTE : Flash  1 page = 512 Bytes  ; 1 Record = 32 Bytes ;  1page= 16 Records   1Sector=8Page=128Records
+         //old  NOTE : Flash  1 page = 512 Bytes  ; 1 Record = 32 Bytes ;  1page= 16 Records   1Sector=8Page=128Records
+         NOTE : Flash  1 page = 512 Bytes  ; 1 Record = 128 Bytes ;  1page= 4Records   1Sector=8Page=32Records
   */
     u32  pageoffset=0;   //Page 偏移
     u32  InPageoffset;   //页内Record偏移
     u16  InPageAddr=0;   //页内 地址偏移 
 //	u8   reg[1]={0};
-	u8   rd_back[40];
+	u8   rd_back[128];
 	u16  i=0,retry=0;
 
   //----------------------------------------------------------------------------------------------
   //   1. Judge  Whether  needs to Erase page 
   
-     pageoffset=(u32)(cycle_write>>4);                // 计算出 Page 偏移  除以16  
-     InPageoffset=cycle_write-(u32)(pageoffset<<4);   // 计算出 页内偏移地址 
-     InPageAddr=(u16)(InPageoffset<<5);           // 计算出页内 字节   乘以 32 (每个记录32个字节)
+     pageoffset=(u32)(cycle_write>>2);                // 计算出 Page 偏移  除以4 (每个page能放4条记录)
+     InPageoffset=cycle_write-(u32)(pageoffset<<2);   // 计算出 页内偏移地址 
+     InPageAddr=(u16)(InPageoffset<<7);           // 计算出页内 字节   乘以 128 (每个记录128个字节)
      if(((pageoffset%8)==0)&&(InPageoffset==0))  // 判断是否需要擦除Sector  被移除到下一个Sector  1Sector=8Page  
      {
         WatchDog_Feed();
@@ -96,35 +95,37 @@ u8 ReadCycleGPS(u32 cycleread,u8 *content ,u16 ReadLen)
     u32  pageoffset=0;   //Page 偏移
     u32  InPageoffset;   //页内Record偏移
     u16  InPageAddr=0;   //页内 地址偏移 
-	u8  i=0,FCS=0;;
+	u8  i=0,FCS=0;
+	u8  Len_read=0;  // 信息长度
 
   /*
-      上报的每一包数据位31个字节， 每条记录为32个字节，用每条记录的最后一个字节来作为是否上报过的标志位。没有上报该标志为0xFF
-      上报过后该标志为被写为0x01
+      上报的每一包数第一个字节是有效信息的长度，从第二个字节是信息内容，
+      信息内容的后边是一个字节额校验(校验从长度开始到内容最后一个字节)
   */
   //----------------------------------------------------------------------------------------------
   //   1. caculate address 
-     pageoffset=(u32)(cycle_read>>4);                // 计算出 Page 偏移  除以16 
-     InPageoffset=cycle_read-(u32)(pageoffset<<4);   // 计算出 页内偏移地址 
-     InPageAddr=(u16)(InPageoffset<<5);            // 计算出页内 字节   乘以 32 (每个记录32个字节)
+     pageoffset=(u32)(cycle_read>>2);                 // 计算出 Page 偏移  除以4 (每个page能放4条记录)
+     InPageoffset=cycle_read-(u32)(pageoffset<<2);   // 计算出 页内偏移地址 
+     InPageAddr=(u16)(InPageoffset<<7);            // 计算出页内 字节   乘以 128 (每个记录128个字节)
   //   2. Write Record Content 
      DF_ReadFlash(pageoffset+CycleStart_offset,InPageAddr,content,ReadLen); 
      DF_delay_us(20);
+	 //  获取信息长度
+	 Len_read=content[0];
+	 
   if(DispContent==2)
   {
-     rt_kprintf("\r\n  读取CycleGPS 内容为 :\r\n ");   
-	  for(i=0;i<ReadLen;i++)
-	  	rt_kprintf("%2X ",content[i]);  
-	 rt_kprintf("\r\n"); 
+   	 OutPrint_HEX("读取CycleGPS 内容为 ",content,Len_read+1);
   }	 
   //  3. Judge FCS	
-	//--------------- 过滤已经发送过的信息 -------
+	//--------------- 过滤已经发送过的信息 ------- 
 	  FCS = 0;
-	   for ( i = 0; i < ReadLen-1; i++ )   //计算读取信息的异或和
+	   for ( i = 0; i < Len_read; i++ )   //计算读取信息的异或和
 	   {
 			   FCS ^= *( content + i );  
-	   }			  
-	  if(((content[ReadLen-1]!=FCS)&&(content[0]!=0xFF))||(content[0]==0xFF))  // 判断异或和   
+	   } 
+	   //rt_kprintf("\r\n  FCS=%d \r\n",FCS); 
+	  if(((content[Len_read]!=FCS)&&(content[0]!=0xFF))||(content[0]==0xFF))  // 判断异或和   
 	    { 	      
 		  if(content[0]==0xFF)
 		  {
@@ -150,107 +151,6 @@ u8 ReadCycleGPS(u32 cycleread,u8 *content ,u16 ReadLen)
 } 
 
 //-----------------------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------------------------------------
-u8 Save_DrvRecoder(u32 In_write,u8 *content ,u16 saveLen) 
-{
-	/*
-	   NOTE : Flash  1 page = 512 Bytes  ; 1 Record = 32 Bytes ;  1page= 16 Records   1Sector=8Page=128Records
-	*/
-    u32  pageoffset=0;   //Page 偏移
-    u32  InPageoffset;   //页内Record偏移 
-    u16  InPageAddr=0;   //页内 地址偏移 
-	u8   reg[1]={0};
-  //----------------------------------------------------------------------------------------------
-  //   1. Judge  Whether  needs to Erase page 
-  
-     pageoffset=(u32)(In_write>>1);                // 计算出 Page 偏移  除以2  
-     InPageoffset=In_write-(u32)(pageoffset<<1);   // 计算出 页内偏移地址 
-     InPageAddr=(u16)(InPageoffset<<8);           // 计算出页内 字节   乘以 256 (每个记录256个字节)  206(content)+1(FCS)
-     if(((pageoffset%8)==0)&&(InPageoffset==0))  // 判断是否需要擦除Block  被移除到下一个Sector  1Sector=8 Page  
-     {
-        SST25V_SectorErase_4KByte((pageoffset+VehicleRecStart_offset)*PageSIZE);      // erase Sector	
-        DF_delay_ms(70);
-		// rt_kprintf("\r\n Erase Cycle Block : %d\r\n",(pageoffset>>6));   
-	 }
-  //	   2. Filter write  area    
-        DF_ReadFlash(pageoffset+VehicleRecStart_offset,InPageAddr,reg,1); 
-	   if(reg[0]!=0xff)  // 如果要写入的区域 dirty  ，则地址跳到下一个
-	   	{
-          In_write++;
-		  Recorder_write++;		  
-		  if(Recorder_write>=Max_RecoderNum)  
-			   Recorder_write=0;  
-		 // rt_kprintf("\r\n    *******   行车记录仪写区域 Write area : %d   is   Dirity!  \r\n",In_write);  
-		  return false;
-	   	}       
-  //   3. Write Record Content 
-     DF_WriteFlashDirect(pageoffset+VehicleRecStart_offset,InPageAddr,content,saveLen);  //   写入信息
-     DF_delay_ms(8); 
-	// rt_kprintf("\r\n DrvRec Starpageoffset=%d  PageOffset= %d ,  InPageAddr= %d \r\n",VehicleRecStart_offset,pageoffset,InPageoffset); 
-		return true; 
-  //-------------------------------------------------------------------------------------------- 
-}
-
-u8 Read_DrvRecoder(u32 In_read,u8 *content ,u16 ReadLen)
-{
-	/*
-	   NOTE : Flash  1 page = 512 Bytes  ; 1 Record = 32 Bytes ;  1page= 16 Records   1Sector=8Page=128Records
-	*/
-    u32  pageoffset=0;   //Page 偏移
-    u32  InPageoffset;   //页内Record偏移
-    u16  InPageAddr=0;   //页内 地址偏移 
-	u8   FCS=0;
-	u16  i=0;    
-
-  /*
-      上报的每一包数据位31个字节， 每条记录为32个字节，用每条记录的最后一个字节来作为是否上报过的标志位。没有上报该标志为0xFF
-      上报过后该标志为被写为0x01
-  */
-  //----------------------------------------------------------------------------------------------
-  //   1. caculate address 
-  pageoffset=(u32)(In_read>>1);				// 计算出 Page 偏移  除以2	
-  InPageoffset=In_read-(u32)(pageoffset<<1);	// 计算出 页内偏移地址 
-  InPageAddr=(u16)(InPageoffset<<8);		   // 计算出页内 字节	乘以 256 (每个记录256个字节)  238(content)+1(FCS)
-  //   2. Write Record Content 
-     DF_ReadFlash(pageoffset+VehicleRecStart_offset,InPageAddr,content,ReadLen); 
-    DF_delay_us(10);
-	// rt_kprintf("\r\n  ReadRecoder Starpageoffset=%d  PageOffset= %d ,  InPageAddr= %d  \r\n",VehicleRecStart_offset,pageoffset,InPageoffset); 
-    // rt_kprintf("\r\n  读取  Records 内容为 :\r\n"); 
-	// for(i=0;i<ReadLen;i++)
-	//  	rt_kprintf("%2X ",content[i]);   
-	// rt_kprintf("\r\n");             
-     
-  //  3.  Judge FCS	
-	//--------------- 过滤已经发送过的信息 -------
-	  FCS = 0;
-	   for ( i = 0; i < ReadLen-1; i++ )   //计算读取信息的异或和
-	   {
-			   FCS ^= *( content + i );  
-	   }			  
-	   if(((content[ReadLen-1]!=FCS)&&(content[0]!=0xFF))||(content[0]==0xFF))	// 判断异或和 
-	    { 	      
-		  if(content[0]==0xFF)
-		  {
-			 Recorder_Read=Recorder_write;//如果是内容是0xFF ，读指针和写指针相等，不再触发上报。			
-			 return false;
-		  }
-          Recorder_Read++;	
-		  if(Recorder_Read>=Max_RecoderNum) 
-		  	Recorder_Read=0; 
-		//  rt_kprintf("\r\n   *******  DrvRecoder 该条记录内容不对 *******  \r\n"); 
-		  return false;
-     	} 
-	   	if(content[0]==0xFF)
-	   	{
-           Recorder_Read=Recorder_write;//如果是内容是0xFF ，读指针和写指针相等，不再触发上报。           
-		   return false;
-	   	}
-	//--------------------------------------------------------------  	
-		 return true; 
-  //-------------------------------------------------------------------------------------------- 
-}
-
-
 u8  Common_WriteContent(u32 In_write,u8 *content ,u16 saveLen, u8 Type) 
 {
   //-----------------------------------------------------
@@ -275,18 +175,6 @@ u8  Common_WriteContent(u32 In_write,u8 *content ,u16 saveLen, u8 Type)
 		case TYPE_ExpSpdAdd:
 							 Start_offset=ExpSpdStart_offset;
 							// memcpy(regStr,"超速报警",25);
-							 break; 					 
-		case TYPE_ErrorLogAdd:
-							 Start_offset=AbNormalStart_offset;
-							 //memcpy(regStr,"异常LOG",25); 
-							 break; 
-		case TYPE_LogInAdd:
-							 Start_offset=LogIn_offset; 
-							// memcpy(regStr,"登录记录",25);   
-							 break; 
-		case TYPE_SettingChgAdd:
-							 Start_offset=SettingChg_offset;    
-							 //memcpy(regStr,"参数修改",25);       
 							 break; 					 
 		default :
 							 return false;		  					 
@@ -374,19 +262,6 @@ u8  Common_ReadContent(u32 In_read,u8 *content ,u16 ReadLen, u8 Type)
 							  Start_offset=ExpSpdStart_offset;
 							//  memcpy(regStr,"超速报警",25);
 							  break;					  
-		 case TYPE_ErrorLogAdd:
-							  Start_offset=AbNormalStart_offset;
-							//  memcpy(regStr,"异常LOG",25); 
-							  break; 
-		  case TYPE_LogInAdd:
-							   Start_offset=LogIn_offset; 
-							//   memcpy(regStr,"登录记录",25);   
-							   break; 
-		  case TYPE_SettingChgAdd:
-							   Start_offset=SettingChg_offset;	  
-							 //  memcpy(regStr,"参数修改",25);	   
-							   break;					   
-		 					  
 		 default :
 							  return false; 						  
 	 } 
@@ -450,7 +325,7 @@ u8  Common_ReadContent(u32 In_read,u8 *content ,u16 ReadLen, u8 Type)
 						return false; 
 			   }
 				In_read++; 
-				if(In_read>=Max_CycleNum)
+				if(In_read>=Max_CommonNum)
 				  In_read=0;
 				rt_kprintf("\r\n   *******	该条记录内容不对 *******  \r\n");  
 				return false;
@@ -624,114 +499,6 @@ u8 Read_PerMinContent(u32 In_read,u8 *content ,u16 ReadLen)
     return true; 
     //-------------------------------------------------------------------------------------------- 
 }
-
-u8 Save_PerSecContent(u32 In_wr,u8 *content ,u16 saveLen)
-{
-	/*
-	   NOTE : Flash  1 page = 512 Bytes  ; 1 Record = 32 Bytes ;  1page= 16 Records   1Sector=8Page=128Records
-	*/
-    u32  pageoffset=0;   //Page 偏移
-    u32  InPageoffset;   //页内Record偏移
-    u16  InPageAddr=0;   //页内 地址偏移 
-	u8   reg[1]={0};
-  //----------------------------------------------------------------------------------------------
-  //   1. Judge  Whether  needs to Erase page 
-  
-     pageoffset=(u32)(In_wr/7);                // 计算出 Page 偏移  除以7 
-     InPageoffset=In_wr-(u32)(pageoffset*7);   // 计算出 页内偏移地址 
-     InPageAddr=(u16)(InPageoffset*70);           // 计算出页内 字节   乘以 70 (每个记录70个字节)    
-     if(((pageoffset%8)==0)&&(InPageoffset==0))  // 判断是否需要擦除Block  被移除到下一个Block  1Block=8Page  
-     {
-	  SST25V_SectorErase_4KByte((pageoffset+AvrgSpdSec_offset)*PageSIZE);	  // erase Sector 
-	  mDelaymS(50);   
-	  // rt_kprintf("\r\n Erase Cycle Block : %d\r\n",(pageoffset>>6));   
-	 }
-  //	   2. Filter write  area    
-      DF_ReadFlash(pageoffset+AvrgSpdSec_offset,InPageAddr,reg,1);
-      DF_delay_us(10);
-	   if(reg[0]!=0xff)  // 如果要写入的区域 dirty  ，则地址增然后从新开始寻找知道找到为止
-	   	{
-	   	  In_wr++; 
-		  AvrgSpdPerSec_write++;		  
-		  if(AvrgSpdPerSec_write>=Max_SPDerSec) 
-			   AvrgSpdPerSec_write=0;   
-//		  rt_kprintf("\r\n    *******  每秒钟速度 写区域 Write area : %d  In_wr=%d  is   Dirity!  \r\n",AvrgSpdPerSec_write,In_wr);  
-          //--------------------------
-		  	 return false;
-	   	}       
-  //   3. Write Record Content 
-     DF_WriteFlashDirect(pageoffset+AvrgSpdSec_offset,InPageAddr,content,saveLen);  //   写入信息
-     DF_delay_ms(10);
-	// rt_kprintf("\r\n Write PerMit Starpageoffset=%d  PageOffset= %d ,  InPageAddr= %d \r\n",AverageSpdStart_offset,pageoffset,InPageoffset); 
-     return true; 
-  //-------------------------------------------------------------------------------------------- 
-}
-
-
-u8 Read_PerSecContent(u32 In_read,u8 *content ,u16 ReadLen)   
-{
-	/*
-	   NOTE : Flash  1 page = 512 Bytes  ; 1 Record = 32 Bytes ;  1page= 16 Records   1Sector=8Page=128Records
-	*/
-    u32  pageoffset=0;   //Page 偏移
-    u32  InPageoffset;   //页内Record偏移
-    u16  InPageAddr=0;   //页内 地址偏移 
-	u8   FCS=0;
-	u16  i=0;   
-
-  /* 
-      上报的每一包数据位31个字节， 每条记录为32个字节，用每条记录的最后一个字节来作为是否上报过的标志位。没有上报该标志为0xFF
-      上报过后该标志为被写为0x01     
-   */
-  //----------------------------------------------------------------------------------------------
-  //   1. caculate address 
-  pageoffset=(u32)(In_read/7);				 // 计算出 Page 偏移  除以7  
-  InPageoffset=In_read-(u32)(pageoffset*7);	 // 计算出 页内偏移地址 
-  InPageAddr=(u16)(InPageoffset*70);		   // 计算出页内 字节	乘以 70 (每个记录70个字节)	  
-  //   2. Write Record Content 
- 
-  DF_ReadFlash(pageoffset+AvrgSpdSec_offset,InPageAddr,content,ReadLen);	  
-  DF_delay_us(10);
-	// rt_kprintf("\r\n   Read PerMintSPD  Starpageoffset=%d  PageOffset= %d ,  InPageAddr= %d   每分钟平均速度 \r\n",AverageSpdStart_offset,pageoffset,InPageoffset);  
-	if(DispContent==2)  
-		{
-			  rt_kprintf("\r\n  读取每秒PerSecSPD 内容为 :\r\n");    
-			  for(i=0;i<ReadLen;i++) 
-				  	rt_kprintf("%2X ",content[i]);          
-			  rt_kprintf("\r\n");    
-		}
-  //  3. Judge FCS	
-	//--------------- 过滤已经发送过的信息 -------
-	  FCS = 0;
-	   for ( i = 0; i < ReadLen-1; i++ )   //计算读取信息的异或和 
-	   {
-			   FCS ^= *(content + i );  
-	   }			  
-	   if(((content[ReadLen-1]!=FCS)&&(content[0]!=0xFF))||(content[0]==0xFF))	// 判断异或和 
-	    { 	    
-		    if(content[0]==0xFF)
-	 		{             
-	 		       rt_kprintf("\r\n  读取内容为0xFF \r\n"); 	 		    
-				   AvrgSpdPerSec_Read=AvrgSpdPerSec_write;//如果是内容是0xFF ，读指针和写指针相等，不再触发上报。   		  
-	               return false;     
-			}     
-          AvrgSpdPerSec_Read++;	 
-		  if(AvrgSpdPerSec_Read>=Max_SPDerSec)      
-		  	AvrgSpdPerSec_Read=0;  
-		  //rt_kprintf("\r\n   ******* PerMit  该条记录内容不对 *******  \r\n");    
-		  return false; 
-     	}  
-	    if(content[0]==0xFF)
- 		{             
- 		       rt_kprintf("\r\n  读取内容为0xFF \r\n"); 	 		    
-			   AvrgSpdPerSec_Read=AvrgSpdPerSec_write;//如果是内容是0xFF ，读指针和写指针相等，不再触发上报。			  
-               return false;      
-		}     
-	//----------------------------------------------------------------------------------------------------- 	
-		return true; 
-    //----------------------------------------------------------------------------------------------------- 
-}
-
 u8 Save_MintPosition(u32 In_write,u8 *content ,u16 saveLen)
 {    // 记录单位小时内每分钟的位置信息
 	/*
@@ -766,7 +533,6 @@ u8 Save_MintPosition(u32 In_write,u8 *content ,u16 saveLen)
   //   3. Write Record Content 
        DF_WriteFlashDirect(pageoffset+AvrgMintPosit_offset,0,content,saveLen);  //   写入信息
        DF_delay_ms(10);
-	// rt_kprintf("\r\n DrvRec Starpageoffset=%d  PageOffset= %d ,  InPageAddr= %d \r\n",VehicleRecStart_offset,pageoffset,InPageoffset); 
      return true; 
   //-------------------------------------------------------------------------------------------- 
 }
@@ -792,7 +558,6 @@ u8 Read_MintPosition(u32 In_read,u8 *content ,u16 ReadLen)
   //   2. Write Record Content 
     DF_ReadFlash(pageoffset+AvrgMintPosit_offset,0,content,ReadLen);	  
     DF_delay_us(10);
-	// rt_kprintf("\r\n  ReadRecoder Starpageoffset=%d  PageOffset= %d  \r\n",VehicleRecStart_offset,pageoffset);   
     // rt_kprintf("\r\n  单位小时每分钟位置读取  Position 内容为 :\r\n");   
 	//  for(i=0;i<ReadLen;i++)
 	//	rt_kprintf("%2X ",content[i]);   

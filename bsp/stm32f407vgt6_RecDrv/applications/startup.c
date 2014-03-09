@@ -97,7 +97,7 @@ void rtthread_startup(void)
  
 	 
     #endif 	 
-   rt_kprintf("\n\r   河北天地通 北斗车载终端 GGHYPT  TW703-BD--13-11-25   Version 1.2 双Module兼容版本  默认 up.gps960.com  Spd Sensor df_drive \r\n ");        
+   rt_kprintf("\n\r   河北天地通 北斗车载终端 GGHYPT  TW703-BD--14-3-9   Version 1.2 双Module兼容版本  默认 up.gps960.com  Spd Sensor df_drive cutFlux \r\n ");        
 	/* show version */
 	rt_show_version(); 
 

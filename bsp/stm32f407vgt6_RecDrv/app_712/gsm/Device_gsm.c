@@ -1887,7 +1887,7 @@ static void GSM_Process(u8 *instr, u16 len)
 	{
 	      connect=true;
 	}
-	if(strncmp((char*)GSM_rx,"ERROR: 13",9)==0)//ERROR:13
+	if((strncmp((char*)GSM_rx,"ERROR: 13",9)==0)||(strncmp((char*)GSM_rx,"ERROR:13",8)==0)||(strncmp((char*)GSM_rx,"ERROR:35",8)==0))//ERROR:13
 	{
 	      Online_error_counter++;
 		  if(Online_error_counter>3)	 

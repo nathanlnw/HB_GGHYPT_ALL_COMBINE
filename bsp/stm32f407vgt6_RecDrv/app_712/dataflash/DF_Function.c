@@ -87,9 +87,6 @@ u8  DF_Write_RecordAdd(u32 Wr_Address,u32 Rd_Address, u8 Type)
 		case TYPE_VechRecordAdd:
 							 Add_offset=DF_RecordAdd_Page;	
 							 break;
-		case TYPE_DoubtAdd:
-                             Add_offset=DF_DoubtAdd_Page; 
-							 break;
 		case TYPE_AvrgSpdSecAdd:
                              Add_offset=DF_AvrgSpdSec_Page;
 			                 break;
@@ -191,9 +188,6 @@ u8  DF_Read_RecordAdd(u32 Wr_Address,u32 Rd_Address, u8 Type)
        case TYPE_VechRecordAdd:
 	   	                    Add_offset=DF_RecordAdd_Page;  
 	                        break;
-	   case TYPE_DoubtAdd:
-							Add_offset=DF_DoubtAdd_Page; 
-							break;	
 		case TYPE_AvrgSpdSecAdd:
                              Add_offset=DF_AvrgSpdSec_Page;
 			                 break;
@@ -281,15 +275,7 @@ u8  DF_Read_RecordAdd(u32 Wr_Address,u32 Rd_Address, u8 Type)
 	   	                    ErrorLog_write=Reg_wrAdd;
 							ErrorLog_Read=Reg_rdAdd;
 	                        break;
-       case TYPE_VechRecordAdd:
-	   	                    Recorder_write=Reg_wrAdd;
-							Recorder_Read=Reg_rdAdd;           
-	                        break;
-	 	case TYPE_AvrgSpdSecAdd:
-			                 AvrgSpdPerSec_write=Reg_wrAdd;
-	 						 AvrgSpdPerSec_Read=Reg_rdAdd;
-	 						 break;
-	 	case TYPE_LogInAdd:
+   	 	 	case TYPE_LogInAdd:
 			                 Login_write=Reg_wrAdd;
 	 						 Login_Read=Reg_rdAdd;
 	 						 break;
