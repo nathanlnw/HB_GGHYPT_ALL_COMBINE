@@ -222,8 +222,8 @@ static struct clk *at91_css_to_clk(unsigned long css)
 	return RT_NULL;
 }
 
-#define false 0
-#define true  1
+#define false     0
+#define true      1
 int at91_clock_init(rt_uint32_t main_clock)
 {
 	unsigned tmp, freq, mckr;

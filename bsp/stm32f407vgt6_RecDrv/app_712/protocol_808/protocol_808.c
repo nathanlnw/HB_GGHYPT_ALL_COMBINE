@@ -402,7 +402,6 @@ unsigned short int Last_crc=0,crc_fcs=0;
 
 
 //---------  中心应答  -----------
-u8		 fCentre_ACK=0; 			  // ---------判断中心应答标志位－－
 u8		 ACK_timer=0;				   //---------	ACK timer 定时器--------------------- 
 u8           Send_Rdy4ok=0;
 unsigned char	Rstart_time = 0; 
@@ -453,6 +452,7 @@ void delay_ms(u16 j )
 {  	
   //unsigned short int crc_file=0;  
   u8  packet_type = 0;
+  u8  Batch_Value=0;  // 批量上传判断
   
 // 	  u8 i=0;
             if(DEV_Login.Operate_enable==1)   // !=2   
@@ -747,21 +747,25 @@ void delay_ms(u16 j )
                                                           正在接收大数据量得下载数据包,导致GSM模块处理不过来，而不是单片机处理不过来,拍照过程中不能进行*/
 
                   //  1. 判断是否是批量数据上传
-                  
-                  if( Stuff_BatchDataTrans_BD_0704H()==false) 
+                   Batch_Value=Stuff_BatchDataTrans_BD_0704H();
+                  switch(Batch_Value) 
                   	{
-		                  // 正常上报 
+                  	  case  0:  // 正常上报 
 						  if (false==Stuff_Normal_Data_0200H())        
 						 	return false;
-                  	}
-				  
-				  fCentre_ACK=1;// 判断应答
-				 //-------- change status  Ready  ACK  ------ 
-			         ReadCycle_status=RdCycle_SdOver;
-				  Send_Rdy4ok=1;  // enable
-				  //----应答次数 ----		  
-				 // if(DispContent)	
-					//  rt_kprintf("\r\n 发送 GPS --saved  OK!\r\n");    
+						  
+                      case  1: //  发送批量数据					  
+							 //-------- change status  Ready  ACK  ------ 
+						      ReadCycle_status=RdCycle_SdOver;
+							  Send_Rdy4ok=1;  // enable
+							  //----应答次数 ----		  
+							 // if(DispContent)	
+								//  rt_kprintf("\r\n 发送 GPS --saved  OK!\r\n");    
+						      break;
+				      default:  //nothing except   waiting                
+						     break;
+					      
+				  	}
 				 return true; 
              }			 
  			//-------------------------------------------------------------
@@ -1423,23 +1427,15 @@ void  GPS_Delta_DurPro(void)    //告GPS 触发上报处理函数
 			  StatusReg_GPS_V();
 		 }	
 		
-		if((SleepState==1)&&(delta_time_seconds==(Current_SD_Duration-5)))  //  --  休眠时 先发鉴权
+		if((SleepState==1)&&(delta_time_seconds==(Current_SD_Duration-5)&&(Current_SD_Duration>5)))  //  --  休眠时 先发鉴权
 		   {
 			  SleepConfigFlag=1;  //发送前5 发送一包鉴权
 		   }            
 		
 		if((delta_time_seconds >= Current_SD_Duration))//limitSend_idle
 		  {			  
-			 if(Current_SD_Duration<=CURREN_LIM_Dur)   // 若发送间隔小于 10  则上报即时信息 
-			  {     
-			        Current_State=1;   //   使能发送标志位
-				     PositionSD_Enable();
-                     Current_UDP_sd=1;   // 使能发送操作执行
-			  }
-			 else
-			 	 Current_State=0; 
 
-			 
+			 Current_State=0;			 
 			 if (BD_ISP.ISP_running==0)
 			    PositionSD_Enable();  
 			 
@@ -5809,26 +5805,53 @@ u8  Stuff_BatchDataTrans_BD_0704H(void)
 	u8   rd_infolen=0;
    
     //0 .  congifrm   batch  num
-        if(cycle_read<cycle_write)
-        {
-            delta_0704_rd=cycle_write-cycle_read;
-			// 判断偏差记录条数是否大于最大记录数
-            if(delta_0704_rd>=Max_PKGRecNum_0704)
-				 delta_0704_rd=Max_PKGRecNum_0704;   
-
-        }
+      // 0.1  获取存储大小      
+		if(cycle_read<cycle_write)
+		{
+			delta_0704_rd=cycle_write-cycle_read;
+		}
 		else   // write 小于 read
 		{
-		    delta_0704_rd=Max_CycleNum-cycle_read; 
+			delta_0704_rd=Max_CycleNum-cycle_read; 
 		}
-
-	    //  判断是不是相差为 1, 如果为 1为实时上报	    
-	       if(delta_0704_rd==1)
+		  
+      // 0.2  根据发送间隔判断每包大小
+      if (Current_SD_Duration>=30)  //  大于30  启动每包上报
+      	{
+            if(delta_0704_rd==1)
 	       	{
                 delta_0704_rd=0;
-                return  false;
+                return  false;  //  要上报正常数据
 	       	}
-		     rt_kprintf("\r\n	 delat_0704=%d\r\n",delta_0704_rd); 
+        }
+	  else	      
+      if(Current_SD_Duration>=15)	//  15 秒以上没3条上一次   
+       {
+            if(delta_0704_rd<3)
+				  return  nothing;   // 小于3  不执行任何操作直接返回
+
+	   }
+	  else
+	   if(Current_SD_Duration>=5)	//  15 秒以上没3条上一次   
+       {
+            if(delta_0704_rd<5)
+				  return  nothing;   // 小于5  不执行任何操作直接返回
+
+	   }
+	   else
+      if(Current_SD_Duration>=0)	// 2 秒以上没3条上一次   
+       {
+            if(delta_0704_rd<10)
+				  return  nothing;   // 小于5  不执行任何操作直接返回
+
+	   } 
+	  //------------------------------------------------
+		// 判断偏差记录条数是否大于最大记录数
+		if(delta_0704_rd>=Max_PKGRecNum_0704)
+			 delta_0704_rd=Max_PKGRecNum_0704;	 
+		
+
+	     rt_kprintf("\r\n	 delat_0704=%d\r\n",delta_0704_rd);  
    // 1. Head
 	if(!Protocol_Head(MSG_0x0704,Packet_Normal)) 
  	     return false; 
@@ -5839,7 +5862,7 @@ u8  Stuff_BatchDataTrans_BD_0704H(void)
 	 Original_info[Original_info_Wr++]	 = delta_0704_rd;
 	 
 	 //  2.2	数据类型	 1	盲区补报	0:	 正常位置批量汇报
-	 Original_info[Original_info_Wr++] = 1;
+	 Original_info[Original_info_Wr++] = 0;  // 这里改成批量上传
 
      //  2.3  数据项目
      

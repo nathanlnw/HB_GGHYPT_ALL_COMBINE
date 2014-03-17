@@ -551,10 +551,7 @@ static void App808_thread_entry(void* parameter)
        // 5. ---------------  顺序存储 GPS  -------------------		    
 		if(GPS_getfirst)	 //------必须搜索到经纬度
 		{
-			    if(Current_SD_Duration>CURREN_LIM_Dur)// 间隔大于10s 存储顺序上报， 小于10 不存储上报 
-			    {                                                 //  拍照中暂不操作flash
-					   Save_GPS();       
-			    } 
+		     Save_GPS();       
 		} 		 	   
 	   // 6.   ACC 状态检测
              ACC_status_Check();
