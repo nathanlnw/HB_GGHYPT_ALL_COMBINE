@@ -26,7 +26,7 @@
 
 
 //---------------------------
-#define  Max_PKGRecNum_0704     17   // 0704 单包最大记录数目   58 *16 =986  单包不超过1024  
+#define  Max_PKGRecNum_0704     15   // 0704 单包最大记录数目   58 *16 =986  单包不超过1024  
 
 //------------  GPS function------
 #define  INIT         1
@@ -1182,6 +1182,7 @@ extern u8	 SleepCounter;
 
 extern u16   DebugSpd;	//调试用GPS速度      
 extern u8	 MMedia2_Flag;
+extern u8		 ACK_timer;				   //---------	ACK timer 定时器--------------------- 
 extern u8     Send_Rdy4ok;
 
 //-------------    不同北斗模块设置  ----

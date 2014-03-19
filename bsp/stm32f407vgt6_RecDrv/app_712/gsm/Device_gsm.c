@@ -1627,12 +1627,7 @@ static void GSM_Process(u8 *instr, u16 len)
 #endif
 	if(strncmp((char*)GSM_rx, "%IPSENDX:1",10)==0)	 // 链路 1  TCP 发送OK  
 	{												   //exam:	%IPSENDX:1,15 
-                //Api_cycle_Update();  //  数据发送 ，更新写指针	   
-             if(Send_Rdy4ok==1)
-		   	{
-		   	    Api_cycle_Update();
-			    Send_Rdy4ok=0;	   
-		   	}
+                //Api_cycle_Update();  //  数据发送 ，更新写指针           
 		  WatchDog_Feed();             		
 	} 
 	else

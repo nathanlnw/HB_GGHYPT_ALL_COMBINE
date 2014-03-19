@@ -30,9 +30,8 @@
 
 //--------   顺序读取发送相关  ------------
 extern u8       ReadCycle_status;   
-extern u8       ReadCycle_timer;   // 超时判断
 
-extern u32     cycle_write, cycle_read,delta_0704_rd;  // 循环存储记录  delta 用于批量数据上传
+extern u32     cycle_write, cycle_read,delta_0704_rd,mangQu_read_reg;  // 循环存储记录  delta 用于批量数据上传
 extern u32    AvrgSpdPerMin_write,AvrgSpdPerMin_Read; // 车辆每分钟平均速度记录
 extern u32    AvrgMintPosit_write,AvrgMintPosit_Read; // 车辆单位小时内每分钟位置记录 
 extern u32    ErrorLog_write,ErrorLog_Read;           // 设备异常记录

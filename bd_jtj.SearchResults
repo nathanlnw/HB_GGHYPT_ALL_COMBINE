@@ -1,16 +1,7 @@
----- JT808Conf_struct.DURATION.Heart_Dur Matches (15 in 2 files) ----
-Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):			Original_info[Original_info_Wr++]=(JT808Conf_struct.DURATION.Heart_Dur>>24);   // 参数值 
-Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):			Original_info[Original_info_Wr++]=(JT808Conf_struct.DURATION.Heart_Dur>>16);
-Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):			Original_info[Original_info_Wr++]=(JT808Conf_struct.DURATION.Heart_Dur>>8);
-Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):			Original_info[Original_info_Wr++]=(JT808Conf_struct.DURATION.Heart_Dur);	 
-Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):		Original_info[Original_info_Wr++]=(JT808Conf_struct.DURATION.Heart_Dur>>24);   // 参数值 
-Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):		Original_info[Original_info_Wr++]=(JT808Conf_struct.DURATION.Heart_Dur>>16);
-Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):		Original_info[Original_info_Wr++]=(JT808Conf_struct.DURATION.Heart_Dur>>8);
-Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):		Original_info[Original_info_Wr++]=(JT808Conf_struct.DURATION.Heart_Dur);     
-Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):					JT808Conf_struct.DURATION.Heart_Dur=(Content[0]<<24)+(Content[1]<<16)+(Content[2]<<8) +Content[3];
-Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):                                   rt_kprintf("\r\n 心跳包间隔: %d s\r\n",JT808Conf_struct.DURATION.Heart_Dur);
-Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):				   //JT808Conf_struct.DURATION.Heart_Dur=320; 
-Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):   JT808Conf_struct.DURATION.Heart_Dur=300;  
-Sys_config.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):    JT808Conf_struct.DURATION.Heart_Dur=60;       // 心跳包发送间隔 
-Sys_config.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):    if(JT808Conf_struct.DURATION.Heart_SDCnter>JT808Conf_struct.DURATION.Heart_Dur)  //超过心跳包设置的间隔
-Sys_config.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):         rt_kprintf("\r\n\r\n        心跳包发送间隔 =	%d s   TCP应答超时Dur = %d s	 TCP重传次数=%d 	驾驶员未登录时上报间隔= %d s\r\n",JT808Conf_struct.DURATION.Heart_Dur,JT808Conf_struct.DURATION.TCP_ACK_Dur,JT808Conf_struct.DURATION.TCP_ReSD_Num,JT808Conf_struct.DURATION.NoDrvLogin_Dur); 
+---- Send_Rdy4ok Matches (6 in 3 files) ----
+App_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):		              if((Send_Rdy4ok==2)&&( ReadCycle_status==RdCycle_SdOver))
+Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):u8           Send_Rdy4ok=0;
+Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):							  Send_Rdy4ok=2;  // enable
+Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):											if(Send_Rdy4ok==2)
+Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):													  Send_Rdy4ok=0;	  
+Protocol_808.h (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):extern u8     Send_Rdy4ok;

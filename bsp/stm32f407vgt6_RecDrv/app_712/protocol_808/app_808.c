@@ -397,16 +397,7 @@ static void timeout_app(void *  parameter)
                    //  system timer
                    App808_tick_counter(); 
 
-                  //---------------------------------- 
-           if( ReadCycle_status==RdCycle_SdOver)
-		   {	   
-			        ReadCycle_timer++;	   
-				 if(ReadCycle_timer>5)  //5s No resulat
-				 {
-				      ReadCycle_timer=0; 
-			             Api_cycle_Update();	   
-				 }		
-           }	
+
 		   //--------  多媒体时间信息上传 后处理(不判应答)-----
            //--------------  多媒体上传相关   天地通有时不给多媒体信息上传应答  --------------                                       
 	       if(MediaObj.Media_transmittingFlag==1)  // clear		 							      

@@ -945,15 +945,7 @@ else
 					     cycle_read++;	 //  收到应答才递增
 					 if(cycle_read>=Max_CycleNum)
 							cycle_read=0;
-					 ReadCycle_status=RdCycle_Idle; 
-
-					 if(delta_0704_rd)
-					 	{  delta_0704_rd=0;  // clear 
-					       rt_kprintf("\r\n 发送 GPS --0704  OK!\r\n");  
-					 	}
-					 else
-					      rt_kprintf("\r\n 发送 GPS --saved  OK!\r\n");    
-					   ReadCycle_timer=0; 
+					 ReadCycle_status=RdCycle_Idle; 			
 				 }	
 				 return 1;
       }

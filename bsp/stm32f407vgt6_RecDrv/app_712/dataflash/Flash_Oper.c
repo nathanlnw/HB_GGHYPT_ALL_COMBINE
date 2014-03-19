@@ -5,10 +5,9 @@
 
 //--------   顺序读取发送相关  ------------
 u8    ReadCycle_status=RdCycle_Idle;  
-u8    ReadCycle_timer=0;   // 超时判断
 
 
-u32     cycle_write=0, cycle_read=0,delta_0704_rd=0;  // 循环存储记录
+u32     cycle_write=0, cycle_read=0,delta_0704_rd=0,mangQu_read_reg=0;  // 循环存储记录
 u32    AvrgSpdPerMin_write=0,AvrgSpdPerMin_Read=0; // 车辆每分钟平均速度记录
 u32    AvrgMintPosit_write=0,AvrgMintPosit_Read=0; // 车辆单位小时内每分钟位置记录
 u32    ErrorLog_write=0,ErrorLog_Read=0;           // 设备异常记录

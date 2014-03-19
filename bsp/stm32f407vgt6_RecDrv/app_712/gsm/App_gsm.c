@@ -176,6 +176,24 @@ u8   Stop_Communicate(void)
 }
 
 
+u8   NO_ACKtimer(void)
+{  // 判断中心应答
+         //------- no  ack  process -----
+		              if((Send_Rdy4ok==2)&&( ReadCycle_status==RdCycle_SdOver))
+		              	{
+		              	  ACK_timer++;
+						  if( ACK_timer>=20)   
+						  {
+						      ACK_timer=0;
+							  cycle_read=mangQu_read_reg;   //   还原read重新发送
+							  ReadCycle_status=RdCycle_Idle; 
+							  rt_kprintf("\r\n MQ_true Noack rensend! \r\n");
+						  }
+
+		              	}
+	
+}
+
 void    GSM_SD_MsgQueue_to_APP (void) 
 {
           // 1.   Rx Process 
@@ -415,6 +433,8 @@ static void timeout_gsm(void *  parameter)
   #ifdef SMS_ENABLE
   //  SMS  timer
     SMS_timer();
+
+  NO_ACKtimer(); //  中心应答timer
  #endif
  //    RTC get 
     time_now=Get_RTC();     

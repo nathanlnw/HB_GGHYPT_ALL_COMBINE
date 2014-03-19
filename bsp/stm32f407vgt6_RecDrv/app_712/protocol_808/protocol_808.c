@@ -756,8 +756,8 @@ void delay_ms(u16 j )
 						  
                       case  1: //  发送批量数据					  
 							 //-------- change status  Ready  ACK  ------ 
-						      ReadCycle_status=RdCycle_SdOver;
-							  Send_Rdy4ok=1;  // enable
+						      ReadCycle_status=RdCycle_SdOver;  
+							  Send_Rdy4ok=2;  // enable
 							  //----应答次数 ----		  
 							 // if(DispContent)	
 								//  rt_kprintf("\r\n 发送 GPS --saved  OK!\r\n");    
@@ -5823,13 +5823,13 @@ u8  Stuff_BatchDataTrans_BD_0704H(void)
             
 			//------------------------------------------------
 			  // 判断偏差记录条数是否大于最大记录数
-			  if(delta_0704_rd>=Max_PKGRecNum_0704)
+			  if(delta_0704_rd>=Max_PKGRecNum_0704)  //Max_PKGRecNum_0704   
 				   delta_0704_rd=Max_PKGRecNum_0704;   
               else
 				  return  nothing;   // 小于5  不执行任何操作直接返回
 
 	   } 
-	  rt_kprintf("\r\n	 delat_0704=%d\r\n",delta_0704_rd);  
+	  rt_kprintf("\r\n	 delat_0704=%d    read=%d\r\n",delta_0704_rd,cycle_read);  
    // 1. Head
 	if(!Protocol_Head(MSG_0x0704,Packet_Normal)) 
  	     return false; 
@@ -5844,6 +5844,7 @@ u8  Stuff_BatchDataTrans_BD_0704H(void)
 
      //  2.3  数据项目
      
+	  mangQu_read_reg=cycle_read;   //	存储当前的记录
       for(i=0;i<delta_0704_rd;i++)
       {
 	     //   读取信息
@@ -7637,7 +7638,7 @@ void TCP_RX_Process( u8  LinkNum)  //  ---- 808  标准协议
 									 } 
 									  //------------------------------------  
 										rt_kprintf( "\r\nCentre ACK!\r\n");  	
-									    Api_cycle_Update();   
+									    
 									   //-------------------------------------------------------------------
 									  /* cycle_read++;   //  收到应答才递增
 									   if(cycle_read>=Max_CycleNum)
@@ -7741,7 +7742,16 @@ void TCP_RX_Process( u8  LinkNum)  //  ---- 808  标准协议
 							case 0x0701: 
                                            rt_kprintf("\r\n  电子运单上报---中心应答!  \r\n"); 							       
 											 
-							           break;		
+							           break;	
+							case 0x0704:
+								            rt_kprintf( "\r\n  0704H-ack  \r\n"); 
+											  //-----------------
+											if(Send_Rdy4ok==2)
+												  {
+													  Api_cycle_Update();
+													  Send_Rdy4ok=0;	  
+												  }
+								           break;
 						   case 0x0705: 	//
 															  rt_kprintf("\r\n can-ack"); 
 								   break; 
