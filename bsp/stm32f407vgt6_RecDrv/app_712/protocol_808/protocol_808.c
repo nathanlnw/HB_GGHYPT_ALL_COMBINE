@@ -721,7 +721,7 @@ void delay_ms(u16 j )
 				 return true;  
 			   } 
 			//----------------------------------------------------------------------
-			if(Current_State==1)   // 调试时30  实际是10 Current_SD_Duration 
+			if(Current_UDP_sd==1)   // 调试时30  实际是10 Current_SD_Duration 
 			 {	
 				 if(PositionSD_Status()&&(DEV_Login.Operate_enable==2)&&((enable==BD_EXT.Trans_GNSS_Flag)||(DispContent==6))||(Current_UDP_sd&&PositionSD_Status()&&(DEV_Login.Operate_enable==2))||((DF_LOCK==enable)&&PositionSD_Status()))	  //首次定位再发 
 				   //  if((PositionSD_Status())&&(DataLink_Status())&&(DEV_Login.Operate_enable==2))	                                                                                                                     // DF  锁定发送当前位置信息  
@@ -9992,7 +9992,7 @@ void  Sleep_Mode_ConfigExit(void)
        Current_SD_Duration=JT808Conf_struct.DURATION.Default_Dur; 
 
    if(Current_SD_Duration>=20)
-      JT808Conf_struct.DURATION.Heart_Dur=200;
+      JT808Conf_struct.DURATION.Heart_Dur=150;
    else
       JT808Conf_struct.DURATION.Heart_Dur=300;   
    SleepState=0;

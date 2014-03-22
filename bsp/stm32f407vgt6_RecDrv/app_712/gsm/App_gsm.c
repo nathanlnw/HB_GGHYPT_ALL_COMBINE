@@ -182,7 +182,7 @@ u8   NO_ACKtimer(void)
 		              if((Send_Rdy4ok==2)&&( ReadCycle_status==RdCycle_SdOver))
 		              	{
 		              	  ACK_timer++;
-						  if( ACK_timer>=20)   
+						  if( ACK_timer>=40)    
 						  {
 						      ACK_timer=0;
 							  cycle_read=mangQu_read_reg;   //   还原read重新发送
