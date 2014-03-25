@@ -27,6 +27,7 @@
 
 //---------------------------
 #define  Max_PKGRecNum_0704     15   // 0704 单包最大记录数目   58 *16 =986  单包不超过1024  
+#define  Limit_packek_Num        3    // 限制每包上报间隔
 
 //------------  GPS function------
 #define  INIT         1

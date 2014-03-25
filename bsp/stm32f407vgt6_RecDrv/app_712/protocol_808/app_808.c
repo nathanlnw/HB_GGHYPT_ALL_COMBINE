@@ -542,7 +542,7 @@ static void App808_thread_entry(void* parameter)
        // 5. ---------------  Ë³Ðò´æ´¢ GPS  -------------------		    
 		if(GPS_getfirst)	 //------±ØÐëËÑË÷µ½¾­Î³¶È
 		{
-		  if(DataLink_Status()&&(Current_UDP_sd))
+		  if(Current_UDP_sd==0)  
 		     Save_GPS();       
 		} 		 	   
 	   // 6.   ACC ×´Ì¬¼ì²â

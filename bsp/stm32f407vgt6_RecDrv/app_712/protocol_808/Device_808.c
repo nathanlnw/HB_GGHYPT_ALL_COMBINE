@@ -945,7 +945,8 @@ else
 					     cycle_read++;	 //  收到应答才递增
 					 if(cycle_read>=Max_CycleNum)
 							cycle_read=0;
-					 ReadCycle_status=RdCycle_Idle; 			
+					 ReadCycle_status=RdCycle_Idle; 
+					 delta_0704_rd=0; // clear 
 				 }	
 				 return 1;
       }

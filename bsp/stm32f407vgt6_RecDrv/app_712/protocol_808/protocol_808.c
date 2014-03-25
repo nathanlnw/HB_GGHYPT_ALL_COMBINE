@@ -1860,7 +1860,7 @@ void  Save_GPS(void)
 				 
 						  //if(DispContent)
 						   //	  printf("\r\n---- Satelitenum: %d , CSQ:%d\r\n",Satelite_num,ModuleSQ);  
-				   
+			#if  0	   
 						  //  附加信息 6  ----------------------------- 	
 					   //  附加信息 ID
 					   GPSsaveBuf[GPSsaveBuf_Wr++]=0x2A; //自定义io
@@ -1878,7 +1878,8 @@ void  Save_GPS(void)
 					   GPSsaveBuf[GPSsaveBuf_Wr++]=(BD_EXT.AD_0>>8);	// 模拟量 1
 					   GPSsaveBuf[GPSsaveBuf_Wr++]=BD_EXT.AD_0;
 					   GPSsaveBuf[GPSsaveBuf_Wr++]=(BD_EXT.AD_1>>8);	// 模拟量 2
-					   GPSsaveBuf[GPSsaveBuf_Wr++]=BD_EXT.AD_1;                    
+					   GPSsaveBuf[GPSsaveBuf_Wr++]=BD_EXT.AD_1;      
+		   #endif			   
 					   //------------------------------------------------
 					   GPSsaveBuf[0]=GPSsaveBuf_Wr;  
 
@@ -1910,7 +1911,7 @@ void  Save_GPS(void)
 				 }
 				  //-----------------------------------------------------
 		  }
-   
+      
 
 }
 //----------------------------------------------------------------------
@@ -2341,7 +2342,7 @@ u8  Stuff_Current_Data_0200H(void)   //  发送即时数据不存储到存储器中
  
 		//if(DispContent)
 		 // 	printf("\r\n---- Satelitenum: %d , CSQ:%d\r\n",Satelite_num,ModuleSQ);	
- 
+#if  0 
 		//	附加信息 6	-----------------------------	  
 	 //  附加信息 ID
 	 Original_info[Original_info_Wr++]=0x2A; //自定义io
@@ -2360,6 +2361,7 @@ u8  Stuff_Current_Data_0200H(void)   //  发送即时数据不存储到存储器中
 	 Original_info[Original_info_Wr++]=BD_EXT.AD_0;
 	 Original_info[Original_info_Wr++]=(BD_EXT.AD_1>>8);  // 模拟量 2
 	 Original_info[Original_info_Wr++]=BD_EXT.AD_1;
+#endif	 
  //  3. Send 
  Protocol_End(Packet_Normal ,0);
 
@@ -5796,6 +5798,8 @@ u8  Stuff_BatchDataTrans_BD_0704H(void)
     u8   i=0;
 	u16  len_wr_reg=0;//   长度单位下标 记录 
 	u8   rd_infolen=0;
+	u8   BubaoFlag=1;  //    1  是补报数据
+	u8   Res_0704=0;   // 需要分包1  不需要0
    
     //0 .  congifrm   batch  num
       // 0.1  获取存储大小      
@@ -5809,26 +5813,77 @@ u8  Stuff_BatchDataTrans_BD_0704H(void)
 		}
 		  
       // 0.2  根据发送间隔判断每包大小
-      if (Current_SD_Duration>=120)  //  大于120  启动每包上报
-      	{
-            if(delta_0704_rd==1)
-	       	{
-                delta_0704_rd=0;
-                return  false;  //  要上报正常数据
-	       	}
-        }
-	  else	      
-      if(Current_SD_Duration>=0)	// 2 秒以上没3条上一次    
-       {
-            
-			//------------------------------------------------
-			  // 判断偏差记录条数是否大于最大记录数
-			  if(delta_0704_rd>=Max_PKGRecNum_0704)  //Max_PKGRecNum_0704   
-				   delta_0704_rd=Max_PKGRecNum_0704;   
-              else
-				  return  nothing;   // 小于5  不执行任何操作直接返回
+       //  0.2.1     先判断是否有存储的信息
+         if(delta_0704_rd)
+         {
+             //  判断是否有很多存储的数据
+             if(delta_0704_rd>=Max_PKGRecNum_0704)  //Max_PKGRecNum_0704   
+			  {
+			      delta_0704_rd=Max_PKGRecNum_0704;
+				  Res_0704=1;
+              }	  
+			 else
+			 if((delta_0704_rd>Limit_packek_Num)&&(Current_SD_Duration>=10)) // 比15 小大于3  还分包
+			  {
+			     delta_0704_rd=Limit_packek_Num;
+				 Res_0704=1;
+			  }	 
+			 else
+			 	Res_0704=0;
+			 
 
-	   } 
+         }
+	   //------------------------
+	   //  盲区内上报完 且存储差值小于等于   3
+	  if(Res_0704==0)
+	  	{
+		      if (Current_SD_Duration>=30)  //  大于120  启动每包上报
+		      	{
+		            if(delta_0704_rd==1)
+			       	{
+		                delta_0704_rd=0;
+		                return  false;  //  要上报正常数据
+			       	}
+					else
+			        return  nothing; // 不执行操作直接返回
+		        }
+			  else	      
+		      if(Current_SD_Duration>=10)	// 10 秒以上没3条上一次    
+		       {
+		           // 分时段进行压缩      正常上报时间段: 5:00  ---20:00
+		           if((Gps_Gprs.Time[0]>=5)&&(Gps_Gprs.Time[0]<=19)) 
+		           	{
+	                    if(delta_0704_rd==1)
+				       	{
+			                delta_0704_rd=0;
+			                return  false;  //  要上报正常数据
+				       	}
+						else
+				           return  nothing; // 不执行操作直接返回
+
+		           	}
+				   else
+				   {  //  非正常上报时间段 3 包一包上报
+						  if(delta_0704_rd>=Limit_packek_Num)  
+						  {
+						     delta_0704_rd=Limit_packek_Num;
+							 BubaoFlag=0;// 正常上报
+						  }	 
+			              else
+							  return  nothing;   // 小于5  不执行任何操作直接返回 
+				   	}
+
+			   } 
+			  else  // 小于等于10
+			  {  //  非正常上报时间段8 包一包上报
+			              BubaoFlag=0;// 正常上报 
+						 if(delta_0704_rd>=8)  
+							  delta_0704_rd=8;	  
+						 else
+							 return  nothing;	// 小于5  不执行任何操作直接返回
+			  } 
+			  	
+	  	}
 	  rt_kprintf("\r\n	 delat_0704=%d    read=%d\r\n",delta_0704_rd,cycle_read);  
    // 1. Head
 	if(!Protocol_Head(MSG_0x0704,Packet_Normal)) 
@@ -5840,7 +5895,7 @@ u8  Stuff_BatchDataTrans_BD_0704H(void)
 	 Original_info[Original_info_Wr++]	 = delta_0704_rd;
 	 
 	 //  2.2	数据类型	 1	盲区补报	0:	 正常位置批量汇报
-	 Original_info[Original_info_Wr++] = 0;  // 这里改成批量上传
+	 Original_info[Original_info_Wr++] = BubaoFlag;  // 这里改成批量上传
 
      //  2.3  数据项目
      
@@ -7636,15 +7691,13 @@ void TCP_RX_Process( u8  LinkNum)  //  ---- 808  标准协议
                                              Warn_Status[0]&=~0x20; 
 											 rt_kprintf( "\r\n碰撞侧翻收到应答，得清除!\r\n");  
 									 } 
+
+									   
 									  //------------------------------------  
 										rt_kprintf( "\r\nCentre ACK!\r\n");  	
 									    
 									   //-------------------------------------------------------------------
-									  /* cycle_read++;   //  收到应答才递增
-									   if(cycle_read>=Max_CycleNum)
-											   cycle_read=0;
-									   ReadCycle_status=RdCycle_Idle;
-                                                                 */
+									    Api_cycle_Update(); 
                                         //--------------  多媒体上传相关  --------------                                       
 									   if(MediaObj.Media_transmittingFlag==1)  // clear									      
 									      {
@@ -7749,7 +7802,8 @@ void TCP_RX_Process( u8  LinkNum)  //  ---- 808  标准协议
 											if(Send_Rdy4ok==2)
 												  {
 													  Api_cycle_Update();
-													  Send_Rdy4ok=0;	  
+													  Send_Rdy4ok=0;	
+													  ACK_timer=0;
 												  }
 								           break;
 						   case 0x0705: 	//
@@ -9991,9 +10045,6 @@ void  Sleep_Mode_ConfigExit(void)
    if(JT808Conf_struct.RT_LOCK.Lock_state!=1)
        Current_SD_Duration=JT808Conf_struct.DURATION.Default_Dur; 
 
-   if(Current_SD_Duration>=20)
-      JT808Conf_struct.DURATION.Heart_Dur=150;
-   else
       JT808Conf_struct.DURATION.Heart_Dur=300;   
    SleepState=0;
    SleepCounter=0;
@@ -10007,7 +10058,7 @@ u16 WaveFile_EncodeHeader(u32 inFilesize ,u8* DestStr)
     
 	//  1. RIFF
     memcpy(DestStr,"RIFF",4); 
-	i+=4;
+	i+=4; 
 	//  2. Wave 文件 大小  小端模式 
 	Filesize=0x24+(inFilesize<<3); // 乘以16 加 36 wave 文件大小 
 	rt_kprintf("\r\n .wav 文件大小: %d Rawdata: %d \r\n ",Filesize,(inFilesize<<3)); 

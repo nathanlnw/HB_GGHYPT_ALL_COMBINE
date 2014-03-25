@@ -1,6 +1,7 @@
----- Current_State Matches (5 in 4 files) ----
-Flash_Oper.c (bsp\stm32f407vgt6_recdrv\app_712\dataflash):				  Current_State=1; // 使能即时上报 		
-Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):			if(Current_State==1)   // 调试时30  实际是10 Current_SD_Duration 
-Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):			 Current_State=0;			 
-Sys_config.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):u8		 Current_State=0; //正式为0 ； 演示为1		 // 上报实时标志位信息	 预防DF 损坏 
-Sys_config.h (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):extern u8		   Current_State;		 // 上报实时标志位信息	 预防DF 损坏  
+---- Send_Rdy4ok Matches (6 in 3 files) ----
+App_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):		              if((Send_Rdy4ok==2)&&( ReadCycle_status==RdCycle_SdOver))
+Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):u8           Send_Rdy4ok=0;
+Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):							  Send_Rdy4ok=2;  // enable
+Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):											if(Send_Rdy4ok==2)
+Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):													  Send_Rdy4ok=0;	  
+Protocol_808.h (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):extern u8     Send_Rdy4ok;
