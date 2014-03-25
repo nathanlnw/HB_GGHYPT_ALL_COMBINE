@@ -946,7 +946,9 @@ else
 					 if(cycle_read>=Max_CycleNum)
 							cycle_read=0;
 					 ReadCycle_status=RdCycle_Idle; 
-					 delta_0704_rd=0; // clear 
+					 //--------------------------------------  
+					 delta_0704_rd=0; // clear 					 
+					 ACK_timer=0;
 				 }	
 				 return 1;
       }
