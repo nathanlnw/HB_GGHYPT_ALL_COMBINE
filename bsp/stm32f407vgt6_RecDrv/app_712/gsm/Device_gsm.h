@@ -81,8 +81,8 @@ typedef  struct
 	u8     Pre_Dial_flag;              //  准备拨号使能
 	u8     Pre_dial_counter;        //  准备拨号计时器
 	u8     start_dial_stateFLAG;  //从开始拨号时写为1 
-	u16     start_dial_counter;           //处于拨号状态标志位
-       u8     Dial_GPRS_Flag;           // 开始登录GPRS 
+	u32     start_dial_counter;           //处于拨号状态标志位
+    u8     Dial_GPRS_Flag;           // 开始登录GPRS 
 	u8     Dial_step;                         //拨号步骤计数器 
 
         //----Single Setp  Operate  related  -----

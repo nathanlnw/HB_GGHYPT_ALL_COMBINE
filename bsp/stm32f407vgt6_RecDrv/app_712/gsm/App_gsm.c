@@ -89,11 +89,11 @@ void   DialLink_TimeOut_Process(void)
 	   {
 					  DataDial.start_dial_counter++; 
 					   //-------- add  on  2013 4-8  -----------
-					  if( DataDial.start_dial_counter==593)
+					  if(( DataDial.start_dial_counter==593)&&(Speed_gps<=10))
 					  	    DataLink_EndFlag=1;
-					  if( DataDial.start_dial_counter==597) 
+					  if(( DataDial.start_dial_counter==597)&&(Speed_gps<=10)) 
 					        Redial_reset_save=1;
-					  if(DataDial.start_dial_counter>600)   	 
+					  if((DataDial.start_dial_counter>600)&&(Speed_gps<=10))    	 
 					  {
 						 DataDial.start_dial_counter=0; 
 						 //----------  ´æ´¢ÐÝÃß¶¨Ê±Æ÷ -----------

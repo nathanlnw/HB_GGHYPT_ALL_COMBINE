@@ -133,7 +133,7 @@
 
 
 
-#define   Max_SystemCounter            86400// 28800 // 86400   //定时重启时间24小时 一天   
+#define   Max_SystemCounter            259200// 28800 // 86400   //定时重启时间24小时 一天   
 
 //-----------------------  Max  Add    ---------------------------------
 #define   Max_CycleNum                  8192

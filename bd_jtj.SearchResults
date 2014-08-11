@@ -1,5 +1,13 @@
----- RdCycle_SdOver Matches (4 in 4 files) ----
-App_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):		              if((Send_Rdy4ok==2)&&( ReadCycle_status==RdCycle_SdOver))
-Device_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):           	 if( ReadCycle_status==RdCycle_SdOver)	 // 发送成功判断 
-Flash_Oper.h (bsp\stm32f407vgt6_recdrv\app_712\dataflash):#define   RdCycle_SdOver               2     // 发送完毕等待中心应答
-Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):						      ReadCycle_status=RdCycle_SdOver;  
+---- Systerm_Reset_counter Matches (13 in 5 files) ----
+App_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):      Systerm_Reset_counter=Max_SystemCounter-3;
+App_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):		  rt_kprintf("\r\n Systerm_Reset_counter=%d     app_thread_runCounter=%d  \r\n",Systerm_Reset_counter,app_thread_runCounter); 
+App_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):    Systerm_Reset_counter++;
+App_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):    if((Systerm_Reset_counter>Max_SystemCounter)&&(Speed_gps<=10))
+App_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):     {   	Systerm_Reset_counter=0;	
+App_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):    if((Systerm_Reset_counter&0x1FF)==0x1FF)  //0x1ff   
+Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):                                       Systerm_Reset_counter=Max_SystemCounter;
+Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):			Systerm_Reset_counter= (Max_SystemCounter-5);	 // 准备重启更新最新程序
+Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):					Systerm_Reset_counter=Max_SystemCounter;
+SMS.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):                     Systerm_Reset_counter=Max_SystemCounter-30; //返回短信后恢复出厂设置
+Sys_config.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):u32  Systerm_Reset_counter=0;
+Sys_config.h (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):extern u32  Systerm_Reset_counter; 

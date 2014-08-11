@@ -160,7 +160,7 @@ void   Reset_Saveconfig(void)
 void  App808_tick_counter(void) 
 {
     Systerm_Reset_counter++;
-    if(Systerm_Reset_counter>Max_SystemCounter)
+    if((Systerm_Reset_counter>Max_SystemCounter)&&(Speed_gps<=10))
      {   	Systerm_Reset_counter=0;	
 	        rt_kprintf("\r\n Sysem  Control   Reset \r\n"); 
                reset(); 
