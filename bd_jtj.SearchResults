@@ -1,13 +1,6 @@
----- Systerm_Reset_counter Matches (13 in 5 files) ----
-App_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):      Systerm_Reset_counter=Max_SystemCounter-3;
-App_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):		  rt_kprintf("\r\n Systerm_Reset_counter=%d     app_thread_runCounter=%d  \r\n",Systerm_Reset_counter,app_thread_runCounter); 
-App_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):    Systerm_Reset_counter++;
-App_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):    if((Systerm_Reset_counter>Max_SystemCounter)&&(Speed_gps<=10))
-App_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):     {   	Systerm_Reset_counter=0;	
-App_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):    if((Systerm_Reset_counter&0x1FF)==0x1FF)  //0x1ff   
-Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):                                       Systerm_Reset_counter=Max_SystemCounter;
-Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):			Systerm_Reset_counter= (Max_SystemCounter-5);	 // 准备重启更新最新程序
-Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):					Systerm_Reset_counter=Max_SystemCounter;
-SMS.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):                     Systerm_Reset_counter=Max_SystemCounter-30; //返回短信后恢复出厂设置
-Sys_config.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):u32  Systerm_Reset_counter=0;
-Sys_config.h (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):extern u32  Systerm_Reset_counter; 
+---- DataDial.Pre_Dial_flag Matches (5 in 2 files) ----
+App_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):					 DataDial.Pre_Dial_flag=1;    // Convert to  DataDial State
+Device_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):					 DataDial.Pre_Dial_flag=1;    // Convert to  DataDial State
+Device_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):   DataDial.Pre_Dial_flag=1;    // Convert to  DataDial State
+Device_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):					   DataDial.Pre_Dial_flag=1; 	  //--- 重新拨号	
+Device_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):		 DataDial.Pre_Dial_flag=1;
