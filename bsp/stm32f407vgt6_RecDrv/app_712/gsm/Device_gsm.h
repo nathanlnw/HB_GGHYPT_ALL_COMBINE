@@ -71,6 +71,8 @@ u8     Initial_step;
 u8     Execute_couter; 
 u8     Execute_enable; 
 u8     cmd_run_once;  
+u8     AT_cmd_sendState;
+u32    AT_cmd_send_timeout;  
 
 }COMM_AT; 
 
@@ -194,7 +196,8 @@ extern  u8     GSM_AsciiTx[GSM_AsciiTX_SIZE];
 extern 	GSM_POWER	GSM_PWR;  
 
 
-extern void GSM_CSQ_timeout(void);
+extern void  AT_cmd_send_TimeOUT(void); 
+extern void  GSM_CSQ_timeout(void);
 extern u8    GSM_CSQ_Query(void);
 extern void  DataLink_MainSocket_set(u8 *IP, u16  PORT, u8 DebugOUT);
 extern void  DataLink_AuxSocket_set(u8 *IP, u16  PORT,u8 DebugOUT) ;
@@ -210,6 +213,9 @@ extern  void  GSM_Buffer_Read_Process(void);
 
 
 extern u8    GPRS_GSM_PowerON(void);   
+extern void  GPRS_GSM_PowerOFF_Working(void);
+extern void  gsm_power_cut(void);
+
 extern void  Data_Send(u8* DataStr, u16  Datalen,u8  Link_Num);
 extern void  End_Datalink(void);
 extern void  ISP_Timer(void); 

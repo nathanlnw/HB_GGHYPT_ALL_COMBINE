@@ -160,10 +160,20 @@ VOC_REC       VocREC;    // 录音上传相关
 #endif
 
  
+//u8  Debug_gsmnoack=0;  
 
 static void GSM_Process(u8 *instr, u16 len);
 u32 GSM_HextoAscii_Convert(u8*SourceHex,u16 SouceHexlen,u8 *Dest);   
 
+
+/*
+void gsmnoack(u8 value)
+{
+  Debug_gsmnoack=value;  
+  rt_kprintf(" \r\n GSM_ack_value=%d  \r\n",Debug_gsmnoack);       
+}
+FINSH_FUNCTION_EXPORT(gsmnoack, gsmnoack);  
+*/
 
 #ifdef  REC_VOICE_ENABLE
 //   VOICE  RECORD   
@@ -388,7 +398,7 @@ void  VOC_REC_filedel(void)
 
  void VOC_REC_Start(void)    // 录音开始
  { 
-     if(GSM_PWR.GSM_power_over)     //  必须模块ON 起来才能操作
+     if(GSM_PWR.GSM_power_over)     //  必须模块ON 起来才能操作 
      {
              if(VocREC.running==0)      //  若正在处理中，不处理    
 		{											   
@@ -521,6 +531,30 @@ void TTS_play(u8 * instr)
 FINSH_FUNCTION_EXPORT(TTS_play, TTS play);
 
 
+void gsm_power_cut(void)
+{
+  GSM_PWR.GSM_powerCounter=0;
+  GSM_PWR.GSM_power_over=3;    // enable  GSM reset
+  rt_kprintf(" \r\n  GSM 模块准备关闭!  \r\n");     
+
+}
+FINSH_FUNCTION_EXPORT(gsm_power_cut, gsm_power_cut);   
+
+void AT_cmd_send_TimeOUT(void)
+{    // work  in    1  sencond  
+   if(CommAT.AT_cmd_sendState==enable)
+   	{
+   	    CommAT.AT_cmd_send_timeout++;
+        if(CommAT.AT_cmd_send_timeout>70) 
+        	{
+        	   gsm_power_cut();        
+               CommAT.AT_cmd_send_timeout=0;
+			   CommAT.AT_cmd_sendState=0;
+			   rt_kprintf("AT  noack  reset GSM module\r\n");         
+        	} 
+   	}
+}
+
 void GSM_CSQ_timeout(void)
 {
             CSQ_counter++;
@@ -534,6 +568,9 @@ void GSM_CSQ_timeout(void)
 
 u8 GSM_CSQ_Query(void)
 {    
+    
+	if((GSM_PWR.GSM_power_over>0)&&(GSM_PWR.GSM_power_over<=2)) 
+	{
        if((CSQ_flag==1)&&(MediaObj.Media_transmittingFlag==0)&&(Dev_Voice.CMD_Type!='1'))  
 	   { 
 		  CSQ_flag=0; 
@@ -543,7 +580,7 @@ u8 GSM_CSQ_Query(void)
 		        rt_kprintf("AT+CSQ\r\n");  
 		  return true;	
 	   } 
-
+	}
 	   return false;   
 }
 
@@ -712,6 +749,7 @@ void rt_hw_gsm_output(const char *str)
 		rt_hw_gsm_putc (*str++);
 	}
 	
+	CommAT.AT_cmd_sendState=enable;
 	/* len=strlen(str);
        while( len )
 	{
@@ -735,6 +773,8 @@ void rt_hw_gsm_output_Data(u8 *Instr,u16 len)
 		rt_hw_gsm_putc (*Instr++);
 		infolen--;
 	}
+	   CommAT.AT_cmd_sendState=enable;
+	   
        //--------  add by  nathanlnw  --------	
 
 }
@@ -1071,6 +1111,37 @@ u8  GPRS_GSM_PowerON(void)
         
 	
 	 return   0;	    
+}
+
+void GPRS_GSM_PowerOFF_Working(void)
+{
+    if(GSM_PWR.GSM_power_over!=3) 
+			  return ; 
+			  
+	  GSM_PWR.GSM_powerCounter++;   
+	
+     if(GSM_PWR.GSM_powerCounter<=3)
+	 {
+		GPIO_SetBits(GPIOD,GPRS_GSM_Power);    //  开电
+	    GPIO_SetBits(GPIOD,GPRS_GSM_PWKEY);      //  PWK 低 
+		//	   rt_kprintf("\r\n 关电 --低 300ms\r\n");   
+	 }	   
+	  if((GSM_PWR.GSM_powerCounter>3)&&(GSM_PWR.GSM_powerCounter<=20))
+      {
+      	  GPIO_SetBits(GPIOD,GPRS_GSM_Power);    //  开电
+	      GPIO_ResetBits(GPIOD,GPRS_GSM_PWKEY);      //  PWK 高
+	     //  rt_kprintf("\r\n 关电 --高\r\n"); 
+      }
+	  
+	  if(GSM_PWR.GSM_powerCounter>20) 
+	  {
+            GSM_PWR.GSM_powerCounter=0;
+			GSM_PWR.GSM_power_over=0;
+			DataLink_Online=0;          // 断开连接
+		    ModuleStatus &=~Status_GPRS;
+			rt_kprintf("\r\n 关模块完毕转入  开机模式\r\n");  
+	  }      
+
 }
 
 void GSM_Module_TotalInitial(void)
@@ -1459,6 +1530,10 @@ static void GSM_Process(u8 *instr, u16 len)
 		 rt_kprintf("%c",GSM_rx[i]);      	
    }
 
+   
+   // -----  ack  timeout    clear
+   CommAT.AT_cmd_send_timeout=0;    
+   CommAT.AT_cmd_sendState=0;
    //------------------------------------------------------------------------------------------------------------------- 
 	if (strncmp((char*)GSM_rx, "AT-Command Interpreter ready",20) == 0)  
 	{	
@@ -2133,6 +2208,16 @@ void  IMSIcode_Get(void)
 		   	} 
 		}  
 }
+
+u8   GSM_Working_State(void)  //  表示GSM ，可以正常工作
+{
+    if((GSM_PWR.GSM_power_over==1)||(GSM_PWR.GSM_power_over==2))
+             return  GSM_PWR.GSM_power_over;
+	else 
+		     return  0;
+}
+	
+
 
 #if 0 
  void Rx_in(u8* instr)

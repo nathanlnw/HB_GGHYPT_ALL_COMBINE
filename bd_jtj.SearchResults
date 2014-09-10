@@ -1,6 +1,5 @@
----- DataDial.Pre_Dial_flag Matches (5 in 2 files) ----
-App_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):					 DataDial.Pre_Dial_flag=1;    // Convert to  DataDial State
-Device_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):					 DataDial.Pre_Dial_flag=1;    // Convert to  DataDial State
-Device_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):   DataDial.Pre_Dial_flag=1;    // Convert to  DataDial State
-Device_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):					   DataDial.Pre_Dial_flag=1; 	  //--- ÖØÐÂ²¦ºÅ	
-Device_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):		 DataDial.Pre_Dial_flag=1;
+---- Debug_gsmnoack Matches (4 in 1 files) ----
+Device_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):u8  Debug_gsmnoack=0; 
+Device_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):  Debug_gsmnoack=value;  
+Device_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):  rt_kprintf(" \r\n GSM_ack_value=%d  \r\n",Debug_gsmnoack);       
+Device_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):		    if(Debug_gsmnoack==0) 

@@ -353,14 +353,21 @@ static void gsm_thread_entry(void* parameter)
 	 //--------------------------------------  
 	while (1)
 	{
-	
-            // 1.  after power  on    get imsi code  	 	
-              IMSIcode_Get(); 
-            //  2. after get imsi   Comm   AT  initial   start 
-              GSM_Module_TotalInitial();  
-            // 3. Receivce & Process   Communication  Module   data ----
-	       GSM_Buffer_Read_Process(); 
-		   rt_thread_delay(20);      	
+	     
+		 if(GSM_Working_State())
+		 {
+	            // 1.  after power  on    get imsi code  	 	
+	              IMSIcode_Get(); 
+	            //  2. after get imsi   Comm   AT  initial   start 
+	              GSM_Module_TotalInitial();  
+	            // 3. Receivce & Process   Communication  Module   data ----
+		       GSM_Buffer_Read_Process(); 
+		 }
+		   rt_thread_delay(20);    
+		   
+		if(GSM_Working_State()==2)	
+		 {
+		    
 	       DataLink_Process();		
              //------------------------------------------------
 		    if (Send_DataFlag== 1) 
@@ -402,7 +409,7 @@ static void gsm_thread_entry(void* parameter)
 			 
 			 //   SMS  Service
 			 SMS_Process();            
-			   
+		  }   
 	}
 }
  
@@ -430,6 +437,8 @@ static void timeout_gsm(void *  parameter)
     DialLink_TimeOut_Process();
  //  CSQ
      GSM_CSQ_timeout();
+  //  AT cmd timeout
+      AT_cmd_send_TimeOUT();   
   #ifdef SMS_ENABLE
   //  SMS  timer
     SMS_timer();
