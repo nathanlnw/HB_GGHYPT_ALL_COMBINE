@@ -13,7 +13,7 @@
 #include  "Vdr.h"
 
  
-#define   SYSID            0x0A1A //  0xA1A      
+#define   SYSID           0xF11A //  0xA1A       
                                 /*        
                                                         0x0000   -----   0x00FF  生产和研发用
                                                         0x0100   -----   0x0FFF  产品出货用
@@ -450,7 +450,7 @@ u8     JT808_Conf_init( void )
                 JT808Conf_struct.DayStartDistance_32=0;     //  每天的起始里程数目
 
                 JT808Conf_struct.Speed_warn_MAX=200;           //  速度报警门限
-                JT808Conf_struct.Spd_Exd_LimitSeconds=10;  //  超速报警持续时间门限 s
+                JT808Conf_struct.Spd_Exd_LimitSeconds=100;  //  超速报警持续时间门限 s
                 JT808Conf_struct.Speed_GetType=0;             //  记录仪获取速度的方式  00  gps取速度  01 表示从传感器去速度 
                 JT808Conf_struct.DF_K_adjustState=0; // 特征系数自动校准状态说明  1:自动校准过    0:尚未自动校准   
 
@@ -1371,6 +1371,9 @@ void  FirstRun_Config_Write(void)
  		  //---- add special -----------  
  		  Login_Menu_Flag=0;     //  输入界面为0 
 		  DF_WriteFlashSector(DF_LOGIIN_Flag_offset,0,&Login_Menu_Flag,1); 
+
+		  Limit_max_SateFlag=1; //使能
+		  DF_WriteFlashSector(DF_LimitSPEED_offset,0,&Limit_max_SateFlag,1); 
 		  
 
 }
@@ -1610,6 +1613,8 @@ void SetConfig(void)
 		   {
 		              ModuleStatus&=~Status_Pcheck;
            } 
+		   DF_ReadFlash(DF_LimitSPEED_offset,0,&Limit_max_SateFlag,1); 
+		   rt_kprintf("\r\n  Limit_max_stateflag=%d",Limit_max_SateFlag); 
            Rails_Routline_Read();
                  
           DF_LOCK=0;  // unlock 

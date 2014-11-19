@@ -188,6 +188,7 @@ u8  Common_WriteContent(u32 In_write,u8 *content ,u16 saveLen, u8 Type)
 		{
         SST25V_SectorErase_4KByte((pageoffset+Start_offset)*PageSIZE);      // erase Sector	
         DF_delay_ms(70);
+		WatchDog_Feed();
 		//  rt_kprintf("\r\n Common --- Erase Cycle Block : %d\r\n",(pageoffset>>6));    
 		}
 	 // 	  2. Filter write  area    

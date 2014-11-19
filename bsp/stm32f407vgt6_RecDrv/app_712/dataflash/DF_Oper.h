@@ -201,8 +201,8 @@ Crystal: 3.6864Mhz
 #define       DF_VehicleBAK2_Struct_offset            6216                 // block 起始位置      
 
 #define       DF_SIMID_12D                            6000                 // Block  	起始位置     
-#define       DF_LOGIIN_Flag_offset                          6040                 // Block      起始位置 
-
+#define       DF_LOGIIN_Flag_offset                          6040          // Block      起始位置 
+#define       DF_LimitSPEED_offset                    6048                 // Block   起始位置    
 
 
 

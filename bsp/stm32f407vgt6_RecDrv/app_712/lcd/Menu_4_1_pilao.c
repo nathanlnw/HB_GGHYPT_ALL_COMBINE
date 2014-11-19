@@ -94,7 +94,7 @@ unsigned char tired_num=0;
 						ReadPiLao(3);
 					else	
 						ReadPiLao(tired_num);
-					Dis_pilao(data_tirexps);
+					Dis_pilao(data_tirexps); 
 					}
 				else
 					{

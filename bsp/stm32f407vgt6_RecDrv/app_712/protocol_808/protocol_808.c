@@ -23,6 +23,7 @@
 
 
 #define    ROUTE_DIS_Default            0x3F000000
+#define    HEX_TO_BCD( A ) ( ( ( ( A ) / 10 ) << 4 ) | ( ( A ) % 10 ) )
 
 
 u8 chushilicheng[4];
@@ -210,6 +211,7 @@ u16     Spd_adjust_counter=0; // 确保匀速状态计数器
 u16     Spd_Deltacheck_counter=0;   // 传感器速度和脉冲速度相差较大判断
 u16     Former_DeltaPlus[K_adjust_Duration]; // 前几秒的脉冲数 
 u8      Former_gpsSpd[K_adjust_Duration];// 前几秒的速度      
+u8      Illeagle_Data_kickOUT=0;  //  剔除非法数据状态
 //-----  车台注册定时器  ----------
 DevRegst   DEV_regist;  // 注册
 DevLOGIN   DEV_Login;   //  鉴权  
@@ -322,6 +324,8 @@ VechINFO     Vechicle_Info;     //  车辆信息
 VechINFO     Vechicle_Info_BAK;  //  车辆信息 BAK
 VechINFO     Vechicle_info_BAK2; //  车辆信息BAK2     
 u8           Login_Menu_Flag=0;       //   登陆界面 标志位
+u8           Limit_max_SateFlag=0;    //   速度最大门限限制指令  
+
 
 
 //------  车门开关拍照 -------
@@ -1100,18 +1104,29 @@ void Speed_pro(u8 *tmpinfo,u8 Invalue,u8 Point)
 		  sp= (u32)(sp * 185.6) ;  //  1 海里=1.856 千米  现在是m/h
 								 
 		  if(sp>220000)   //时速大于220km/h则剔除
-			  return;  
+		    {
+		      Illeagle_Data_kickOUT=1;
+		      return;
+		  	}  
 	 
 		  sp_DISP=sp/100;   //  sp_Disp 单位是 0.1km/h 
 							  
 	         //------------------------------ 通过GPS模块数据获取到的速度 --------------------------------
-                   Speed_gps=(u16)sp_DISP;
+             if(1==Limit_max_SateFlag)
+			 {
+			   if((sp_DISP>=1200)&&(sp_DISP<1500))
+			   	   sp_DISP=1200;     //  速度大于120 km/h   且小于150 km/h
+			   if(sp_DISP>=1500)
+                    Illeagle_Data_kickOUT=1;  // 速度大于150  剔除 
+			   else
+			   	   Speed_gps=(u16)sp_DISP;
+             }
+			 else
+			    Speed_gps=(u16)sp_DISP;
 
 
 
         //  Speed_gps=Speed_jiade;//800;  //  假的为了测试   
-
-
 			 
 	         //---------------------------------------------------------------------------
        if(JT808Conf_struct.Speed_GetType)  // 通过速度传感器 获取速度
@@ -1443,8 +1458,11 @@ void  GPS_Delta_DurPro(void)    //告GPS 触发上报处理函数
 		  }
   	}  
   
-    //------------------------------ do this every  second-----------------------------------------    
-	memcpy((char*)&Gps_Gprs,(char*)&Temp_Gps_Gprs,sizeof(Temp_Gps_Gprs));     
+    //------------------------------ do this every  second-----------------------------------------
+    if(Illeagle_Data_kickOUT==0)
+	    memcpy((char*)&Gps_Gprs,(char*)&Temp_Gps_Gprs,sizeof(Temp_Gps_Gprs));   
+	else
+		Illeagle_Data_kickOUT=0;  // clear 
 
 
 
@@ -9726,7 +9744,7 @@ void SpeedWarnJudge(void)  //  速度报警判断
 							// if( DebugSpd > ( JT808Conf_struct.Speed_warn_MAX*10) ) 
 							 {
 											 speed_Exd.dur_seconds++;
-											 if ( speed_Exd.dur_seconds >JT808Conf_struct.Spd_Exd_LimitSeconds)   
+											 if((speed_Exd.dur_seconds>JT808Conf_struct.Spd_Exd_LimitSeconds)&&(speed_Exd.excd_status==0))   
 											 {
 													 speed_Exd.dur_seconds = 0;  
 													 if ( speed_Exd.speed_flag!= 1 )
@@ -9772,7 +9790,7 @@ void SpeedWarnJudge(void)  //  速度报警判断
 												speed_Exd.excd_status=2;
 							 	            }
 											else
-											if(speed_Exd.excd_status==0)
+											if(speed_Exd.excd_status==0) 
 												Spd_ExpInit();
 											//---------------------------------------------- 
 							 }
@@ -10798,15 +10816,43 @@ void Save_AvrgSpdPerMin(void)
 
   }
 
+#if 0
+  void  debug_spdwarn(u8 * str1,u8 *str2,u16 spd_km)
+{ 
+   u8 _ip[6];
+   u8  i=0;
+   //TiredConf_struct.Tired_drive.start_time
+   //TiredConf_struct.Tired_drive.start_time
+
+
+  sscanf(str1, "%d-%d-%d %d:%d:%d", (u32*)&_ip[0], (u32*)&_ip[1], (u32*)&_ip[2], (u32*)&_ip[3], (u32*)&_ip[4],(u32*)&_ip[5]);
+  for(i=0;i<6;i++) 
+   speed_Exd.ex_startTime[i]=HEX_TO_BCD(_ip[i]);
+ sscanf(str2, "%d-%d-%d %d:%d:%d", (u32*)&_ip[0], (u32*)&_ip[1], (u32*)&_ip[2], (u32*)&_ip[3], (u32*)&_ip[4],(u32*)&_ip[5]);
+  for(i=0;i<6;i++) 
+   speed_Exd.ex_endTime[i]=HEX_TO_BCD(_ip[i]);  
+   rt_kprintf("\r\n input start:%02X-%02X-%02X %02X:%02X:%02X", speed_Exd.ex_startTime[0], speed_Exd.ex_startTime[1], speed_Exd.ex_startTime[2],speed_Exd.ex_startTime[3], speed_Exd.ex_startTime[4],speed_Exd.ex_startTime[5]);
+   rt_kprintf("\r\n input end:%02X-%02X-%02X %02X:%02X:%02X", speed_Exd.ex_endTime[0], speed_Exd.ex_endTime[1], speed_Exd.ex_endTime[2], speed_Exd.ex_endTime[3], speed_Exd.ex_endTime[4],speed_Exd.ex_endTime[5]);
+   speed_Exd.current_maxSpd=spd_km; 
+   rt_kprintf("\r\n maxspd=%d ",spd_km);
+   
+   speed_Exd.excd_status=2;  
+
+
+    rt_kprintf(" \r\n  debug over \r\n");
+}
+FINSH_FUNCTION_EXPORT(debug_spdwarn, debug_spdwarn   debug_spdwarn); 
+#endif
+
 void Save_TiredDrive_Record(void) 
 {
-  u8   content[40];
+  u8   content[70]; 
   u8   wr_add=0,FCS=0,i; 
 
         wr_add=0; 
 	 memset(content,0,70);
 
-	  Time2BCD(TiredConf_struct.Tired_drive.end_time); 
+	  Time2BCD(TiredConf_struct.Tired_drive.end_time);  
 	 
       memcpy(content+wr_add,JT808Conf_struct.Driver_Info.DriveName,18);
 	  wr_add+=18;
@@ -10822,15 +10868,40 @@ void Save_TiredDrive_Record(void)
 	   }			  //求上边数据的异或和
 	   content[wr_add++] = FCS;	  // 第31字节 
 	   
-       Api_DFdirectory_Write(tired_warn, (u8 *)content, 32); 
+      Api_DFdirectory_Write(tired_warn, (u8 *)content, 32);  
        //-----  clear status ---------------  
 	  TIRED_Drive_Init();      
 	  Status_TiredwhRst=0;
 	 // DF_WriteFlashSector(DF_TiredStartTime_Page,0,(u8*)&Status_TiredwhRst,1); //清除O后要写入		
 	   TIRED_Drive_Init(); //	休息了 
-	   Warn_Status[3]&=~0x04;  //BIT(2)	疲劳驾驶  
+	   Warn_Status[3]&=~0x04;  //BIT(2)	疲劳驾驶   
 
 }
+
+#if 0
+void  debug_tired(u8 * str1,u8 *str2)
+{ 
+   u8 _ip[6];
+   u8  i=0;
+   //TiredConf_struct.Tired_drive.start_time
+   //TiredConf_struct.Tired_drive.start_time
+
+
+  sscanf(str1, "%d-%d-%d %d:%d:%d", (u32*)&_ip[0], (u32*)&_ip[1], (u32*)&_ip[2], (u32*)&_ip[3], (u32*)&_ip[4],(u32*)&_ip[5]);
+  for(i=0;i<6;i++) 
+   TiredConf_struct.Tired_drive.start_time[i]=HEX_TO_BCD(_ip[i]);
+ sscanf(str2, "%d-%d-%d %d:%d:%d", (u32*)&_ip[0], (u32*)&_ip[1], (u32*)&_ip[2], (u32*)&_ip[3], (u32*)&_ip[4],(u32*)&_ip[5]);
+  for(i=0;i<6;i++) 
+   TiredConf_struct.Tired_drive.end_time[i]=HEX_TO_BCD(_ip[i]);  
+   rt_kprintf("\r\n input start:%02X-%02X-%02X %02X:%02X:%02X", TiredConf_struct.Tired_drive.start_time[0], TiredConf_struct.Tired_drive.start_time[1], TiredConf_struct.Tired_drive.start_time[2], TiredConf_struct.Tired_drive.start_time[3], TiredConf_struct.Tired_drive.start_time[4],TiredConf_struct.Tired_drive.start_time[5]);
+   rt_kprintf("\r\n input end:%02X-%02X-%02X %02X:%02X:%02X", TiredConf_struct.Tired_drive.end_time[0], TiredConf_struct.Tired_drive.end_time[1], TiredConf_struct.Tired_drive.end_time[2], TiredConf_struct.Tired_drive.end_time[3], TiredConf_struct.Tired_drive.end_time[4],TiredConf_struct.Tired_drive.end_time[5]);
+   TiredConf_struct.Tired_drive.Tireddrv_status=2;  
+
+
+    rt_kprintf(" \r\n  debug over \r\n");
+}
+FINSH_FUNCTION_EXPORT(debug_tired, debug_tired   debug_tired);  
+#endif
 
 //E:\work_xj\F4_BD\北斗行车记录仪过检(新协议)\2-21 RT-Thread_NewBoard-LCD2-Jiance\bsp\stm32f407vgt6_RecDrv\app_712\lcd\Menu_0_3_Sim.c
 void CAN_struct_init(void)
@@ -11023,7 +11094,7 @@ void  JT808_Related_Save_Process(void)
 		//-----------------  存储疲劳驾驶记录 ---------------			
 		if( TiredConf_struct.Tired_drive.Tireddrv_status==2)   
 		{
-	        Save_TiredDrive_Record();
+	        Save_TiredDrive_Record(); 
 			return;	 
 		}			
 		//-----------------  超速报警 ----------------------
@@ -11069,6 +11140,10 @@ void Tired_Check( void )
 	// if(DebugSpd>60)
 	{
 		//-------------疲劳驾驶相关 -----------------------
+		if(TiredConf_struct.Tired_drive.ACC_ONstate_counter==0)    // 疲劳驾驶起始时间 
+			  Time2BCD( TiredConf_struct.Tired_drive.start_time );
+
+		
 		TiredConf_struct.Tired_drive.ACC_ONstate_counter++;                                                                     // ACC 累计工作时间
 		if( DispContent == 5 )
 		{
@@ -11097,11 +11172,11 @@ void Tired_Check( void )
 
 			Status_TiredwhRst								= 2;                                                                // 疲劳了就为2了
 			TiredConf_struct.Tired_drive.Tireddrv_status	= 1;                                                                // 记录疲劳驾驶的状态
-			if( TiredConf_struct.Tired_drive.ACC_ONstate_counter == ( TiredConf_struct.TiredDoor.Door_DrvKeepingSec) )    //14400
+			if( TiredConf_struct.Tired_drive.ACC_ONstate_counter == (TiredConf_struct.TiredDoor.Door_DrvKeepingSec) )    //14400
 			{
 				//Tired_drive.Tgvoice_play=1;  // 开始播放疲劳驾驶语音提示
 				// Tired_drive.voicePly_counter++;
-				Time2BCD( TiredConf_struct.Tired_drive.start_time );
+				
 				rt_kprintf( "\r\n   疲劳驾驶触发了! \r\n" );
 				TTS_play( "您已经疲劳驾驶，请注意休息" );
 				//tts_bro_tired_flag	= 1;
@@ -11141,12 +11216,11 @@ void Tired_Check( void )
 				TiredConf_struct.Tired_drive.Tireddrv_status	= 1;                                                                // 记录疲劳驾驶的状态
 				if( TiredConf_struct.Tired_drive.ACC_ONstate_counter == ( TiredConf_struct.TiredDoor.Door_DrvKeepingSec  ) )    //14400
 				{
-					Time2BCD( TiredConf_struct.Tired_drive.start_time );
 					rt_kprintf( "\r\n	 速度小，但未满足休息门限时间 疲劳驾驶触发了! \r\n");
 					TTS_play( "您已经疲劳驾驶，请注意休息" );
 					//tts_bro_tired_flag	= 1;
 					Warn_Status[3]		|= 0x04;                                                                                    //BIT(2)  疲劳驾驶
-					//---- 触发即时上报数据-------
+					//---- 触发即时上报数据------- 
 					PositionSD_Enable( );
 					Current_UDP_sd = 1;
 					//-------------------------------------
@@ -11596,5 +11670,13 @@ void ata_enable(u8 value)
   Api_Config_write(config,ID_CONF_SYS,(u8*)&SysConf_struct,sizeof(SysConf_struct));
 }
 //FINSH_FUNCTION_EXPORT(ata_enable, ata_enable[1|0]);    
+void write_read(u32 write ,u32 read)
+{  
+   cycle_write=write;
+   cycle_read=read;
+   DF_Write_RecordAdd(cycle_write,cycle_read,TYPE_CycleAdd);   
+   rt_kprintf("\r\n  write=%d    read=%d     \r\n",cycle_write,cycle_read); 
+}
+FINSH_FUNCTION_EXPORT(write_read,write_read(write,read)); 
 
 // C.  Module

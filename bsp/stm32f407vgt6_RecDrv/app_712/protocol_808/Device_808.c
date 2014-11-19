@@ -1101,7 +1101,7 @@ else
 			  //-----  Record update----	
 			   return true;
                }
-                if(strcmp((const char*)name,tired_warn)==0) 
+         if(strcmp((const char*)name,tired_warn)==0) 
 		 {
 			   Common_WriteContent( TiredDrv_write, buffer, len,  TYPE_TiredDrvAdd);      
 			   //-----  Record update----	

@@ -1,5 +1,11 @@
----- Debug_gsmnoack Matches (4 in 1 files) ----
-Device_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):u8  Debug_gsmnoack=0; 
-Device_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):  Debug_gsmnoack=value;  
-Device_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):  rt_kprintf(" \r\n GSM_ack_value=%d  \r\n",Debug_gsmnoack);       
-Device_gsm.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):		    if(Debug_gsmnoack==0) 
+---- Limit_max_SateFlag Matches (10 in 5 files) ----
+App_hmi.c (bsp\stm32f407vgt6_recdrv\app_712\hmi):		 if((ChaosuJilu[0].Speed>120)&&(Limit_max_SateFlag==1))
+Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):u8           Limit_max_SateFlag=0;    //   速度最大门限限制指令  
+Protocol_808.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):             if(1==Limit_max_SateFlag)
+Protocol_808.h (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):extern  u8			 Limit_max_SateFlag;	  //   速度最大门限限制指令  
+SMS.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):				  Limit_max_SateFlag=sms_content[0]-0x30; 
+SMS.c (bsp\stm32f407vgt6_recdrv\app_712\gsm):		           DF_WriteFlashSector(DF_LimitSPEED_offset,0,&Limit_max_SateFlag,1); 
+Sys_config.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):		  Limit_max_SateFlag=1; //使能
+Sys_config.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):		  DF_WriteFlashSector(DF_LimitSPEED_offset,0,&Limit_max_SateFlag,1); 
+Sys_config.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):		   DF_ReadFlash(DF_LimitSPEED_offset,0,&Limit_max_SateFlag,1); 
+Sys_config.c (bsp\stm32f407vgt6_recdrv\app_712\protocol_808):		   rt_kprintf("\r\n  Limit_max_stateflag=%d",Limit_max_SateFlag); 

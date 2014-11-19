@@ -953,6 +953,7 @@ extern  VechINFO             Vechicle_Info;     //  车辆信息
 extern  VechINFO     Vechicle_Info_BAK;  //  车辆信息 BAK
 extern  VechINFO     Vechicle_info_BAK2; //  车辆信息BAK2      
 extern  u8           Login_Menu_Flag;	   //	登陆界面 标志位    
+extern  u8			 Limit_max_SateFlag;	  //   速度最大门限限制指令  
 
 
 
@@ -1377,7 +1378,7 @@ extern void  ata_enable(u8 value);
 extern void  plus_num(u32 value);
 extern void  spd_type(int  in); 
 extern void  adjust_ok(int in); 
-
+extern void  write_read(u32 write ,u32 read);  
 
 
 //extern u8  RecordSerial_output_Str(const char *fmt,...); 

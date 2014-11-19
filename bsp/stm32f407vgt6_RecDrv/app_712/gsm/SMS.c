@@ -204,7 +204,7 @@ void   SMS_protocol (u8 *instr,u16 len, u8  ACKstate)   //  ACKstate
 	strcpy(SMS_Service.SMS_sd_Content,Vechicle_Info.Vech_Num);
 	strcat(SMS_Service.SMS_sd_Content,"#");// Debug
 	strcat(SMS_Service.SMS_sd_Content,SimID_12D);// Debug
-	strcat(SMS_Service.SMS_sd_Content,"#V3");// 版本信息 
+	strcat(SMS_Service.SMS_sd_Content,"#VU");// 版本信息 
 	/*************************处理信息****************************/
 	p_Instr=(char *)instr;
 	for(i=0;i<len;i++)
@@ -473,6 +473,21 @@ void   SMS_protocol (u8 *instr,u16 len, u8  ACKstate)   //  ACKstate
 				      DF_Write_RecordAdd(TiredDrv_write,TiredDrv_read,TYPE_TiredDrvAdd);      
 				      Add_SMS_Ack_Content(sms_ack_data,ACKstate);	   
 				}
+			else
+				if(strncmp(pstrTemp,"SPDCLEAR",8)==0)		///8+1.清除疲劳驾驶记录
+				{
+				  ExpSpdRec_write=0;
+				  DF_Write_RecordAdd(ExpSpdRec_write, ExpSpdRec_write, TYPE_ExpSpdAdd); 	
+				  Add_SMS_Ack_Content(sms_ack_data,ACKstate);	
+                      
+				}
+		    else
+				if(strncmp(pstrTemp,"SPDLIMIT",8)==0)		///8+1.清除疲劳驾驶记录
+				{
+				   Limit_max_SateFlag=sms_content[0]-0x30; 
+		           DF_WriteFlashSector(DF_LimitSPEED_offset,0,&Limit_max_SateFlag,1); 
+				   Add_SMS_Ack_Content(sms_ack_data,ACKstate);	                      
+				}	
 			else if(strncmp(pstrTemp,"DISCLEAR",8)==0)			///9清除里程
 				{
 				   	 DayStartDistance_32=0;
@@ -493,6 +508,12 @@ void   SMS_protocol (u8 *instr,u16 len, u8  ACKstate)   //  ACKstate
 					 Add_SMS_Ack_Content(sms_ack_data,ACKstate);	
 
             	}
+		    else
+			  if(strncmp(pstrTemp,"DATACLEAR",9)==0)		///清除存储数据 
+				{
+				      write_read(0,0);
+				      Add_SMS_Ack_Content(sms_ack_data,ACKstate);	    
+				}
 			else if(strncmp(pstrTemp,"RESET",5)==0)			///10.终端重启
 				{
 				      reset();

@@ -60,14 +60,39 @@ void  HMI_MsgQue_Post(u16  CMD_ID, u16 len, u8 *content)
 		
        rt_mq_send( &HMI_MsgQue, (void*)&HMI_Comunicate,sizeof(HMI_COM) );
 }
+static u32 Time_sec_u32(u8 *instr,u8 len)
+{
+   u32  value=0;
 
-void Dayin_TireExpsFun(unsigned char type,unsigned char n)
+   if(len<6)
+   	   return  0;
+    value=(instr[0]*356+instr[1]*32+instr[2])*86400+\
+		  instr[3]*3600+instr[4]*60+instr[5];
+  
+    return value;
+}
+
+u8  Dayin_TireExpsFun(unsigned char type,unsigned char n)
 {
 unsigned char i=0;
-if(type==1)
+u32  start_u32=0;
+u32  end_u32=0;
+
+if(type==1)  // 疲劳驾驶记录
 	{
 	if(n==1)
-		{
+		{ 
+		  start_u32=Time_sec_u32(PilaoJilu[0].StartTime,6);
+		  end_u32=Time_sec_u32(PilaoJilu[0].EndTime,6);
+
+		 // rt_kprintf("\r\n  start=%d    end=%d  \r\n",start_u32,end_u32);
+
+		 if(end_u32<=start_u32)
+		 	       return    1;
+
+		if((end_u32-start_u32)<=TiredConf_struct.TiredDoor.Door_DrvKeepingSec)	
+                    return    1;
+		
 		memcpy(Dayin_TireExpsCard+2,PilaoJilu[0].Drver_Name,strlen((const char*)PilaoJilu[0].Drver_Name));
 		strcat((char*)Dayin_TireExpsCard,"\r\n");
 		printer((const char *)Dayin_TireExpsCard);
@@ -92,15 +117,24 @@ if(type==1)
 		}
 	}
 else
-	{
+	{       //   超速报警记录 
 	if(n==1)
 		{
+		   start_u32=Time_sec_u32(ChaosuJilu[0].StartTime,6);
+		   end_u32=Time_sec_u32(ChaosuJilu[0].EndTime,6); 
+
+		 // rt_kprintf("\r\n 2 start=%d    end=%d   maxspd=%d\r\n",start_u32,end_u32,ChaosuJilu[0].Speed); 
+
+		 if(end_u32<=start_u32)
+		 	   return 1;
+		 if((ChaosuJilu[0].Speed>120)&&(Limit_max_SateFlag==1))
+                   return 1;			
 		memcpy(Dayin_TireExpsCard+2,ChaosuJilu[0].Drver_Name,strlen((const char*)ChaosuJilu[0].Drver_Name)); 
 		strcat((char*)Dayin_TireExpsCard,"\r\n"); 
 		printer((const char *)Dayin_TireExpsCard);
 		}
 	else if(n==2)
-		{
+	  {
 		for(i=0;i<6;i++)
 			{
 			Dayin_TireExpsStartTime[9+i*3]=ChaosuJilu[0].StartTime[i]/10+0x30;
@@ -125,6 +159,7 @@ else
 		printer((const char *)Dayin_TireExpsMaxSpeed);
 		}
 	}
+     return  0 ;
 }
 	
 void Dayin_15MinSpeedFun(unsigned char n)
@@ -261,8 +296,14 @@ if(dayin_par==1)
 		case 25:
 			if(TiredDrv_write>0)
 				{
-				Dayin_TireExpsFun(1,1);
-				DaYin++;
+				 
+				  if(  Dayin_TireExpsFun(1,1)==1)
+				  	{
+                       printer("无疲劳驾驶记录\r\n");
+				       DaYin=28;     
+				  	}
+				  else
+				   DaYin++;
 				}
 			else
 				{
@@ -285,8 +326,13 @@ if(dayin_par==1)
 		case 29:
 			if(ExpSpdRec_write>0)
 				{
-				Dayin_TireExpsFun(2,1);
-				DaYin++;
+				  if(  Dayin_TireExpsFun(2,1)==1)
+				  	{
+                       printer("无超速驾驶记录\r\n");
+				       DaYin=33;     
+				  	}
+				  else
+				  DaYin++;
 				}
 			else
 				{
